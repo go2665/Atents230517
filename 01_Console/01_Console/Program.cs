@@ -2,6 +2,15 @@ namespace _01_Console
 {
     internal class Program
     {
+        enum AgeCatagory
+        {
+            Child = 0,
+            Elementry,
+            Middle,
+            High,
+            Adult
+        }
+
         static void Main(string[] args)
         {
             // 5/18--------------------------------------------------------------------------------
@@ -56,53 +65,89 @@ namespace _01_Console
             string str = Console.ReadLine();
             int.TryParse(str, out age);
             int category = -1;
-            if( age < 8)
+            AgeCatagory eCategory = AgeCatagory.Child;
+
+            if ( age < 8)
             {
                 Console.WriteLine("미취학 아동입니다.");
                 category = 0;
+                eCategory = AgeCatagory.Child;
             }
             else if( age < 13) 
             {
                 Console.WriteLine("초등학생입니다.");
                 category = 1;
+                eCategory = AgeCatagory.Elementry;
             }
             else if( age < 16) 
             {
                 Console.WriteLine("중학생입니다.");
                 category = 2;
+                eCategory = AgeCatagory.Middle;
             }
             else if( age < 19)
             {
                 Console.WriteLine("고등학생입니다.");
                 category = 3;
+                eCategory = AgeCatagory.High;
             }
             else
             {
                 Console.WriteLine("성인입니다.");
                 category = 4;
+                eCategory = AgeCatagory.Adult;
             }
 
-            switch(category)    // ()에서 받은 변수의 값에 따라 다른 코드를 수행하는 조건문
+            //switch(category)    // switch: ()에서 받은 변수의 값에 따라 다른 코드를 수행하는 조건문
+            //{
+            //    case 0:
+            //        Console.WriteLine("미취학 아동의 버스요금은 무료입니다.");
+            //        break;
+            //    case 1:
+            //        Console.WriteLine("초등학생의 버스요금은 300원입니다.");
+            //        break;
+            //    case 2:
+            //        Console.WriteLine("중학생의 버스요금은 500원입니다.");
+            //        break;
+            //    case 3:
+            //        Console.WriteLine("고등학생의 버스요금은 1000원입니다.");
+            //        break;
+            //    case 4:
+            //        Console.WriteLine("성인의 버스요금은 1300원입니다.");
+            //        break;
+            //    default:
+            //        Console.WriteLine("잘못된 입력입니다.");
+            //        break;
+            //}
+
+            switch (eCategory)
             {
-                case 0:
+                case AgeCatagory.Child:
                     Console.WriteLine("미취학 아동의 버스요금은 무료입니다.");
                     break;
-                case 1:
+                case AgeCatagory.Elementry:
                     Console.WriteLine("초등학생의 버스요금은 300원입니다.");
                     break;
-                case 2:
+                case AgeCatagory.Middle:
                     Console.WriteLine("중학생의 버스요금은 500원입니다.");
                     break;
-                case 3:
+                case AgeCatagory.High:
                     Console.WriteLine("고등학생의 버스요금은 1000원입니다.");
                     break;
-                case 4:
+                case AgeCatagory.Adult:
                     Console.WriteLine("성인의 버스요금은 1300원입니다.");
                     break;
                 default:
                     Console.WriteLine("잘못된 입력입니다.");
                     break;
             }
+
+            // 1. 성적을 입력 받기(0~100점 사이로 받기)
+            // 2. 범위가 벗어나면 잘못된 입력입니다 라고 출력하기
+            // 3. 91~100점 사이는 A등급, 81~90 : B, 71~80 : C, 61~70 : D, 나머지는 F
+            // 4. 등급은 enum으로 만든 후 변수에 저장하기
+            // 5. switch문을 이용해서 받은 등급을 출력해주기
+
             
 
 
