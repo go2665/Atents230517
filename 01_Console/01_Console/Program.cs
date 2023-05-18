@@ -1,3 +1,5 @@
+using System;
+
 namespace _01_Console
 {
     internal class Program
@@ -18,6 +20,34 @@ namespace _01_Console
             C,
             D,
             F
+        }
+
+        // 리턴타입 : void(리턴 값이 없다는 표시)
+        // 함수 이름 : GuGuDan
+        // 파라메터 : ()사이에 선언되어 있는 변수, 이 함수는 없음
+        // 함수 바디 : {} 사이에 있는 모든 코드
+        static void GuGuDan()
+        {
+            Console.Write("몇단을 출력할까요? : ");
+            string str = Console.ReadLine();
+            int.TryParse(str, out int num);
+            Console.WriteLine($"{num}이(가) 입력되었습니다.");
+            for (int i = 1; i < 10; i++)
+            {
+                Console.WriteLine($"{num} * {i} = {num * i}");
+            }
+        }
+
+        // 리턴타입 : void(리턴 값이 없다는 표시)
+        // 함수 이름 : GuGuDan_Print
+        // 파라메터 : int dan
+        // 함수 바디 : {} 사이에 있는 모든 코드
+        static void GuGuDan_Print(int dan)
+        {
+            for (int i = 1; i < 10; i++)
+            {
+                Console.WriteLine($"{dan} * {i} = {dan * i}");
+            }
         }
 
         static void Main(string[] args)
@@ -194,45 +224,81 @@ namespace _01_Console
             //}
 
 
-            Console.Write("*을 몇개 출력할까요? : ");
-            string str = Console.ReadLine();
-            int.TryParse(str, out int num);
-            Console.WriteLine($"{num}이(가) 입력되었습니다.");
+            //Console.Write("*을 몇개 출력할까요? : ");
+            //string str = Console.ReadLine();
+            //int.TryParse(str, out int num);
+            //Console.WriteLine($"{num}이(가) 입력되었습니다.");
 
-            // while;
-            int count = 0;
-            while(count < num) // ()안이 true면 {}안의 내용 반복해서 실행
-            {
-                Console.Write("*");
-                //count = count + 1;
-                count++;
-            }
-            Console.WriteLine("");
+            //// while;
+            //int count = 0;
+            //while(count < num) // ()안이 true면 {}안의 내용 반복해서 실행
+            //{
+            //    Console.Write("*");
+            //    //count = count + 1;
+            //    count++;
+            //}
+            //Console.WriteLine("");
 
-            // 증감연산자
-            // ++ : 변수에다가 1을 더한 다음 대입한다.
-            // -- : 변수에다가 1을 뺀 다음 대입한다.
-            // += : 왼쪽에 있는 변수에 오른쪽에 있는 값을 더한 후 대입
-            // -= : 왼쪽에 있는 변수에 오른쪽에 있는 값을 뺀 후 대입
-            // *= : 왼쪽에 있는 변수에 오른쪽에 있는 값을 곱한 후 대입
-            // /= : 왼쪽에 있는 변수에 오른쪽에 있는 값을 나눈 후 대입
+            //// 증감연산자
+            //// ++ : 변수에다가 1을 더한 다음 대입한다.
+            //// -- : 변수에다가 1을 뺀 다음 대입한다.
+            //// += : 왼쪽에 있는 변수에 오른쪽에 있는 값을 더한 후 대입
+            //// -= : 왼쪽에 있는 변수에 오른쪽에 있는 값을 뺀 후 대입
+            //// *= : 왼쪽에 있는 변수에 오른쪽에 있는 값을 곱한 후 대입
+            //// /= : 왼쪽에 있는 변수에 오른쪽에 있는 값을 나눈 후 대입
 
-            // do-while;
-            count = 0;
-            do
-            {
-                Console.Write("*");
-                count++;
-            }
-            while (count < num);
-            Console.WriteLine("");
+            //// do-while;
+            //count = 0;
+            //do
+            //{
+            //    Console.Write("*");
+            //    count++;
+            //}
+            //while (count < num);
+            //Console.WriteLine("");
 
-            // for
-            for(int i = 0 ; i<num ; i++)    // 증감변수 선언 및 초기화 ; 증감변수로 조건 확인 ; 증감변수를 증감
-            {
-                Console.Write("*");
-            }
-            Console.WriteLine("");
+            //// for
+            //for(int i = 0 ; i<num ; i++)    // 증감변수 선언 및 초기화 ; 증감변수로 조건 확인 ; 증감변수를 증감
+            //{
+            //    Console.Write("*");
+            //}
+            //Console.WriteLine("");
+
+            // 실습
+            // 1. 숫자를 입력받아서 *로 삼각형 그리기            
+            // *
+            // **
+            // ***
+
+            //Console.Write("*을 몇층으로 출력할까요? : ");
+            //string str = Console.ReadLine();
+            //int.TryParse(str, out int num);
+            //Console.WriteLine($"{num}이(가) 입력되었습니다.");
+
+            //for(int i=0;i<num;i++)
+            //{
+            //    for (int j = 0; j < i+1; j++)   // 오름차순
+            //    //for(int j=0;j<num-i;j++)      // 내림차수
+            //    {
+            //        Console.Write("*");
+            //    }
+            //    Console.WriteLine();
+            //}
+
+            //// 2. 숫자를 입력받아서 입력 받은 구구단 출력하기
+            //Console.Write("몇단을 출력할까요? : ");
+            //str = Console.ReadLine();
+            //int.TryParse(str, out num);
+            //Console.WriteLine($"{num}이(가) 입력되었습니다.");
+            //for(int i=1; i<10; i++)
+            //{
+            //    Console.WriteLine($"{num} * {i} = {num * i}");
+            //}
+
+            GuGuDan();
+            GuGuDan_Print(5);
+
+            // 삼각형 찍는 함수 만들기
 
             // 5/18--------------------------------------------------------------------------------
 
