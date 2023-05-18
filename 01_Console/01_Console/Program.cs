@@ -50,6 +50,19 @@ namespace _01_Console
             }
         }
 
+        static void Triangle_Print(int num)
+        {
+            for (int i = 0; i < num; i++)
+            {
+                for (int j = 0; j < i + 1; j++)   // 오름차순
+                //for(int j=0;j<num-i;j++)      // 내림차수
+                {
+                    Console.Write("*");
+                }
+                Console.WriteLine();
+            }
+        }
+
         static void Main(string[] args)
         {
             // 5/18--------------------------------------------------------------------------------
@@ -295,10 +308,14 @@ namespace _01_Console
             //    Console.WriteLine($"{num} * {i} = {num * i}");
             //}
 
-            GuGuDan();
-            GuGuDan_Print(5);
+            //GuGuDan();
+            //GuGuDan_Print(5);
 
             // 삼각형 찍는 함수 만들기
+            //Triangle_Print(15);
+
+            Character player = new Character();
+            player.Attack();
 
             // 5/18--------------------------------------------------------------------------------
 
