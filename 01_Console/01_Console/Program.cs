@@ -11,108 +11,139 @@ namespace _01_Console
             Adult
         }
 
+        enum Grade
+        {
+            A = 0,
+            B,
+            C,
+            D,
+            F
+        }
+
         static void Main(string[] args)
         {
             // 5/18--------------------------------------------------------------------------------
-            int age = 20;
+            //int age = 20;
             
-            //// if구문(statement) : if뒤에 있는 소괄호() 안의 조건이 참이면 중괄호{} 안의 코드를 수행
-            //if ( age > 18 )   
-            //{
-            //    Console.WriteLine("성인입니다.");
-            //}
+            ////// if구문(statement) : if뒤에 있는 소괄호() 안의 조건이 참이면 중괄호{} 안의 코드를 수행
+            ////if ( age > 18 )   
+            ////{
+            ////    Console.WriteLine("성인입니다.");
+            ////}
 
-            //if(age < 19)    // (age <= 18)
-            //{
-            //    Console.WriteLine("미성년자입니다.");
-            //}
+            ////if(age < 19)    // (age <= 18)
+            ////{
+            ////    Console.WriteLine("미성년자입니다.");
+            ////}
 
-            //// if-else구문
-            //// ()안의 조건이 참이면 if아래의 {}안에 있는 코드 수행. 거짓이면 else 아래의 {}안에 있는 코드 수행
-            //if( age > 18 )
+            ////// if-else구문
+            ////// ()안의 조건이 참이면 if아래의 {}안에 있는 코드 수행. 거짓이면 else 아래의 {}안에 있는 코드 수행
+            ////if( age > 18 )
+            ////{
+            ////    Console.WriteLine("성인입니다.");
+            ////}
+            ////else
+            ////{
+            ////    Console.WriteLine("미성년자입니다.");
+            ////}
+
+            ////if( age < 10 )
+            ////{
+            ////    Console.WriteLine("아동입니다.");
+            ////}
+            ////else if( age < 20)
+            ////{
+            ////    Console.WriteLine("청소년입니다.");
+            ////}
+            ////else if ( age < 70 )
+            ////{
+            ////    Console.WriteLine("성인입니다.");
+            ////}
+            ////else
+            ////{
+            ////    Console.WriteLine("노인입니다.");
+            ////}
+
+            //// 실습 
+            //// 1. 나이를 입력받기
+            //// 2. 8살 미만이면 "미취학 아동"으로 출력
+            //// 3. 13살 미만이면 "초등학생"으로 출력
+            //// 4. 16살 미만이면 "중학생"으로 출력
+            //// 5. 19살 미만이면 "고등학생"으로 출력
+            //Console.Write("나이를 입력해 주세요 : ");
+            //string str = Console.ReadLine();
+            //int.TryParse(str, out age);
+            //int category = -1;
+            //AgeCatagory eCategory = AgeCatagory.Child;
+
+            //if ( age < 8)
             //{
-            //    Console.WriteLine("성인입니다.");
+            //    Console.WriteLine("미취학 아동입니다.");
+            //    category = 0;
+            //    eCategory = AgeCatagory.Child;
+            //}
+            //else if( age < 13) 
+            //{
+            //    Console.WriteLine("초등학생입니다.");
+            //    category = 1;
+            //    eCategory = AgeCatagory.Elementry;
+            //}
+            //else if( age < 16) 
+            //{
+            //    Console.WriteLine("중학생입니다.");
+            //    category = 2;
+            //    eCategory = AgeCatagory.Middle;
+            //}
+            //else if( age < 19)
+            //{
+            //    Console.WriteLine("고등학생입니다.");
+            //    category = 3;
+            //    eCategory = AgeCatagory.High;
             //}
             //else
             //{
-            //    Console.WriteLine("미성년자입니다.");
-            //}
-
-            //if( age < 10 )
-            //{
-            //    Console.WriteLine("아동입니다.");
-            //}
-            //else if( age < 20)
-            //{
-            //    Console.WriteLine("청소년입니다.");
-            //}
-            //else if ( age < 70 )
-            //{
             //    Console.WriteLine("성인입니다.");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("노인입니다.");
+            //    category = 4;
+            //    eCategory = AgeCatagory.Adult;
             //}
 
-            // 실습 
-            // 1. 나이를 입력받기
-            // 2. 8살 미만이면 "미취학 아동"으로 출력
-            // 3. 13살 미만이면 "초등학생"으로 출력
-            // 4. 16살 미만이면 "중학생"으로 출력
-            // 5. 19살 미만이면 "고등학생"으로 출력
-            Console.Write("나이를 입력해 주세요 : ");
-            string str = Console.ReadLine();
-            int.TryParse(str, out age);
-            int category = -1;
-            AgeCatagory eCategory = AgeCatagory.Child;
+            ////switch(category)    // switch: ()에서 받은 변수의 값에 따라 다른 코드를 수행하는 조건문
+            ////{
+            ////    case 0:
+            ////        Console.WriteLine("미취학 아동의 버스요금은 무료입니다.");
+            ////        break;
+            ////    case 1:
+            ////        Console.WriteLine("초등학생의 버스요금은 300원입니다.");
+            ////        break;
+            ////    case 2:
+            ////        Console.WriteLine("중학생의 버스요금은 500원입니다.");
+            ////        break;
+            ////    case 3:
+            ////        Console.WriteLine("고등학생의 버스요금은 1000원입니다.");
+            ////        break;
+            ////    case 4:
+            ////        Console.WriteLine("성인의 버스요금은 1300원입니다.");
+            ////        break;
+            ////    default:
+            ////        Console.WriteLine("잘못된 입력입니다.");
+            ////        break;
+            ////}
 
-            if ( age < 8)
-            {
-                Console.WriteLine("미취학 아동입니다.");
-                category = 0;
-                eCategory = AgeCatagory.Child;
-            }
-            else if( age < 13) 
-            {
-                Console.WriteLine("초등학생입니다.");
-                category = 1;
-                eCategory = AgeCatagory.Elementry;
-            }
-            else if( age < 16) 
-            {
-                Console.WriteLine("중학생입니다.");
-                category = 2;
-                eCategory = AgeCatagory.Middle;
-            }
-            else if( age < 19)
-            {
-                Console.WriteLine("고등학생입니다.");
-                category = 3;
-                eCategory = AgeCatagory.High;
-            }
-            else
-            {
-                Console.WriteLine("성인입니다.");
-                category = 4;
-                eCategory = AgeCatagory.Adult;
-            }
-
-            //switch(category)    // switch: ()에서 받은 변수의 값에 따라 다른 코드를 수행하는 조건문
+            //switch (eCategory)
             //{
-            //    case 0:
+            //    case AgeCatagory.Child:
             //        Console.WriteLine("미취학 아동의 버스요금은 무료입니다.");
             //        break;
-            //    case 1:
+            //    case AgeCatagory.Elementry:
             //        Console.WriteLine("초등학생의 버스요금은 300원입니다.");
             //        break;
-            //    case 2:
+            //    case AgeCatagory.Middle:
             //        Console.WriteLine("중학생의 버스요금은 500원입니다.");
             //        break;
-            //    case 3:
+            //    case AgeCatagory.High:
             //        Console.WriteLine("고등학생의 버스요금은 1000원입니다.");
             //        break;
-            //    case 4:
+            //    case AgeCatagory.Adult:
             //        Console.WriteLine("성인의 버스요금은 1300원입니다.");
             //        break;
             //    default:
@@ -120,35 +151,48 @@ namespace _01_Console
             //        break;
             //}
 
-            switch (eCategory)
-            {
-                case AgeCatagory.Child:
-                    Console.WriteLine("미취학 아동의 버스요금은 무료입니다.");
-                    break;
-                case AgeCatagory.Elementry:
-                    Console.WriteLine("초등학생의 버스요금은 300원입니다.");
-                    break;
-                case AgeCatagory.Middle:
-                    Console.WriteLine("중학생의 버스요금은 500원입니다.");
-                    break;
-                case AgeCatagory.High:
-                    Console.WriteLine("고등학생의 버스요금은 1000원입니다.");
-                    break;
-                case AgeCatagory.Adult:
-                    Console.WriteLine("성인의 버스요금은 1300원입니다.");
-                    break;
-                default:
-                    Console.WriteLine("잘못된 입력입니다.");
-                    break;
-            }
-
             // 1. 성적을 입력 받기(0~100점 사이로 받기)
             // 2. 범위가 벗어나면 잘못된 입력입니다 라고 출력하기
             // 3. 91~100점 사이는 A등급, 81~90 : B, 71~80 : C, 61~70 : D, 나머지는 F
             // 4. 등급은 enum으로 만든 후 변수에 저장하기
             // 5. switch문을 이용해서 받은 등급을 출력해주기
+            string str = Console.ReadLine();
+            int score = 0;
+            int.TryParse(str, out score);
 
-            
+            // 연산자(operator)
+            // 산술연산자 : int i = 10 + 5; // +-*/%는 산술연산자
+            // 대입연산자 : =, 오른쪽에 있는 값을 왼쪽에다가 복사해라
+            // 비교연산자 : <, >, <=, >=, ==(같다), !=(다르다)
+            // 논리연산자 : &&(and - 양쪽의 값이 둘다 true일때만 true), ||(or - 양쪽의 값이 하나라도 true면 true) 
+
+            if((score > 100) || (score < 0))
+            {
+                Console.WriteLine("잘못된 입력입니다.");
+            }
+            else
+            {
+                Grade grade = Grade.F;
+                if(score > 90)
+                {
+                    grade = Grade.A;
+                }
+                else if(score > 80)
+                {
+                    grade = Grade.B;
+                }
+                else if(score > 70)
+                {
+                    grade = Grade.C;
+                }
+                else if( score > 60)
+                {
+                    grade = Grade.D;
+                }
+
+                Console.WriteLine($"성적은 {grade}입니다.");
+            }
+
 
 
             // 5/18--------------------------------------------------------------------------------
