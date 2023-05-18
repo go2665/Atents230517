@@ -24,7 +24,7 @@ namespace _01_Console
         {
             // 5/18--------------------------------------------------------------------------------
             //int age = 20;
-            
+
             ////// if구문(statement) : if뒤에 있는 소괄호() 안의 조건이 참이면 중괄호{} 안의 코드를 수행
             ////if ( age > 18 )   
             ////{
@@ -151,49 +151,88 @@ namespace _01_Console
             //        break;
             //}
 
-            // 1. 성적을 입력 받기(0~100점 사이로 받기)
-            // 2. 범위가 벗어나면 잘못된 입력입니다 라고 출력하기
-            // 3. 91~100점 사이는 A등급, 81~90 : B, 71~80 : C, 61~70 : D, 나머지는 F
-            // 4. 등급은 enum으로 만든 후 변수에 저장하기
-            // 5. switch문을 이용해서 받은 등급을 출력해주기
+            //// 1. 성적을 입력 받기(0~100점 사이로 받기)
+            //// 2. 범위가 벗어나면 잘못된 입력입니다 라고 출력하기
+            //// 3. 91~100점 사이는 A등급, 81~90 : B, 71~80 : C, 61~70 : D, 나머지는 F
+            //// 4. 등급은 enum으로 만든 후 변수에 저장하기
+            //// 5. switch문을 이용해서 받은 등급을 출력해주기
+            //string str = Console.ReadLine();
+            //int score = 0;
+            //int.TryParse(str, out score);
+
+            //// 연산자(operator)
+            //// 산술연산자 : int i = 10 + 5; // +-*/%는 산술연산자
+            //// 대입연산자 : =, 오른쪽에 있는 값을 왼쪽에다가 복사해라
+            //// 비교연산자 : <, >, <=, >=, ==(같다), !=(다르다)
+            //// 논리연산자 : &&(and - 양쪽의 값이 둘다 true일때만 true), ||(or - 양쪽의 값이 하나라도 true면 true) 
+
+            //if((score > 100) || (score < 0))
+            //{
+            //    Console.WriteLine("잘못된 입력입니다.");
+            //}
+            //else
+            //{
+            //    Grade grade = Grade.F;
+            //    if(score > 90)
+            //    {
+            //        grade = Grade.A;
+            //    }
+            //    else if(score > 80)
+            //    {
+            //        grade = Grade.B;
+            //    }
+            //    else if(score > 70)
+            //    {
+            //        grade = Grade.C;
+            //    }
+            //    else if( score > 60)
+            //    {
+            //        grade = Grade.D;
+            //    }
+
+            //    Console.WriteLine($"성적은 {grade}입니다.");
+            //}
+
+
+            Console.Write("*을 몇개 출력할까요? : ");
             string str = Console.ReadLine();
-            int score = 0;
-            int.TryParse(str, out score);
+            int.TryParse(str, out int num);
+            Console.WriteLine($"{num}이(가) 입력되었습니다.");
 
-            // 연산자(operator)
-            // 산술연산자 : int i = 10 + 5; // +-*/%는 산술연산자
-            // 대입연산자 : =, 오른쪽에 있는 값을 왼쪽에다가 복사해라
-            // 비교연산자 : <, >, <=, >=, ==(같다), !=(다르다)
-            // 논리연산자 : &&(and - 양쪽의 값이 둘다 true일때만 true), ||(or - 양쪽의 값이 하나라도 true면 true) 
-
-            if((score > 100) || (score < 0))
+            // while;
+            int count = 0;
+            while(count < num) // ()안이 true면 {}안의 내용 반복해서 실행
             {
-                Console.WriteLine("잘못된 입력입니다.");
+                Console.Write("*");
+                //count = count + 1;
+                count++;
             }
-            else
+            Console.WriteLine("");
+
+            // 증감연산자
+            // ++ : 변수에다가 1을 더한 다음 대입한다.
+            // -- : 변수에다가 1을 뺀 다음 대입한다.
+            // += : 왼쪽에 있는 변수에 오른쪽에 있는 값을 더한 후 대입
+            // -= : 왼쪽에 있는 변수에 오른쪽에 있는 값을 뺀 후 대입
+            // *= : 왼쪽에 있는 변수에 오른쪽에 있는 값을 곱한 후 대입
+            // /= : 왼쪽에 있는 변수에 오른쪽에 있는 값을 나눈 후 대입
+
+            // do-while;
+            count = 0;
+            do
             {
-                Grade grade = Grade.F;
-                if(score > 90)
-                {
-                    grade = Grade.A;
-                }
-                else if(score > 80)
-                {
-                    grade = Grade.B;
-                }
-                else if(score > 70)
-                {
-                    grade = Grade.C;
-                }
-                else if( score > 60)
-                {
-                    grade = Grade.D;
-                }
-
-                Console.WriteLine($"성적은 {grade}입니다.");
+                Console.Write("*");
+                count++;
             }
+            while (count < num);
+            Console.WriteLine("");
 
-
+            // for
+            for(int i = 0 ; i<num ; i++)    // 증감변수 선언 및 초기화 ; 증감변수로 조건 확인 ; 증감변수를 증감
+            {
+                Console.Write("*");
+            }
+            Console.WriteLine("");
 
             // 5/18--------------------------------------------------------------------------------
 
