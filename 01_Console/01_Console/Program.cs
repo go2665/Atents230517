@@ -66,9 +66,13 @@ namespace _01_Console
         static void Main(string[] args)
         {
             // 5/19 -------------------------------------------------------------------------------
+            Character mike = new Character("마이크", 1, 120);
+            Character jack = new Character("잭", 1, 100);
+
+            mike.Attack(jack);  // 마이크가 잭을 공격하기
+
             int i = 0;
-            Character mike = new Character(1,120);
-            Character jack = new Character(1,100);
+
 
             // 5/19 -------------------------------------------------------------------------------
 
@@ -321,8 +325,8 @@ namespace _01_Console
             // 삼각형 찍는 함수 만들기
             //Triangle_Print(15);
 
-            Character player = new Character();
-            player.Attack();
+            //Character player = new Character();
+            //player.Attack();
 
             // 5/18--------------------------------------------------------------------------------
 
