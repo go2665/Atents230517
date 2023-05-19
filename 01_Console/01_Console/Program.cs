@@ -71,9 +71,15 @@ namespace _01_Console
 
             mike.Attack(jack);  // 마이크가 잭을 공격하기
 
+
+            TestInherit_Child test = new TestInherit_Child();
+
+            TestInherit_Parent p = test;
+            p.Test_Func();
+
+
+
             int i = 0;
-
-
 
             // 5/19 -------------------------------------------------------------------------------
 

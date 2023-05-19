@@ -80,7 +80,7 @@ namespace _01_Console
         /// <param name="target">공격할 대상</param>
         public void Attack(Character target)
         {
-            Console.WriteLine($"공격한다.");    // ~를 공격한다.
+            Console.WriteLine($"{target.Name}를 공격한다.");
             target.Defence(attackPower);
         }
 
@@ -91,12 +91,12 @@ namespace _01_Console
         public void Defence(float damage)
         {
             float finale = damage - defencePower;
-            Console.WriteLine("방어한다.");     // ~의 데미지를 받고 ~를 방어했다.
+            Console.WriteLine($"{damage}의 데미지를 입고 최종적으로 {finale}의 피해를 입었다.");
             if (finale < 0)
                 finale = 0;
 
-            HP -= finale;            
-            // 현재 HP는 ~다.
+            HP -= finale;
+            Console.WriteLine($"현재 {Name}의 HP는 {HP}이다.");
         }
 
         private void Die()
