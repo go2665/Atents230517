@@ -13,8 +13,39 @@ namespace _01_Console
         private int level = 1;
         private float hp = 100.0f;
         private float exp = 0.0f;
+        private float attackPower = 1000.0f;
+        private float defencePower = 5.0f;
 
         public static int test_staticValue = 10;
+
+        // 읽기는 public, 쓰기는 private 프로퍼티
+        public float HP
+        {
+            get
+            {
+                return hp;
+            }
+
+            private set
+            {
+                hp = value;
+                if( hp < 0 )
+                {
+                    Die();
+                }
+            }
+        }
+
+        //public string Name
+        //{
+        //    get
+        //    {
+        //        return name;
+        //    }
+        //}
+
+        // name을 읽을 수만 있는 프로퍼티
+        public string Name => name;
 
         // 기본 생성자
         public Character() 
@@ -49,8 +80,8 @@ namespace _01_Console
         /// <param name="target">공격할 대상</param>
         public void Attack(Character target)
         {
-            Console.WriteLine($"공격한다.");
-            target.Defence(10);
+            Console.WriteLine($"공격한다.");    // ~를 공격한다.
+            target.Defence(attackPower);
         }
 
         /// <summary>
@@ -59,11 +90,14 @@ namespace _01_Console
         /// <param name="damage">받은 데미지</param>
         public void Defence(float damage)
         {
-            hp -= damage;
-            Console.WriteLine("방어한다.");
-        }
+            float finale = damage - defencePower;
+            Console.WriteLine("방어한다.");     // ~의 데미지를 받고 ~를 방어했다.
+            if (finale < 0)
+                finale = 0;
 
-        // 공격력과 방어력 변수를 만들고 적용해보기
+            HP -= finale;            
+            // 현재 HP는 ~다.
+        }
 
         private void Die()
         {
