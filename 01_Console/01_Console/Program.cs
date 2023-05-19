@@ -66,20 +66,32 @@ namespace _01_Console
         static void Main(string[] args)
         {
             // 5/19 -------------------------------------------------------------------------------
-            Character mike = new Character("마이크", 1, 120);
-            Character jack = new Character("잭", 1, 100);
+            //Character mike = new Character("마이크", 1, 120);
+            //Character jack = new Character("잭", 1, 100);
 
-            mike.Attack(jack);  // 마이크가 잭을 공격하기
-
-
-            TestInherit_Child test = new TestInherit_Child();
-
-            TestInherit_Parent p = test;
-            p.Test_Func();
+            //mike.Attack(jack);  // 마이크가 잭을 공격하기
 
 
+            //TestInherit_Child test = new TestInherit_Child();
 
-            int i = 0;
+            //TestInherit_Parent p = test;
+            //p.Test_Func();
+
+            //int[] result = new int[10];            
+            //Random r = new Random();
+            //for (int i = 0; i<10000000;i++)
+            //{
+            //    int rand = r.Next(0, 10);
+            //    result[rand]++;
+            //}
+
+            CharacterBase mike = new Warrior("Mike");
+            CharacterBase jack = new Warrior("Jack");
+            mike.Attack(jack);
+            jack.Skill(mike);
+
+            int j = 0;
+
 
             // 5/19 -------------------------------------------------------------------------------
 
