@@ -28,7 +28,7 @@ namespace _01_Console
         {
             base.Attack(target);
 
-            float damage = wisdom * 0.8f + random.NextSingle() * 1.2f;   // 지혜의 0.8배 ~ 2.0배
+            float damage = wisdom * (0.8f + random.NextSingle() * 1.2f);   // 지혜의 0.8배 ~ 2.0배
             Console.WriteLine($" - {target.Name}에게 ({damage:f1})만큼의 공격을 합니다.");
             target.Defence(damage);
         }
