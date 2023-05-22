@@ -65,6 +65,27 @@ namespace _01_Console
 
         static void Main(string[] args)
         {
+            // 5/22 -------------------------------------------------------------------------------
+            Random random1 = new Random(100);
+            Console.WriteLine("Random 1");
+            for(int i=0;i<10;i++)
+            {
+                Console.WriteLine($"{random1.Next()}");
+            }
+
+            Random random2 = new Random(100);
+            Console.WriteLine("Random 2");
+            for (int i = 0; i < 10; i++)
+            {
+                Console.WriteLine($"{random2.Next()}");
+            }
+
+            string s1 = "aaaa";
+            string s2 = "bbbb";
+            string s3 = s1 + s2 + s2 + s2;    // s3 = "aaaabbbb"
+
+            // 5/22 -------------------------------------------------------------------------------
+
             // 5/19 -------------------------------------------------------------------------------
             //Character mike = new Character("마이크", 1, 120);
             //Character jack = new Character("잭", 1, 100);
@@ -85,12 +106,12 @@ namespace _01_Console
             //    result[rand]++;
             //}
 
-            CharacterBase mike = new Warrior("Mike");
-            CharacterBase jack = new Warrior("Jack");
-            mike.Attack(jack);
-            jack.Skill(mike);
+            //CharacterBase mike = new Warrior("Mike");
+            //CharacterBase jack = new Warrior("Jack");
+            //mike.Attack(jack);
+            //jack.Skill(mike);
 
-            int j = 0;
+            //int j = 0;
 
 
             // 5/19 -------------------------------------------------------------------------------
