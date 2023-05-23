@@ -35,6 +35,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Boost"",
+                    ""type"": ""Button"",
+                    ""id"": ""e6665c0b-d016-4056-bf30-5e9a5b8ee383"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -92,6 +101,28 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44066b03-c9d7-41a5-af93-cd38a1b5159c"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Boost"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d2b584e3-2c14-47d6-80e7-a7c32a68d771"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Boost"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -118,6 +149,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
+        m_Player_Boost = m_Player.FindAction("Boost", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -180,11 +212,13 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
+    private readonly InputAction m_Player_Boost;
     public struct PlayerActions
     {
         private @PlayerInputAction m_Wrapper;
         public PlayerActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
+        public InputAction @Boost => m_Wrapper.m_Player_Boost;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -197,6 +231,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
+            @Boost.started += instance.OnBoost;
+            @Boost.performed += instance.OnBoost;
+            @Boost.canceled += instance.OnBoost;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -204,6 +241,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
+            @Boost.started -= instance.OnBoost;
+            @Boost.performed -= instance.OnBoost;
+            @Boost.canceled -= instance.OnBoost;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -233,5 +273,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         void OnMove(InputAction.CallbackContext context);
+        void OnBoost(InputAction.CallbackContext context);
     }
 }
