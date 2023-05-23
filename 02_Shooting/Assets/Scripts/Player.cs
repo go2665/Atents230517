@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
     // public으로 만든 변수는 인스팩터 창에서 수정이 가능하다.
     public float speed = 2.0f;
 
+    Vector3 dir = Vector3.zero;
+
     PlayerInputAction inputAction;
 
     // 게임 오브젝트가 생성이 완료되면 호출되는 함수
@@ -54,7 +56,7 @@ public class Player : MonoBehaviour
         //Debug.Log("Player의 Update"); 
         // 플레이어를 계속 오른쪽으로 움직이게 하기
         // Time.deltaTime : 이전 Update함수가 호출되고 이번 Update 함수가 호출될 때까지 걸린 시간
-        transform.position += (Time.deltaTime * speed * Vector3.right); // 초당 2의 속도로 오른쪽으로 움직이기
+        transform.position += (Time.deltaTime * speed * dir); // 초당 speed의 속도로 dir방향으로 움직이기
 
         // InputManager : 옛날 방식
         //if( Input.GetKey(KeyCode.Space) ) {}
@@ -64,6 +66,14 @@ public class Player : MonoBehaviour
     {
         Vector2 value = context.ReadValue<Vector2>();
         Debug.Log($"이동 입력 - {value}");
+
+        dir = value;
+        //dir.x = value.x;
+        //dir.y = value.y;
+        //dir.z = 0.0f;
+
+        // 1. 입력된 이동 방향으로 이동하기
+        // 2. shift키를 누르고 있으면 이동속도가 2배가 되게 만들기
     }
 
 }
