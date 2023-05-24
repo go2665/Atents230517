@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     /// </summary>
     public float speed = 2.0f;
 
+    public GameObject bullet;
+
     /// <summary>
     /// 부스트 상태를 나타내는 변수(일반 상황일 때는 1, 부스트 상황일 때는 2)
     /// </summary>
@@ -57,6 +59,7 @@ public class Player : MonoBehaviour
         inputAction.Player.Move.canceled += OnMove;
         inputAction.Player.Boost.performed += OnBoost;
         inputAction.Player.Boost.canceled += OnBoost;
+        inputAction.Player.Fire.performed += OnFire;
     }
 
     // 게임 오브젝트가 비활성화 될 때 호출되는 함수
@@ -126,6 +129,28 @@ public class Player : MonoBehaviour
             // 버튼이 눌러져서 실행된 경우
             boost = 2.0f;
         }
+    }
+
+    private void OnFire(InputAction.CallbackContext _)
+    {
+        Debug.Log("발사");
+        GameObject newBullet = GameObject.Instantiate(bullet);
+
+        // 이름으로 찾기. 씬 전부를 찾는다. 이름으로 비교해서 느리다.
+        //GameObject temp1 = GameObject.Find("FireTransform");
+        //Debug.Log(temp1);
+
+        // 태그로 찾기. 씬 전부를 찾는다. 태그로 찾는다.(태그는 숫자로 변경될 수 있어서 조금 더 빠르다.)
+        //GameObject temp2 = GameObject.FindGameObjectWithTag("Fire");
+
+        // 특정 컴포넌트를 가진 게임 오브젝트 찾기.
+        //GameObject.FindObjectOfType<Transform>();
+
+        // 자식 트랜스폼 가져오기
+        Transform child = transform.GetChild(0);        // 첫번째 자식 가져오기
+
+        newBullet.transform.position = child.position;  // fireTransform 위치로 옮기기
+        newBullet.transform.rotation = child.rotation;  // fireTransform의 회전을 적용하기
     }
 
 }
