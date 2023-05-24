@@ -24,6 +24,13 @@ public class Player : MonoBehaviour
     Vector3 direction = Vector3.zero;   // 초기값으로 방향은 지정이 안되어있다.
 
     /// <summary>
+    /// 애니메이터 컨트롤러 컴포넌트
+    /// </summary>
+    Animator anim;
+
+    readonly int InputY_String = Animator.StringToHash("InputY");
+
+    /// <summary>
     /// 입력 액션 에셋
     /// </summary>
     PlayerInputAction inputAction;
@@ -33,6 +40,8 @@ public class Player : MonoBehaviour
     {
         Debug.Log("Player의 Awake");
         inputAction = new PlayerInputAction();  // 입력 액션 객체 만들기
+
+        anim = GetComponent<Animator>();        // Animator 컴포넌트를 찾아서 리턴하는 함수. 없으면 null
     }
 
     // 게임 오브젝트를 활성화 할 때 호출되는 함수
@@ -95,6 +104,10 @@ public class Player : MonoBehaviour
         Debug.Log($"이동 입력 - {value}");
 
         direction = value;      // 입력 받은 값을 맴버변수인 direction에 저장하기
+        
+        //anim.SetFloat("InputY", direction.y);     // 아래 코드와 같은 결과
+        anim.SetFloat(InputY_String, direction.y);
+
         //dir.x = value.x;
         //dir.y = value.y;
         //dir.z = 0.0f;
