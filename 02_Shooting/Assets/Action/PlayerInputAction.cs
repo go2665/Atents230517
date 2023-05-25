@@ -145,6 +145,134 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Test"",
+            ""id"": ""0b6a4cef-056a-4d20-b48b-2e989079c127"",
+            ""actions"": [
+                {
+                    ""name"": ""Test1"",
+                    ""type"": ""Button"",
+                    ""id"": ""d9f16e75-c4ef-49ee-8013-94bfb29884df"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Test2"",
+                    ""type"": ""Button"",
+                    ""id"": ""b6694675-8728-4fcc-9685-169bec6a8c29"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Test3"",
+                    ""type"": ""Button"",
+                    ""id"": ""e5968e90-baba-419d-a99d-7abf42acf274"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Test4"",
+                    ""type"": ""Button"",
+                    ""id"": ""42737a87-bebf-46d3-9b94-e056f8c02504"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Test5"",
+                    ""type"": ""Button"",
+                    ""id"": ""24346e6a-e973-4f89-97fc-da11447f3756"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TestClick"",
+                    ""type"": ""Value"",
+                    ""id"": ""b88293f1-ab5a-4b51-9cd1-3a4e78959447"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""ab364b3a-a22d-4668-83c9-b1e7145974c9"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Test1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d561b3e7-cc91-4055-b377-e16084444631"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Test2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a1febe1b-ba88-4448-aa81-5c59fa2ea9d9"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Test3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""445c6bcc-a056-487c-95fc-3d0c8dc55428"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Test4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""130cc810-b551-4334-889e-b9622f405ed7"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Test5"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""75efc5d3-7af4-46a1-8c15-e92baa9686a3"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TestClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -171,6 +299,14 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Boost = m_Player.FindAction("Boost", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
+        // Test
+        m_Test = asset.FindActionMap("Test", throwIfNotFound: true);
+        m_Test_Test1 = m_Test.FindAction("Test1", throwIfNotFound: true);
+        m_Test_Test2 = m_Test.FindAction("Test2", throwIfNotFound: true);
+        m_Test_Test3 = m_Test.FindAction("Test3", throwIfNotFound: true);
+        m_Test_Test4 = m_Test.FindAction("Test4", throwIfNotFound: true);
+        m_Test_Test5 = m_Test.FindAction("Test5", throwIfNotFound: true);
+        m_Test_TestClick = m_Test.FindAction("TestClick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -290,6 +426,92 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // Test
+    private readonly InputActionMap m_Test;
+    private List<ITestActions> m_TestActionsCallbackInterfaces = new List<ITestActions>();
+    private readonly InputAction m_Test_Test1;
+    private readonly InputAction m_Test_Test2;
+    private readonly InputAction m_Test_Test3;
+    private readonly InputAction m_Test_Test4;
+    private readonly InputAction m_Test_Test5;
+    private readonly InputAction m_Test_TestClick;
+    public struct TestActions
+    {
+        private @PlayerInputAction m_Wrapper;
+        public TestActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Test1 => m_Wrapper.m_Test_Test1;
+        public InputAction @Test2 => m_Wrapper.m_Test_Test2;
+        public InputAction @Test3 => m_Wrapper.m_Test_Test3;
+        public InputAction @Test4 => m_Wrapper.m_Test_Test4;
+        public InputAction @Test5 => m_Wrapper.m_Test_Test5;
+        public InputAction @TestClick => m_Wrapper.m_Test_TestClick;
+        public InputActionMap Get() { return m_Wrapper.m_Test; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(TestActions set) { return set.Get(); }
+        public void AddCallbacks(ITestActions instance)
+        {
+            if (instance == null || m_Wrapper.m_TestActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_TestActionsCallbackInterfaces.Add(instance);
+            @Test1.started += instance.OnTest1;
+            @Test1.performed += instance.OnTest1;
+            @Test1.canceled += instance.OnTest1;
+            @Test2.started += instance.OnTest2;
+            @Test2.performed += instance.OnTest2;
+            @Test2.canceled += instance.OnTest2;
+            @Test3.started += instance.OnTest3;
+            @Test3.performed += instance.OnTest3;
+            @Test3.canceled += instance.OnTest3;
+            @Test4.started += instance.OnTest4;
+            @Test4.performed += instance.OnTest4;
+            @Test4.canceled += instance.OnTest4;
+            @Test5.started += instance.OnTest5;
+            @Test5.performed += instance.OnTest5;
+            @Test5.canceled += instance.OnTest5;
+            @TestClick.started += instance.OnTestClick;
+            @TestClick.performed += instance.OnTestClick;
+            @TestClick.canceled += instance.OnTestClick;
+        }
+
+        private void UnregisterCallbacks(ITestActions instance)
+        {
+            @Test1.started -= instance.OnTest1;
+            @Test1.performed -= instance.OnTest1;
+            @Test1.canceled -= instance.OnTest1;
+            @Test2.started -= instance.OnTest2;
+            @Test2.performed -= instance.OnTest2;
+            @Test2.canceled -= instance.OnTest2;
+            @Test3.started -= instance.OnTest3;
+            @Test3.performed -= instance.OnTest3;
+            @Test3.canceled -= instance.OnTest3;
+            @Test4.started -= instance.OnTest4;
+            @Test4.performed -= instance.OnTest4;
+            @Test4.canceled -= instance.OnTest4;
+            @Test5.started -= instance.OnTest5;
+            @Test5.performed -= instance.OnTest5;
+            @Test5.canceled -= instance.OnTest5;
+            @TestClick.started -= instance.OnTestClick;
+            @TestClick.performed -= instance.OnTestClick;
+            @TestClick.canceled -= instance.OnTestClick;
+        }
+
+        public void RemoveCallbacks(ITestActions instance)
+        {
+            if (m_Wrapper.m_TestActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ITestActions instance)
+        {
+            foreach (var item in m_Wrapper.m_TestActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_TestActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public TestActions @Test => new TestActions(this);
     private int m_KMSchemeIndex = -1;
     public InputControlScheme KMScheme
     {
@@ -304,5 +526,14 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnBoost(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+    }
+    public interface ITestActions
+    {
+        void OnTest1(InputAction.CallbackContext context);
+        void OnTest2(InputAction.CallbackContext context);
+        void OnTest3(InputAction.CallbackContext context);
+        void OnTest4(InputAction.CallbackContext context);
+        void OnTest5(InputAction.CallbackContext context);
+        void OnTestClick(InputAction.CallbackContext context);
     }
 }
