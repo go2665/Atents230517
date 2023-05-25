@@ -23,8 +23,5 @@ public class Test_Spawner : TestBase
         i++;
 
         return;
-
-        int j = 0;
-        j++;
     }
 }
