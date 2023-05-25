@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.HID;
 
 public class Player : MonoBehaviour
 {
@@ -13,7 +14,40 @@ public class Player : MonoBehaviour
     /// </summary>
     public float speed = 2.0f;
 
+    /// <summary>
+    /// 총알 프리팹
+    /// </summary>
     public GameObject bullet;
+
+    /// <summary>
+    /// 총알 발사 간격
+    /// </summary>
+    public float fireInterval = 0.5f;
+
+    /// <summary>
+    /// 총알 연사용 코루틴
+    /// </summary>
+    IEnumerator fireCoroutine;
+
+    /// <summary>
+    /// 총알 발사 위치
+    /// </summary>
+    Transform fireTransform;
+
+    /// <summary>
+    /// 코루틴에서 시간 대기용 캐싱(총알 발사 간격)
+    /// </summary>
+    WaitForSeconds fireWait;
+
+    /// <summary>
+    /// 총알 발사 이팩트용 그림
+    /// </summary>
+    GameObject fireFlash;
+
+    /// <summary>
+    /// 코루틴에서 시간 대기용 캐싱(플래시 이팩트)
+    /// </summary>
+    WaitForSeconds flashWait;
 
     /// <summary>
     /// 부스트 상태를 나타내는 변수(일반 상황일 때는 1, 부스트 상황일 때는 2)
@@ -44,6 +78,13 @@ public class Player : MonoBehaviour
         inputAction = new PlayerInputAction();  // 입력 액션 객체 만들기
 
         anim = GetComponent<Animator>();        // Animator 컴포넌트를 찾아서 리턴하는 함수. 없으면 null
+
+        fireCoroutine = FireCoroutine();        // 코루틴 함수를 저장하기
+        fireTransform = transform.GetChild(0);  // 총알 발사할 트랜스폼 미리 찾아놓기
+        fireWait = new WaitForSeconds(fireInterval);    // 코루틴에서 대기용 사용할 것 미리 만들어 놓기
+
+        fireFlash = transform.GetChild(1).gameObject;   // 총알 발사 이팩트 찾기
+        flashWait = new WaitForSeconds(0.1f);
     }
 
     // 게임 오브젝트를 활성화 할 때 호출되는 함수
@@ -59,13 +100,16 @@ public class Player : MonoBehaviour
         inputAction.Player.Move.canceled += OnMove;
         inputAction.Player.Boost.performed += OnBoost;
         inputAction.Player.Boost.canceled += OnBoost;
-        inputAction.Player.Fire.performed += OnFire;
+        inputAction.Player.Fire.performed += OnFireStart;
+        inputAction.Player.Fire.canceled += OnFireStop;
     }
 
     // 게임 오브젝트가 비활성화 될 때 호출되는 함수
     private void OnDisable()
     {
         Debug.Log("Player의 비활성화");
+        inputAction.Player.Fire.canceled -= OnFireStop;
+        inputAction.Player.Fire.performed -= OnFireStart;
         inputAction.Player.Boost.canceled -= OnBoost;
         inputAction.Player.Boost.performed -= OnBoost;
         inputAction.Player.Move.canceled -= OnMove;
@@ -131,10 +175,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnFire(InputAction.CallbackContext _)
+    private void OnFireStart(InputAction.CallbackContext _)
     {
         Debug.Log("발사");
-        GameObject newBullet = GameObject.Instantiate(bullet);
 
         // 이름으로 찾기. 씬 전부를 찾는다. 이름으로 비교해서 느리다.
         //GameObject temp1 = GameObject.Find("FireTransform");
@@ -146,11 +189,34 @@ public class Player : MonoBehaviour
         // 특정 컴포넌트를 가진 게임 오브젝트 찾기.
         //GameObject.FindObjectOfType<Transform>();
 
-        // 자식 트랜스폼 가져오기
-        Transform child = transform.GetChild(0);        // 첫번째 자식 가져오기
 
-        newBullet.transform.position = child.position;  // fireTransform 위치로 옮기기
-        newBullet.transform.rotation = child.rotation;  // fireTransform의 회전을 적용하기
+        StartCoroutine(fireCoroutine);  // 코루틴 시작 -> 총알을 계속 만든다.
+    }
+
+    private void OnFireStop(InputAction.CallbackContext _)
+    {
+        StopCoroutine(fireCoroutine);   // 코루틴 끝내기 -> 총알을 더 이상 안만든다.
+    }
+
+    IEnumerator FireCoroutine()
+    {
+        while(true)
+        {
+            GameObject newBullet = Instantiate(bullet);
+            newBullet.transform.position = fireTransform.position;  // fireTransform 위치로 옮기기
+            newBullet.transform.rotation = fireTransform.rotation;  // fireTransform의 회전을 적용하기
+
+            StartCoroutine(FlashEffect());
+
+            yield return fireWait;
+        }
+    }
+
+    IEnumerator FlashEffect()
+    {
+        fireFlash.SetActive(true);      // 게임 오브젝트 활성화하기
+        yield return flashWait;
+        fireFlash.SetActive(false);     // 게임 오브젝트 비활성화하기
     }
 
 }
