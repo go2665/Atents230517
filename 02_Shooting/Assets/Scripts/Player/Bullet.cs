@@ -15,4 +15,9 @@ public class Bullet : MonoBehaviour
         //transform.position += Time.deltaTime * speed * transform.right;   // 총알의 오른쪽으로 이동
         //transform.position += Time.deltaTime * speed * Vector3.right;     // 월드의 오른쪽으로 이동
     }
+
+    // 총알이 사라지게 만들기
+    // 1. 킬존에 닿았을 때
+    // 2. 적에게 닿았을 때
+    // 3. 생성되고 10초가 지났을 때
 }

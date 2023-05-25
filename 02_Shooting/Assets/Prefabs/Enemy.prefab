@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 883832914604240813}
   - component: {fileID: 883832914604240814}
   - component: {fileID: 883832914604240803}
+  - component: {fileID: 7484727020097242131}
+  - component: {fileID: 2421663644404224051}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -122,3 +124,40 @@ MonoBehaviour:
   amplitude: 2
   frequency: 1.5
   speed: 1
+--- !u!58 &7484727020097242131
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883832914604240815}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.15, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.7
+--- !u!50 &2421663644404224051
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883832914604240815}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4

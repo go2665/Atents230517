@@ -48,4 +48,14 @@ public class EnemyBase : MonoBehaviour
             spawnY + Mathf.Sin(timeElapsed) * amplitude,    // spawnY를 기준으로 sin함수 이용해서 높이 결정
             0);
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //if(collision.tag == "KillZone")       <= 아주 안좋은 방법
+
+        if(collision.CompareTag("KillZone"))    // 부딪친 상대의 태그가 KillZone 일 때만
+        {
+            Destroy(this.gameObject);           // 자기 자신의 게임 오브젝트를 죽이기
+        }
+    }
 }

@@ -74,7 +74,7 @@ public class Player : MonoBehaviour
     // 게임 오브젝트가 생성이 완료되면 호출되는 함수
     private void Awake()
     {
-        Debug.Log("Player의 Awake");
+        //Debug.Log("Player의 Awake");
         inputAction = new PlayerInputAction();  // 입력 액션 객체 만들기
 
         anim = GetComponent<Animator>();        // Animator 컴포넌트를 찾아서 리턴하는 함수. 없으면 null
@@ -94,7 +94,7 @@ public class Player : MonoBehaviour
         // performed;    // 확실하게 액션이 일어났을 때(버튼을 확실하게 눌렀을 때)
         // canceled;     // 액션이 취소 되었을 때(버튼을 땠을 때)
 
-        Debug.Log("Player의 활성화");
+        //Debug.Log("Player의 활성화");
         inputAction.Player.Enable();                        // 입력 활성화
         inputAction.Player.Move.performed += OnMove;        // 액션별 함수 연결
         inputAction.Player.Move.canceled += OnMove;
@@ -107,7 +107,7 @@ public class Player : MonoBehaviour
     // 게임 오브젝트가 비활성화 될 때 호출되는 함수
     private void OnDisable()
     {
-        Debug.Log("Player의 비활성화");
+        //Debug.Log("Player의 비활성화");
         inputAction.Player.Fire.canceled -= OnFireStop;
         inputAction.Player.Fire.performed -= OnFireStart;
         inputAction.Player.Boost.canceled -= OnBoost;
@@ -120,7 +120,7 @@ public class Player : MonoBehaviour
     // Start는 첫번째 프레임 업데이트가 일어나기 전에 호출된다.(시작할 때 호출된다.)
     void Start()
     {
-        Debug.Log("Player의 Start");
+        //Debug.Log("Player의 Start");
         //Vector3 newPosition = new Vector3(1, 2, 3); // 새 위치는 (1,2,3)
         //newPosition.x = 3;  // (3,2,3)
         //this.gameObject.transform.position = newPosition; // 아래와 똑같은 코드
@@ -148,7 +148,7 @@ public class Player : MonoBehaviour
     private void OnMove(InputAction.CallbackContext context)
     {
         Vector2 value = context.ReadValue<Vector2>();   // 입력 값 받아오기(Action type이 value인 경우만 가능)
-        Debug.Log($"이동 입력 - {value}");
+        //Debug.Log($"이동 입력 - {value}");
 
         direction = value;      // 입력 받은 값을 맴버변수인 direction에 저장하기
         
@@ -177,7 +177,7 @@ public class Player : MonoBehaviour
 
     private void OnFireStart(InputAction.CallbackContext _)
     {
-        Debug.Log("발사");
+        //Debug.Log("발사");
 
         // 이름으로 찾기. 씬 전부를 찾는다. 이름으로 비교해서 느리다.
         //GameObject temp1 = GameObject.Find("FireTransform");
@@ -219,4 +219,41 @@ public class Player : MonoBehaviour
         fireFlash.SetActive(false);     // 게임 오브젝트 비활성화하기
     }
 
+
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    // 트리거 영역안에 들어갔다.
+    //    // Collider2D collision : 상대방의 컬라이더
+    //    Debug.Log($"{collision.gameObject.name}의 트리거 영역에 들어갔다.");
+    //}
+
+    //private void OnTriggerStay2D(Collider2D collision)
+    //{
+    //    // 트리거 영역안에서 움직이고 있다.
+    //    //Debug.Log($"{collision.gameObject.name}의 트리거 영역에서 움직이고 있다.");
+    //}
+
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    // 트리거 영역에서 나왔다.
+    //    Debug.Log($"{collision.gameObject.name}의 트리거 영역에서 나왔다.");
+    //}
+
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    // 다른 컬라이더와 충돌했다.(컬라이더는 겹칠 수 없다.)        
+    //    Debug.Log($"{collision.gameObject.name}와 충돌했다.");
+    //}
+
+    //private void OnCollisionStay2D(Collision2D collision)
+    //{
+    //    // 다른 컬라이더와 접촉한채로 움직이고 있다.
+    //    //Debug.Log($"{collision.gameObject.name}와 접촉한채로 움직이고 있다.");
+    //}
+
+    //private void OnCollisionExit2D(Collision2D collision)
+    //{
+    //    // 다른 컬라이더와 떨어졌다.
+    //    Debug.Log($"{collision.gameObject.name}와 떨어졌다.");
+    //}
 }
