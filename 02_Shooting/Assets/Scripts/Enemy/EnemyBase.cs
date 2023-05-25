@@ -22,6 +22,20 @@ public class EnemyBase : MonoBehaviour
     private void Start()
     {
         spawnY = transform.position.y;      // 시작 높이 저장하기
+        StartCoroutine(WaitCoroutine());
+    }
+
+    IEnumerator WaitCoroutine()
+    {
+        const float waitTime1 = 3.0f;
+        const float waitTime2 = 1.0f;
+        yield return new WaitForSeconds(waitTime1);     // 시작하고나서 3초 기다리기
+        float prevSpeed = speed;
+        speed = 0.0f;                                   // 3초가 지났으면 속도를 0으로 만들기
+        yield return new WaitForSeconds(waitTime2);     // 다시 1초 기다리기
+        speed = prevSpeed;                              // 1초가 지나면 속도를 다시 원상복귀 시킨다.
+
+        // yield return null;    // 다음 프레임까지 기다리기
     }
 
     private void Update()

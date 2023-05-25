@@ -10,7 +10,21 @@ public class Test_Spawner : TestBase
 
     protected override void Test1(InputAction.CallbackContext context)
     {
+        Test1111();
         Debug.Log("테스트1");
+        Test1111();
         spawner.TestSpawn();
+    }
+
+
+    void Test1111()
+    {
+        int i = 0;
+        i++;
+
+        return;
+
+        int j = 0;
+        j++;
     }
 }
