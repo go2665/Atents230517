@@ -49,13 +49,13 @@ public class EnemyBase : MonoBehaviour
             0);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        //if(collision.tag == "KillZone")       <= 아주 안좋은 방법
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    //if(collision.tag == "KillZone")       <= 아주 안좋은 방법
 
-        if(collision.CompareTag("KillZone"))    // 부딪친 상대의 태그가 KillZone 일 때만
-        {
-            Destroy(this.gameObject);           // 자기 자신의 게임 오브젝트를 죽이기
-        }
-    }
+    //    if(collision.CompareTag("KillZone"))    // 부딪친 상대의 태그가 KillZone 일 때만
+    //    {
+    //        Destroy(this.gameObject);           // 자기 자신의 게임 오브젝트를 죽이기
+    //    }
+    //}
 }
