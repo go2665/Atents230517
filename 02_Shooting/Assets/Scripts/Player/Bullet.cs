@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,15 @@ public class Bullet : MonoBehaviour
     // 총알의 수명
     public float lifeTime = 10.0f;
 
+    // 터지는 이팩트
     GameObject hitExplosion;
+
+
+    // delegate void OnEnemyKill(int score);   // 델리게이트의 선언(이런 델리게이트가 있다. 리턴타입은 void, 파라메터는 int 하나)
+    // OnEnemyKill onEnemyKill;                // OnEnemyKill 타입의 델리게이트 변수 만들기
+    
+    // 적을 죽였을 때 신호를 보내는 델리게이트
+    public Action<int> onEnemyKill;
 
     private void Awake()
     {
@@ -37,16 +46,14 @@ public class Bullet : MonoBehaviour
         {
             hitExplosion.transform.SetParent(null);     // 이팩트의 부모 제거하기
             hitExplosion.transform.position = collision.contacts[0].point;  // 충돌한 지점으로 이팩트 옮기기
+            hitExplosion.transform.Rotate(0, 0, UnityEngine.Random.Range(0.0f, 360.0f));// 랜덤하게 회전 시키기
             hitExplosion.SetActive(true);               // 이팩트 보여주기
+
+            EnemyBase enemy = collision.gameObject.GetComponent<EnemyBase>();   // 태그가 Enemy니까 EnemyBase는 무조건 있음
+            onEnemyKill?.Invoke(enemy.Score);   // onEnemyKill에 연결된 함수를 모두 실행하기(하나도 없으면 실행안함)
 
             Destroy(this.gameObject);
         }
     }
 
-    // 총알이 사라지게 만들기
-    // 1. 킬존에 닿았을 때
-    // 2. 적에게 닿았을 때
-    // 3. 생성되고 10초가 지났을 때
-
-    // 총알이 적에게 부딪치면 Hit 이팩트 나오게 만들기
 }

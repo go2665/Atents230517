@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.HID;
 
 public class Player : MonoBehaviour
 {
@@ -70,6 +68,20 @@ public class Player : MonoBehaviour
     /// 입력 액션 에셋
     /// </summary>
     PlayerInputAction inputAction;
+
+    int score = 0;
+    public int Score
+    {
+        get => score;
+        set
+        {
+            if( score != value )
+            {
+                score = value;
+                Debug.Log(score);
+            }
+        }
+    }
 
     // 게임 오브젝트가 생성이 완료되면 호출되는 함수
     private void Awake()
@@ -206,11 +218,20 @@ public class Player : MonoBehaviour
             newBullet.transform.position = fireTransform.position;  // fireTransform 위치로 옮기기
             newBullet.transform.rotation = fireTransform.rotation;  // fireTransform의 회전을 적용하기
 
+            Bullet bulletComp = newBullet.GetComponent<Bullet>();
+            //bulletComp.onEnemyKill += AddScore;   // 아래와 같은 코드. onEnemyKill 델리게이트에 AddScore함수를 등록
+            bulletComp.onEnemyKill += (newScore) => Score += newScore;  // 람다식(Lambda을 이용한 방식)
+
             StartCoroutine(FlashEffect());
 
             yield return fireWait;
         }
     }
+
+    //void AddScore(int newScore)
+    //{
+    //    Score += newScore;
+    //}
 
     IEnumerator FlashEffect()
     {
