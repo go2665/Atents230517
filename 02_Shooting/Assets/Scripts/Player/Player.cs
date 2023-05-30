@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -69,19 +70,24 @@ public class Player : MonoBehaviour
     /// </summary>
     PlayerInputAction inputAction;
 
+    /// <summary>
+    /// 플레이어의 현재 점수
+    /// </summary>
     int score = 0;
     public int Score
     {
         get => score;
-        set
+        private set
         {
             if( score != value )
             {
                 score = value;
-                Debug.Log(score);
+                onScoreChange?.Invoke( score );
             }
         }
     }
+
+    public Action<int> onScoreChange;
 
     // 게임 오브젝트가 생성이 완료되면 호출되는 함수
     private void Awake()
