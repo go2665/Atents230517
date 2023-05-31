@@ -14,7 +14,7 @@ public class Spawner : MonoBehaviour
         StartCoroutine(SpawnCoroutine());
     }
 
-    private void Spawn()
+    protected virtual void Spawn()
     {
         GameObject obj = Instantiate(spawnTarget);
         obj.transform.position = new Vector3(
@@ -32,7 +32,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+    protected virtual void OnDrawGizmos()
     {
         Gizmos.color = new Color(0, 1, 0);
         Gizmos.DrawLine(

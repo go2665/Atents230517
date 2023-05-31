@@ -18,7 +18,7 @@ public class BackgroundPlanet : MonoBehaviour
 
     private void Start()
     {
-        baseLineX = transform.position.x;
+        baseLineX = transform.position.x;        
     }
 
     private void Update()
