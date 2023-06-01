@@ -161,6 +161,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1
   score: 10
+  MaxHP: 2
   amplitude: 3
   frequency: 2
 --- !u!1001 &3420670980998373742

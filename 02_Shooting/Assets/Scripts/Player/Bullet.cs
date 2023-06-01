@@ -19,7 +19,7 @@ public class Bullet : MonoBehaviour
     // OnEnemyKill onEnemyKill;                // OnEnemyKill 타입의 델리게이트 변수 만들기
     
     // 적을 죽였을 때 신호를 보내는 델리게이트
-    public Action<int> onEnemyKill;
+    // public Action<int> onEnemyKill;
 
     private void Awake()
     {
@@ -49,8 +49,8 @@ public class Bullet : MonoBehaviour
             hitExplosion.transform.Rotate(0, 0, UnityEngine.Random.Range(0.0f, 360.0f));// 랜덤하게 회전 시키기
             hitExplosion.SetActive(true);               // 이팩트 보여주기
 
-            EnemyBase enemy = collision.gameObject.GetComponent<EnemyBase>();   // 태그가 Enemy니까 EnemyBase는 무조건 있음
-            onEnemyKill?.Invoke(enemy.Score);   // onEnemyKill에 연결된 함수를 모두 실행하기(하나도 없으면 실행안함)
+            // EnemyBase enemy = collision.gameObject.GetComponent<EnemyBase>();   // 태그가 Enemy니까 EnemyBase는 무조건 있음
+            // onEnemyKill?.Invoke(enemy.Score);   // onEnemyKill에 연결된 함수를 모두 실행하기(하나도 없으면 실행안함)
 
             Destroy(this.gameObject);
         }

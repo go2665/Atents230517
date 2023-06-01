@@ -71,6 +71,11 @@ public class Player : MonoBehaviour
     PlayerInputAction inputAction;
 
     /// <summary>
+    /// 리지드바디2D용 컴포넌트
+    /// </summary>
+    Rigidbody2D rigid;
+
+    /// <summary>
     /// 플레이어의 현재 점수
     /// </summary>
     int score = 0;
@@ -96,6 +101,7 @@ public class Player : MonoBehaviour
         inputAction = new PlayerInputAction();  // 입력 액션 객체 만들기
 
         anim = GetComponent<Animator>();        // Animator 컴포넌트를 찾아서 리턴하는 함수. 없으면 null
+        rigid = GetComponent<Rigidbody2D>();
 
         fireCoroutine = FireCoroutine();        // 코루틴 함수를 저장하기
         fireTransform = transform.GetChild(0);  // 총알 발사할 트랜스폼 미리 찾아놓기
@@ -156,10 +162,18 @@ public class Player : MonoBehaviour
 
         // 초당 speed의 속도(부스트인 상황은 2배)로 dir방향으로 움직이기
         //transform.position += (Time.deltaTime * speed * boost * direction);   // 아래와 같은 코드
-        transform.Translate(Time.deltaTime * speed * boost * direction);
+        //transform.Translate(Time.deltaTime * speed * boost * direction);
+        //Debug.Log(Time.deltaTime);
 
         // InputManager : 옛날 방식
         //if( Input.GetKey(KeyCode.Space) ) {}
+    }
+
+    private void FixedUpdate()
+    {
+        //Debug.Log($"FixedUpdate : {Time.fixedDeltaTime}");
+        //transform.Translate(Time.fixedDeltaTime * speed * boost * direction);
+        rigid.MovePosition(rigid.position + (Vector2)(Time.fixedDeltaTime * speed * boost * direction));
     }
 
     // WASD 입력이 있을 때 실행되는 함수
@@ -226,7 +240,7 @@ public class Player : MonoBehaviour
 
             Bullet bulletComp = newBullet.GetComponent<Bullet>();
             //bulletComp.onEnemyKill += AddScore;   // 아래와 같은 코드. onEnemyKill 델리게이트에 AddScore함수를 등록
-            bulletComp.onEnemyKill += (newScore) => Score += newScore;  // 람다식(Lambda을 이용한 방식)
+            //bulletComp.onEnemyKill += (newScore) => Score += newScore;  // 람다식(Lambda을 이용한 방식)
 
             StartCoroutine(FlashEffect());
 
@@ -234,10 +248,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    //void AddScore(int newScore)
-    //{
-    //    Score += newScore;
-    //}
+    public void AddScore(int newScore)
+    {
+        Score += newScore;
+    }
 
     IEnumerator FlashEffect()
     {

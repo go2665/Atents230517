@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyAsteroid : EnemyBase
 {
+    [Header("운석 데이터")]
     /// <summary>
     /// 최소 이동 속도
     /// </summary>
@@ -26,7 +27,7 @@ public class EnemyAsteroid : EnemyBase
     /// <summary>
     /// 현재 회전 속도
     /// </summary>
-    float rotateSpeed = 360.0f;
+    float rotateSpeed = 0.0f;
 
     /// <summary>
     /// 이동 방향

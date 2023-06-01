@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8125731220776776473}
   - component: {fileID: 8125731220776776472}
+  - component: {fileID: 1278052328}
+  - component: {fileID: 1278052327}
   - component: {fileID: 8125731220776776474}
   m_Layer: 0
   m_Name: EnemyAsteroid
@@ -86,6 +88,43 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!50 &1278052328
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8125731220776776551}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!58 &1278052327
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8125731220776776551}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.8
 --- !u!114 &8125731220776776474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,8 +137,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bed9784cf564e6149b04fcf53f6c0404, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 5
   score: 10
+  MaxHP: 3
+  minMoveSpeed: 2
+  maxMoveSpeed: 5
+  minRotateSpeed: 30
+  maxRotateSpeed: 360
 --- !u!1001 &8125731219948174456
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -158,6 +202,14 @@ PrefabInstance:
     - target: {fileID: 3062809618208850328, guid: 304f2a99ff7c3dc478b51b98fb5ed2c0, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9005368925959700629, guid: 304f2a99ff7c3dc478b51b98fb5ed2c0, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9005368925959700629, guid: 304f2a99ff7c3dc478b51b98fb5ed2c0, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -386560237
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 304f2a99ff7c3dc478b51b98fb5ed2c0, type: 3}

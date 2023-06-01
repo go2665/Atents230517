@@ -24,9 +24,15 @@ public class Spawner : MonoBehaviour
     /// </summary>
     public float interval = 0.5f;
 
+    /// <summary>
+    /// 게임 플레이어
+    /// </summary>
+    Player player;
+
     private void Start()
     {
-        StartCoroutine(SpawnCoroutine());   // 스폰하는 코루틴 실행
+        player = FindObjectOfType<Player>();    // 플레이어 미리 한번만 찾아 놓기
+        StartCoroutine(SpawnCoroutine());       // 스폰하는 코루틴 실행
     }
 
     /// <summary>
@@ -43,6 +49,7 @@ public class Spawner : MonoBehaviour
 
         EnemyBase enemy = obj.GetComponent<EnemyBase>();
         enemy.OnInitialize();                       // 적 초기화
+        enemy.onDie += player.AddScore;             // 적이 죽을 때 플레이어의 점수 증가
         return enemy;
     }
 

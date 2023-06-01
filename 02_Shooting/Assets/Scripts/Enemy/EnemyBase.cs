@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyBase : MonoBehaviour
 {
+    [Header("Base 데이터")]
     /// <summary>
     /// 현재 이동하는 속도
     /// </summary>
@@ -27,8 +27,30 @@ public class EnemyBase : MonoBehaviour
     /// </summary>
     GameObject explosionEffect;
 
+    public int MaxHP = 1;
+    int hp = 1;
+    public int HP
+    {
+        get => hp;
+        protected set
+        {
+            if( hp != value )
+            {
+                hp = value;
+                if(hp <= 0 )
+                {
+                    hp = 0;
+                    Die();
+                }
+            }
+        }
+    }
+
+    public Action<int> onDie;
+
     private void Awake()
     {
+        hp = MaxHP;
         explosionEffect = GetComponentInChildren<Explosion>(true).gameObject;   // 이팩트 찾아 놓기
     }
 
@@ -50,7 +72,7 @@ public class EnemyBase : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Bullet"))   // 총알만 충돌 처리
         {
-            Die();  // 총알과 부딪치면 죽는다.
+            HP--;
         }
     }
 
@@ -74,6 +96,9 @@ public class EnemyBase : MonoBehaviour
         explosionEffect.transform.Rotate(0, 0, UnityEngine.Random.Range(0.0f, 360.0f)); 
 
         explosionEffect.SetActive(true);    // 활성화 시켜서 보여주기
+
+        onDie?.Invoke(score);               // 죽었다고 알리기
+
         Destroy(gameObject);                // 오브젝트 삭제
     }
 }

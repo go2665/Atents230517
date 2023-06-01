@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyFighter : EnemyBase
 {
+    [Header("Fighter 데이터")]
     // 위아래로 움직이는 정도 결정
     public float amplitude = 3.0f;
 
