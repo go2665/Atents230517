@@ -4,25 +4,52 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    /// <summary>
+    /// 스폰할 오브젝트의 프리팹
+    /// </summary>
     public GameObject spawnTarget;
+
+    /// <summary>
+    /// 스폰되는 최대 높이
+    /// </summary>
     public float maxY = 4;
+
+    /// <summary>
+    /// 스폰되는 최소 높이
+    /// </summary>
     public float minY = -4;
+
+    /// <summary>
+    /// 스폰되는 시간 간격
+    /// </summary>
     public float interval = 0.5f;
 
     private void Start()
     {
-        StartCoroutine(SpawnCoroutine());
+        StartCoroutine(SpawnCoroutine());   // 스폰하는 코루틴 실행
     }
 
-    protected virtual void Spawn()
+    /// <summary>
+    /// 실제로 오브젝트를 스폰하는 함수
+    /// </summary>
+    /// <returns>스폰한 오브젝트</returns>
+    protected virtual EnemyBase Spawn()
     {
-        GameObject obj = Instantiate(spawnTarget);
-        obj.transform.position = new Vector3(
+        GameObject obj = Instantiate(spawnTarget);  // 생성하고
+        obj.transform.position = new Vector3(       // 위치 변경
             transform.position.x,
             Random.Range(minY, maxY),
             0.0f);
+
+        EnemyBase enemy = obj.GetComponent<EnemyBase>();
+        enemy.OnInitialize();                       // 적 초기화
+        return enemy;
     }
 
+    /// <summary>
+    /// 일정 시간 간격으로 계속 스폰을 하는 함수
+    /// </summary>
+    /// <returns></returns>
     IEnumerator SpawnCoroutine()
     {
         while(true)
@@ -32,6 +59,9 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 스폰되는 영역 그리기
+    /// </summary>
     protected virtual void OnDrawGizmos()
     {
         Gizmos.color = new Color(0, 1, 0);
@@ -51,6 +81,9 @@ public class Spawner : MonoBehaviour
         //Gizmos.DrawWireCube()
     }
 
+    /// <summary>
+    /// 테스트 : 단순 스폰 확인용
+    /// </summary>
     public void TestSpawn()
     {
         Spawn();
