@@ -44,6 +44,7 @@ public class Bullet : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))   // 적과 부딪치면 내가 사라진다.
         {
+            Debug.Log($"{collision.gameObject.name}");
             hitExplosion.transform.SetParent(null);     // 이팩트의 부모 제거하기
             hitExplosion.transform.position = collision.contacts[0].point;  // 충돌한 지점으로 이팩트 옮기기
             hitExplosion.transform.Rotate(0, 0, UnityEngine.Random.Range(0.0f, 360.0f));// 랜덤하게 회전 시키기
