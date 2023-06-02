@@ -38,7 +38,7 @@ public class EnemyAsteroid : EnemyBase
     /// 목적지
     /// </summary>
     private Vector3? destination = null;
-
+    
     /// <summary>
     /// 목적지 확인 및 설정용 프로퍼티
     /// </summary>
@@ -51,10 +51,21 @@ public class EnemyAsteroid : EnemyBase
             {
                 destination = value;
                 direction = (destination.Value - transform.position).normalized;    // 벡터의 크기를 1로 만들기(방향만 남겨 놓기)
-                Debug.Log($"목적지 : {destination}");
+                //Debug.Log($"목적지 : {destination}");
             }
         }
     }
+
+    /// <summary>
+    /// 이 운석이 파괴 될 때 생성할 자식용 프리팹
+    /// </summary>
+    public GameObject childPrefab;
+
+    /// <summary>
+    /// 폭발적으로 미니운석이 생성될 확률
+    /// </summary>
+    [Range(0f, 1f)]
+    public float criticalRate = 0.95f;
 
     /// <summary>
     /// 업데이트에서 실행되는 이동 처리 함수
@@ -84,5 +95,41 @@ public class EnemyAsteroid : EnemyBase
 
         speed = Random.Range(minMoveSpeed, maxMoveSpeed);           // 속도만 랜덤으로 처리
         rotateSpeed = Random.Range(minRotateSpeed, maxRotateSpeed);
+    }
+
+    protected override void Die()
+    {
+        if(childPrefab != null)     // 자식용 프리팹이 있을 경우
+        {
+            int count;              // 생성할 자식 갯수
+
+            if( Random.value < criticalRate )   
+            { 
+                count = 20;                     // 크리티컬이 터지면 자식은 20개 생성
+            }
+            else
+            {
+                count = Random.Range(3, 8);     // 정상적인 상황이면 3~7개 생성
+            }
+
+            float angle = 360.0f / count;                   // 사이각 구하기
+            float startAngle = Random.Range(0.0f, 360.0f);  // 시작각 구하기
+            for ( int i=0;i<count; i++ )
+            {
+                GameObject obj = Instantiate(childPrefab);      // 생성 갯수만큼 운석 생성
+                obj.transform.position = transform.position;    // 위치 옮기고
+                obj.transform.Rotate((startAngle + angle * i) * Vector3.forward);   // 회전시키고
+
+                EnemyBase enemy = obj.GetComponent<EnemyBase>();
+                enemy.OnInitialize();                           // 자식 초기화
+            }
+        }
+
+        base.Die();
+    }
+
+    public void Test_Die()
+    {
+        Die();
     }
 }

@@ -65,7 +65,7 @@ public class EnemyBase : MonoBehaviour
     /// <param name="deltaTime">프레임간 경과시간</param>
     protected virtual void OnMoveUpdate(float deltaTime)
     {
-        transform.Translate(deltaTime * speed * -transform.right);  // 그냥 왼쪽으로만 이동하기
+        transform.Translate(deltaTime * speed * -transform.right, Space.World);  // 그냥 왼쪽으로만 이동하기
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
