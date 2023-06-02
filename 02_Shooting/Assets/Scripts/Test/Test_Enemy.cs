@@ -10,7 +10,7 @@ public class Test_Enemy : TestBase
 
     protected override void Test1(InputAction.CallbackContext context)
     {
-        if(asteroid == null)
+        if (asteroid == null)
         {
             GameObject obj = Instantiate(prefab);
             asteroid = obj.GetComponent<EnemyAsteroid>();
