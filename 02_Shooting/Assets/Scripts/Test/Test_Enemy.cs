@@ -14,6 +14,7 @@ public class Test_Enemy : TestBase
         {
             GameObject obj = Instantiate(prefab);
             asteroid = obj.GetComponent<EnemyAsteroid>();
+            asteroid.OnInitialize();
         }
     }
 

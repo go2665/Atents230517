@@ -68,6 +68,16 @@ public class EnemyAsteroid : EnemyBase
     public float criticalRate = 0.95f;
 
     /// <summary>
+    /// 운석의 최소 수명
+    /// </summary>
+    public float minLifeTime = 4.0f;
+
+    /// <summary>
+    /// 운석의 최대 수명
+    /// </summary>
+    public float maxLifeTime = 7.0f;
+
+    /// <summary>
     /// 업데이트에서 실행되는 이동 처리 함수
     /// </summary>
     /// <param name="deltaTime">프레임간 경과시간</param>
@@ -91,15 +101,19 @@ public class EnemyAsteroid : EnemyBase
     /// </summary>
     public override void OnInitialize()
     {
+        //Debug.Log("OnInitialize");
         base.OnInitialize();
 
         speed = Random.Range(minMoveSpeed, maxMoveSpeed);           // 속도만 랜덤으로 처리
         rotateSpeed = Random.Range(minRotateSpeed, maxRotateSpeed);
+
+        StartCoroutine(SelfCrush());
     }
 
     protected override void Die()
     {
-        if(childPrefab != null)     // 자식용 프리팹이 있을 경우
+        //Debug.Log("Die");
+        if (childPrefab != null)     // 자식용 프리팹이 있을 경우
         {
             int count;              // 생성할 자식 갯수
 
@@ -126,6 +140,13 @@ public class EnemyAsteroid : EnemyBase
         }
 
         base.Die();
+    }
+
+    IEnumerator SelfCrush()
+    {
+        float lifeTime = Random.Range(minLifeTime, maxLifeTime);
+        yield return new WaitForSeconds(lifeTime);
+        Die();
     }
 
     public void Test_Die()
