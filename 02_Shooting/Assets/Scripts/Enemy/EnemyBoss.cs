@@ -58,21 +58,13 @@ public class EnemyBoss : EnemyBase
         //    SetNextTargetPosition();  // 새 목적지 설정
         //}
 
-        if( targetPosition.y > 0 )
+        if (transform.position.y > areaMax.y)       // 내 위치가 최대치보다 위면
         {
-            // 위쪽으로 가는 중이고
-            if ( transform.position.y > targetPosition.y )   // 내 위치가 목적지보다 위면
-            {
-                SetNextTargetPosition();    // 새 목적지 설정
-            }
+            SetNextTargetPosition();    // 새 목적지 설정
         }
-        else
+        else if(transform.position.y < areaMin.y)   // 내 위치가 최소치보다 아래면
         {
-            // 아래쪽으로 가는 중이고
-            if( transform.position.y < targetPosition.y )   // 내 위치가 목적지보다 아래면
-            {
-                SetNextTargetPosition();    // 새 목적지 설정
-            }
+            SetNextTargetPosition();    // 새 목적지 설정
         }
     }
 
