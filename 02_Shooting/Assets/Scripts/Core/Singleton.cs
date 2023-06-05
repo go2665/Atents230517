@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Singleton<T> : MonoBehaviour where T : Component
 {
@@ -64,11 +66,30 @@ public class Singleton<T> : MonoBehaviour where T : Component
         }
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;        
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        OnInitialize();
+    }
+
     /// <summary>
     /// 프로그램이 종료될 때 실행되는 함수
     /// </summary>
     private void OnApplicationQuit()
     {
         isShutDown = true;  // 종료 표시
+    }
+
+    protected virtual void OnInitialize()
+    {
     }
 }

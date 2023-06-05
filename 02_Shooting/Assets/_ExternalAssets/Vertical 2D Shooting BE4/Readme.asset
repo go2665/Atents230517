@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c714bd06c1e4be4b9d5c917d22cc9d6, type: 3}
+  m_Name: Readme
+  m_EditorClassIdentifier: 
+  icon: {fileID: 2800000, guid: 44b5bbb9155e66d4caeefd36a792b021, type: 3}
+  title: Vertical 2D Shooting
+  sections:
+  - heading: 종스크롤 슈팅 (Vertical Scroll Shooting)
+    text: '세로로 된 화면에서 탄막을 피하며 적 기체를 물리치는 장르입니다.'
+    linkText: 
+    url: 	
+  - heading: 
+    text: '골드메탈 기초 강좌 BE4 진행에 필요한 에셋 팩으로 캐릭터와 탄막, 배경 스프라이트를 포함하고 있습니다.'
+    linkText: BE4 강좌 재생목록
+    url: https://www.youtube.com/playlist?list=PLO-mt5Iu5TeYtWvM9eN-xnwRbyUAMWd3b
+  - heading: 
+    text: '골드메탈 출저만 표기하는 전제 하에 자유롭게 사용 가능합니다. (상용 가능)'
+    linkText: 골드메탈 스튜디오
+    url: https://www.goldmetal.co.kr
+  - heading: 
+    text: 'Copyright ⓒ 2021 Goldmetal'
+    linkText:
+    url:
+  loadedLayout: 1
