@@ -8,9 +8,10 @@ public class EnemyCurve : EnemyBase
     public float rotateSpeed = 10.0f;
     float curveDir = -1;
 
-    public override void OnInitialize()
+    protected override void OnInitialize()
     {
-        if( transform.position.y > 0)
+        base.OnInitialize();
+        if ( transform.position.y > 0)
         {
             // 위에서 등장하면 아래로 커브를 그리는 움직임을 한다.(우회전시켜야 한다)
             curveDir = 1.0f;

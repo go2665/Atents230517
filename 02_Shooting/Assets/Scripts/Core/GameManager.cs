@@ -5,7 +5,17 @@ using UnityEngine;
 public class GameManager : Singleton<GameManager>
 {
     Player player;
-    public Player Player => player;
+    public Player Player
+    {
+        get 
+        { 
+            if (player == null)
+            {
+                OnInitialize();
+            }
+            return player; 
+        }
+    }
 
     protected override void OnInitialize()
     {

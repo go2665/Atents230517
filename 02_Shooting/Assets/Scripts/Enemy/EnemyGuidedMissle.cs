@@ -7,7 +7,7 @@ public class EnemyGuidedMissle : EnemyBase
     Transform target;
     bool onGuided = true;
 
-    public override void OnInitialize()
+    protected override void OnInitialize()
     {
         target = GameManager.Inst.Player.transform;
         onGuided = true;

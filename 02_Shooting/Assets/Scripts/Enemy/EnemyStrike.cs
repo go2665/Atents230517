@@ -20,8 +20,10 @@ public class EnemyStrike : EnemyBase
     /// </summary>
     public float waitTime = 5.0f;
 
-    public override void OnInitialize()
+    protected override void OnInitialize()
     {
+        base.OnInitialize();
+
         StopAllCoroutines();
         StartCoroutine(AppearProcess());
     }

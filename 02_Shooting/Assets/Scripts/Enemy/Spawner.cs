@@ -5,9 +5,9 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     /// <summary>
-    /// 스폰할 오브젝트의 프리팹
+    /// 스폰할 오브젝트의 종류
     /// </summary>
-    public GameObject spawnTarget;
+    public PoolObjectType spawnType;
 
     /// <summary>
     /// 스폰되는 최대 높이
@@ -41,15 +41,13 @@ public class Spawner : MonoBehaviour
     /// <returns>스폰한 오브젝트</returns>
     protected virtual EnemyBase Spawn()
     {
-        GameObject obj = Instantiate(spawnTarget);  // 생성하고
+        GameObject obj = Factory.Inst.GetObject(spawnType);
         obj.transform.position = new Vector3(       // 위치 변경
             transform.position.x,
             Random.Range(minY, maxY),
             0.0f);
 
-        EnemyBase enemy = obj.GetComponent<EnemyBase>();
-        enemy.OnInitialize();                       // 적 초기화
-        enemy.onDie += player.AddScore;             // 적이 죽을 때 플레이어의 점수 증가
+        EnemyBase enemy = obj.GetComponent<EnemyBase>();        
         return enemy;
     }
 

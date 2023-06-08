@@ -54,6 +54,11 @@ public class EnemyBase : MonoBehaviour
         explosionEffect = GetComponentInChildren<Explosion>(true).gameObject;   // 이팩트 찾아 놓기
     }
 
+    protected virtual void Start()
+    {
+        OnInitialize();
+    }
+
     private void Update()
     {
         OnMoveUpdate(Time.deltaTime);        // 각 클래스별 이동 업데이트 함수 실행
@@ -79,8 +84,12 @@ public class EnemyBase : MonoBehaviour
     /// <summary>
     /// 클래스별 초기화 함수
     /// </summary>
-    public virtual void OnInitialize()
+    protected virtual void OnInitialize()
     {
+        if(GameManager.Inst.Player != null)
+        {
+            onDie += GameManager.Inst.Player.AddScore;
+        }
     }
 
     /// <summary>

@@ -20,20 +20,22 @@ public class EnemyBoss : EnemyBase
     /// </summary>
     public float bulletInterval = 1.0f;
 
-    /// <summary>
-    /// 총알용 프리팹
-    /// </summary>
-    public GameObject bulletPrefab;
-
-    /// <summary>
-    /// 추적용 미사일 프리팹
-    /// </summary>
-    public GameObject missilePrefab;
-
     Vector3 targetPosition;
     Vector3 moveDirection;
+
+    /// <summary>
+    /// 총알 발사 위치1
+    /// </summary>
     Transform firePosition1;
+
+    /// <summary>
+    /// 총알 발사 위치2
+    /// </summary>
     Transform firePosition2;
+
+    /// <summary>
+    /// 미사일 발사 위치
+    /// </summary>
     Transform firePosition3;
 
     protected override void Awake()
@@ -44,8 +46,9 @@ public class EnemyBoss : EnemyBase
         firePosition3 = transform.GetChild(4);
     }
 
-    public override void OnInitialize()
+    protected override void OnInitialize()
     {
+        base.OnInitialize();
         Vector3 newPosition = transform.position;
         newPosition.y = 0.0f;
         transform.position = newPosition;   // y위치는 0으로 고정
@@ -125,9 +128,11 @@ public class EnemyBoss : EnemyBase
     {
         while (true)
         {
-            // bulletPrefab를 firePosition1.position위치에 Quaternion.identity만큼 회전시켜서 생성
-            Instantiate(bulletPrefab, firePosition1.position, Quaternion.identity);
-            Instantiate(bulletPrefab, firePosition2.position, Quaternion.identity);
+            GameObject bullet1 = Factory.Inst.GetObject(PoolObjectType.BossBullet);
+            bullet1.transform.position = firePosition1.position;
+            GameObject bullet2 = Factory.Inst.GetObject(PoolObjectType.BossBullet);
+            bullet2.transform.position = firePosition2.position;
+
             yield return new WaitForSeconds(bulletInterval);
         }
     }
@@ -136,9 +141,9 @@ public class EnemyBoss : EnemyBase
     {
         for(int i=0;i<3;i++)
         {
-            GameObject obj = Instantiate(missilePrefab, firePosition3.position, Quaternion.identity);
-            EnemyBase enemy = obj.GetComponent<EnemyBase>();
-            enemy.OnInitialize();
+            GameObject obj = Factory.Inst.GetObject(PoolObjectType.BossMissle);
+            obj.transform.position = firePosition3.position;
+
             yield return new WaitForSeconds(0.2f);
         }
     }
