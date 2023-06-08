@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnerAsteroid : Spawner
+public class SpawnerAsteroid : OldSpawner
 {
     /// <summary>
     /// 목적지 영역의 기준

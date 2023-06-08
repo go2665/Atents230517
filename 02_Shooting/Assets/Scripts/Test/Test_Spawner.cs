@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class Test_Spawner : TestBase
 {
-    public Spawner spawner;
+    public OldSpawner spawner;
 
 
     protected override void Test1(InputAction.CallbackContext context)

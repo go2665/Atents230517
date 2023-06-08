@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 8981198049853952289}
   - component: {fileID: 4502748566141196261}
   m_Layer: 8
-  m_Name: GuidedMissle
+  m_Name: EnemyGuidedMissle
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

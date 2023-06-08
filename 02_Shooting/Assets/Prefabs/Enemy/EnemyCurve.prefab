@@ -96,9 +96,9 @@ GameObject:
   - component: {fileID: 8447904745702531853}
   - component: {fileID: 8447904745702531852}
   - component: {fileID: 8447904745702531855}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EnemyCurve
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
