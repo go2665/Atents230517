@@ -189,12 +189,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3512760078947467910, guid: 530f55f4b8718fd47837543dedef8abc, type: 3}
       propertyPath: interval
-      value: 1
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3512760078947467910, guid: 530f55f4b8718fd47837543dedef8abc, type: 3}
       propertyPath: spawnTarget
       value: 
-      objectReference: {fileID: 4502748566141196265, guid: 55b64e4638303c440b2f5d7518f1eb19, type: 3}
+      objectReference: {fileID: 3389801232631826843, guid: 68a1085a0c3c626449d79f8505f63df3, type: 3}
     - target: {fileID: 3512760078947467912, guid: 530f55f4b8718fd47837543dedef8abc, type: 3}
       propertyPath: m_Name
       value: Spawner
@@ -607,10 +607,6 @@ PrefabInstance:
     - target: {fileID: 3389801232631826843, guid: 68a1085a0c3c626449d79f8505f63df3, type: 3}
       propertyPath: m_Name
       value: EnemyBoss
-      objectReference: {fileID: 0}
-    - target: {fileID: 3389801232631826843, guid: 68a1085a0c3c626449d79f8505f63df3, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 68a1085a0c3c626449d79f8505f63df3, type: 3}

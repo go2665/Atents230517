@@ -48,7 +48,7 @@ public class EnemyBase : MonoBehaviour
 
     public Action<int> onDie;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         hp = MaxHP;
         explosionEffect = GetComponentInChildren<Explosion>(true).gameObject;   // 이팩트 찾아 놓기

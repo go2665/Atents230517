@@ -15,8 +15,34 @@ public class EnemyBoss : EnemyBase
     /// </summary>
     public Vector2 areaMax = new Vector2(7, 3);
 
+    /// <summary>
+    /// 총알 발사 간격
+    /// </summary>
+    public float bulletInterval = 1.0f;
+
+    /// <summary>
+    /// 총알용 프리팹
+    /// </summary>
+    public GameObject bulletPrefab;
+
+    /// <summary>
+    /// 추적용 미사일 프리팹
+    /// </summary>
+    public GameObject missilePrefab;
+
     Vector3 targetPosition;
     Vector3 moveDirection;
+    Transform firePosition1;
+    Transform firePosition2;
+    Transform firePosition3;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        firePosition1 = transform.GetChild(2);
+        firePosition2 = transform.GetChild(3);
+        firePosition3 = transform.GetChild(4);
+    }
 
     public override void OnInitialize()
     {
@@ -43,7 +69,9 @@ public class EnemyBoss : EnemyBase
             yield return null;
         }
         speed = oldSpeed;
-        SetNextTargetPosition();
+        SetNextTargetPosition();        // 다음 위치 결정
+
+        StartCoroutine(BulletFire());   // 총알 발사 시작
     }
 
     protected override void OnMoveUpdate(float deltaTime)
@@ -61,10 +89,12 @@ public class EnemyBoss : EnemyBase
         if (transform.position.y > areaMax.y)       // 내 위치가 최대치보다 위면
         {
             SetNextTargetPosition();    // 새 목적지 설정
+            StartCoroutine(MissileFire());
         }
         else if(transform.position.y < areaMin.y)   // 내 위치가 최소치보다 아래면
         {
             SetNextTargetPosition();    // 새 목적지 설정
+            StartCoroutine(MissileFire());
         }
     }
 
@@ -89,5 +119,27 @@ public class EnemyBoss : EnemyBase
         targetPosition = new Vector3(x, y);
         moveDirection = targetPosition - transform.position;    // 방향 구하고
         moveDirection.Normalize();  // 길이를 1로 만들기(정규화시킴. Normalize)
+    }
+
+    IEnumerator BulletFire()
+    {
+        while (true)
+        {
+            // bulletPrefab를 firePosition1.position위치에 Quaternion.identity만큼 회전시켜서 생성
+            Instantiate(bulletPrefab, firePosition1.position, Quaternion.identity);
+            Instantiate(bulletPrefab, firePosition2.position, Quaternion.identity);
+            yield return new WaitForSeconds(bulletInterval);
+        }
+    }
+
+    IEnumerator MissileFire()
+    {
+        for(int i=0;i<3;i++)
+        {
+            GameObject obj = Instantiate(missilePrefab, firePosition3.position, Quaternion.identity);
+            EnemyBase enemy = obj.GetComponent<EnemyBase>();
+            enemy.OnInitialize();
+            yield return new WaitForSeconds(0.2f);
+        }
     }
 }
