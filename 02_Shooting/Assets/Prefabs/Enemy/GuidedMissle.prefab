@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 4502748566141196260}
   - component: {fileID: 4502748566141196263}
   - component: {fileID: 4502748566141196262}
+  - component: {fileID: 8981198049853952289}
   - component: {fileID: 4502748566141196261}
   m_Layer: 8
   m_Name: GuidedMissle
@@ -157,6 +158,22 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.8, y: 0.3}
   m_Direction: 1
+--- !u!58 &8981198049853952289
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4502748566141196265}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 3
 --- !u!114 &4502748566141196261
 MonoBehaviour:
   m_ObjectHideFlags: 0
