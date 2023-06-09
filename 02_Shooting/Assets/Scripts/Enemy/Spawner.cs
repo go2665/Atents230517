@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [Serializable]
     // 스폰 정보를 저장하는 구조체
+    [Serializable]
     public struct SpawnData
     {
         public SpawnData(PoolObjectType type = PoolObjectType.EnemyFighter, float interval = 0.5f)
@@ -31,7 +31,8 @@ public class Spawner : MonoBehaviour
     /// <summary>
     /// 스폰 데이터들을 가지는 배열
     /// </summary>
-    public List<SpawnData> spawnDatas;    
+    //public List<SpawnData> spawnDatas; 
+    public SpawnData[] spawnDatas;
 
     /// <summary>
     /// 스폰되는 최대 높이

@@ -234,7 +234,8 @@ public class Player : MonoBehaviour
     {
         while(true)
         {
-            GameObject newBullet = Instantiate(bullet);
+            //GameObject newBullet = Instantiate(bullet);
+            GameObject newBullet = Factory.Inst.GetObject(PoolObjectType.PlayerBullet);
             newBullet.transform.position = fireTransform.position;  // fireTransform 위치로 옮기기
             newBullet.transform.rotation = fireTransform.rotation;  // fireTransform의 회전을 적용하기
 

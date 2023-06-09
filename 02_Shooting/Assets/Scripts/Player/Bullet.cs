@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : PooledObject
 {
     // 오른쪽으로 계속 날아기기
     public float speed = 7.0f;
@@ -26,9 +26,12 @@ public class Bullet : MonoBehaviour
         hitExplosion = transform.GetChild(0).gameObject;
     }
 
-    private void Start()
+    protected override void OnEnable()
     {
-        Destroy(gameObject, lifeTime);  // lifeTime초 후에 gameObject 삭제하기
+        base.OnEnable();
+
+        StopAllCoroutines();                // 혹시 모를 남아있는 코루틴 제거용
+        StartCoroutine(LifeOver(lifeTime)); // lifeTime초 후에 비활성화
     }
 
     private void Update()
@@ -49,6 +52,7 @@ public class Bullet : MonoBehaviour
 
         // EnemyBase enemy = collision.gameObject.GetComponent<EnemyBase>();   // 태그가 Enemy니까 EnemyBase는 무조건 있음
         // onEnemyKill?.Invoke(enemy.Score);   // onEnemyKill에 연결된 함수를 모두 실행하기(하나도 없으면 실행안함)
-        Destroy(this.gameObject);        
+        //Destroy(this.gameObject);        
+        gameObject.SetActive(false);
     }
 }
