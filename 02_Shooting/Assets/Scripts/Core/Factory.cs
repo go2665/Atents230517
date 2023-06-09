@@ -19,10 +19,10 @@ public class Factory : Singleton<Factory>
 {
     //public GameObject playerBullet;
     BulletPool bulletPool;
+    BossPool bossPool;
+    BossBulletPool bossBulletPool;
+    BossMissiletPool bossMissiletPool;
 
-    public GameObject boss;
-    public GameObject bossBullet;
-    public GameObject bossMissile;
     public GameObject enemyAsteroid;
     public GameObject enemyAsteroidMini;
     public GameObject enemyCurve;
@@ -34,8 +34,14 @@ public class Factory : Singleton<Factory>
         base.OnInitialize();
 
         bulletPool = GetComponentInChildren<BulletPool>();
+        bossPool = GetComponentInChildren<BossPool>();
+        bossBulletPool = GetComponentInChildren<BossBulletPool>();
+        bossMissiletPool = GetComponentInChildren<BossMissiletPool>();
 
         bulletPool?.Initialize();
+        bossPool?.Initialize();
+        bossBulletPool?.Initialize();
+        bossMissiletPool?.Initialize();
     }
 
     public GameObject GetObject(PoolObjectType type)
@@ -47,13 +53,13 @@ public class Factory : Singleton<Factory>
                 result = bulletPool?.GetObject()?.gameObject;                
                 break;
             case PoolObjectType.Boss:
-                result = Instantiate(boss);
+                result = bossPool?.GetObject()?.gameObject;
                 break;
             case PoolObjectType.BossBullet:
-                result = Instantiate(bossBullet);
+                result = bossBulletPool.GetObject()?.gameObject;
                 break;
             case PoolObjectType.BossMissle:
-                result = Instantiate(bossMissile);
+                result = bossMissiletPool.GetObject()?.gameObject;
                 break;
             case PoolObjectType.EnemyAsteroid:
                 result = Instantiate(enemyAsteroid);

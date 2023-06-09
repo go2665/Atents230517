@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBullet : MonoBehaviour
+public class EnemyBullet : PooledObject
 {
     // 오른쪽으로 계속 날아기기
     public float speed = 7.0f;
@@ -19,9 +19,10 @@ public class EnemyBullet : MonoBehaviour
         hitExplosion = transform.GetChild(0).gameObject;
     }
 
-    private void Start()
+    protected override void OnEnable()
     {
-        Destroy(gameObject, lifeTime);  // lifeTime초 후에 gameObject 삭제하기
+        base.OnEnable();
+        LifeOver(lifeTime); // lifeTime초 후에 gameObject 비활성화하기
     }
 
     private void Update()
@@ -38,7 +39,7 @@ public class EnemyBullet : MonoBehaviour
             hitExplosion.transform.Rotate(0, 0, UnityEngine.Random.Range(0.0f, 360.0f));// 랜덤하게 회전 시키기
             hitExplosion.SetActive(true);               // 이팩트 보여주기
 
-            Destroy(this.gameObject);
+            gameObject.SetActive(false);
         }
     }
 

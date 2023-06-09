@@ -43,6 +43,4 @@ public class EnemyGuidedMissle : EnemyBase
             onGuided = false;
         }        
     }
-
-    // 미사일이 어느 정도 플레이어에게 근접하면 더이상 추적을 하지 않는다.
 }

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBase : MonoBehaviour
+public class EnemyBase : PooledObject
 {
     [Header("Base 데이터")]
     /// <summary>
@@ -54,9 +54,19 @@ public class EnemyBase : MonoBehaviour
         explosionEffect = GetComponentInChildren<Explosion>(true).gameObject;   // 이팩트 찾아 놓기
     }
 
-    protected virtual void Start()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         OnInitialize();
+    }
+
+    protected override void OnDisable()
+    {
+        if (GameManager.Inst?.Player != null)
+        {
+            onDie -= GameManager.Inst.Player.AddScore;
+        }
+        base.OnDisable();
     }
 
     private void Update()
@@ -108,6 +118,6 @@ public class EnemyBase : MonoBehaviour
 
         onDie?.Invoke(score);               // 죽었다고 알리기
 
-        Destroy(gameObject);                // 오브젝트 삭제
+        gameObject.SetActive(false);        // 오브젝트 삭제
     }
 }

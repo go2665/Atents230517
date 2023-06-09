@@ -18,10 +18,12 @@ public class EnemyFighter : EnemyBase
     float timeElapsed = 0.0f;
 
 
-    protected override void Start()
+    protected override void OnEnable()
     {
-        base.Start();
+        base.OnEnable();
+
         spawnY = transform.position.y;      // 시작 높이 저장하기
+        StopAllCoroutines();
         StartCoroutine(WaitCoroutine());
     }
 
