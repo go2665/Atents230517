@@ -114,13 +114,9 @@ public class EnemyBase : PooledObject
     /// </summary>
     protected virtual void Die()
     {
-        GameObject explosionEffect = Factory.Inst.GetObject(PoolObjectType.Explosion);
-
-        explosionEffect.transform.position = transform.position;
-        // 특정 회전으로 설정하기
-        //explosionEffect.transform.rotation = Quaternion.Euler(0,0,Random.Range(0.0f,360.0f)); 
-        // 현재 회전에서 입력받은만큼 추가 회전
-        explosionEffect.transform.Rotate(0, 0, UnityEngine.Random.Range(0.0f, 360.0f)); 
+        // 터지는 이팩트 생성
+        Factory.Inst.GetObject(PoolObjectType.Explosion, 
+            transform.position, UnityEngine.Random.Range(0.0f, 360.0f));
 
         onDie?.Invoke(score);               // 죽었다고 알리기
 

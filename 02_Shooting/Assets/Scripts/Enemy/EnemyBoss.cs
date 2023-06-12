@@ -139,10 +139,9 @@ public class EnemyBoss : EnemyBase
     {
         while (true)
         {
-            GameObject bullet1 = Factory.Inst.GetObject(PoolObjectType.BossBullet);
-            bullet1.transform.position = firePosition1.position;
-            GameObject bullet2 = Factory.Inst.GetObject(PoolObjectType.BossBullet);
-            bullet2.transform.position = firePosition2.position;
+            // 총알 만들기
+            Factory.Inst.GetObject(PoolObjectType.BossBullet, firePosition1.position);
+            Factory.Inst.GetObject(PoolObjectType.BossBullet, firePosition2.position);
 
             yield return new WaitForSeconds(bulletInterval);
         }
@@ -152,8 +151,8 @@ public class EnemyBoss : EnemyBase
     {
         for(int i=0;i<3;i++)
         {
-            GameObject obj = Factory.Inst.GetObject(PoolObjectType.BossMissle);
-            obj.transform.position = firePosition3.position;
+            // 미사일 생성
+            Factory.Inst.GetObject(PoolObjectType.BossMissle, firePosition3.position);
 
             yield return new WaitForSeconds(0.2f);
         }

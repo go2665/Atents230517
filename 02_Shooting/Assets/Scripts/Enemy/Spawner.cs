@@ -75,13 +75,9 @@ public class Spawner : MonoBehaviour
     /// <returns>스폰한 오브젝트</returns>
     protected virtual EnemyBase Spawn(PoolObjectType spawnType)
     {
-        GameObject obj = Factory.Inst.GetObject(spawnType);
-        obj.transform.position = new Vector3(       // 위치 변경
-            transform.position.x,
-            UnityEngine.Random.Range(minY, maxY),
-            0.0f);
-
-        EnemyBase enemy = obj.GetComponent<EnemyBase>();   
+        GameObject obj = Factory.Inst.GetObject(spawnType,
+            new Vector3(transform.position.x, UnityEngine.Random.Range(minY, maxY), 0.0f));
+        EnemyBase enemy = obj.GetComponent<EnemyBase>();
         
         switch(spawnType)
         {

@@ -88,7 +88,7 @@ public class Player : MonoBehaviour
             {
                 score = value;
                 onScoreChange?.Invoke( score );
-                Debug.Log($"Score : {score}");
+                //Debug.Log($"Score : {score}");
             }
         }
     }
@@ -235,14 +235,10 @@ public class Player : MonoBehaviour
     {
         while(true)
         {
-            //GameObject newBullet = Instantiate(bullet);
-            GameObject newBullet = Factory.Inst.GetObject(PoolObjectType.PlayerBullet);
-            newBullet.transform.position = fireTransform.position;  // fireTransform 위치로 옮기기
-            newBullet.transform.rotation = fireTransform.rotation;  // fireTransform의 회전을 적용하기
-
-            Bullet bulletComp = newBullet.GetComponent<Bullet>();
-            //bulletComp.onEnemyKill += AddScore;   // 아래와 같은 코드. onEnemyKill 델리게이트에 AddScore함수를 등록
-            //bulletComp.onEnemyKill += (newScore) => Score += newScore;  // 람다식(Lambda을 이용한 방식)
+            Factory.Inst.GetObject(
+                PoolObjectType.PlayerBullet,
+                fireTransform.position,                 // fireTransform 위치로 옮기기
+                fireTransform.rotation.eulerAngles.z);  // fireTransform의 회전을 적용하기
 
             StartCoroutine(FlashEffect());
 

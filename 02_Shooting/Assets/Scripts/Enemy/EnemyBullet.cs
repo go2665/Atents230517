@@ -26,9 +26,9 @@ public class EnemyBullet : PooledObject
     {
         if (collision.gameObject.CompareTag("Player"))   // 적과 부딪치면 내가 사라진다.
         {
-            GameObject hitExplosion = Factory.Inst.GetObject(PoolObjectType.Hit);
-            hitExplosion.transform.position = collision.contacts[0].point;  // 충돌한 지점으로 이팩트 옮기기
-            hitExplosion.transform.Rotate(0, 0, UnityEngine.Random.Range(0.0f, 360.0f));// 랜덤하게 회전 시키기
+            Factory.Inst.GetObject(PoolObjectType.Hit,
+                collision.contacts[0].point,                // 충돌한 지점으로 이팩트 옮기기
+                UnityEngine.Random.Range(0.0f, 360.0f));    // 랜덤하게 회전 시키기
 
             gameObject.SetActive(false);
         }

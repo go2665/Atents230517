@@ -61,6 +61,11 @@ public class Factory : Singleton<Factory>
         enemyStrikePool?.Initialize();
     }
 
+    /// <summary>
+    /// 오브젝트를 풀에서 하나 가져오는 함수
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public GameObject GetObject(PoolObjectType type)
     {
         GameObject result;
@@ -105,5 +110,36 @@ public class Factory : Singleton<Factory>
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// 오브젝트를 풀에서 하나 가져오면서 위치와 각도를 설정하는 함수
+    /// </summary>
+    /// <param name="type">생성할 오브젝트의 종류</param>
+    /// <param name="position">생성할 위치(월드좌표)</param>
+    /// <param name="angle">z축 회전 정도</param>
+    /// <returns>생성한 오브젝트</returns>
+    public GameObject GetObject(PoolObjectType type, Vector3 position, float angle = 0.0f)
+    {
+        GameObject obj = GetObject(type);
+        obj.transform.position = position;
+        obj.transform.Rotate(angle * Vector3.forward); 
+        return obj;
+    }
+
+    /// <summary>
+    /// 작은 운석을 위치와 각도를 설정하면서 받아오는 함수
+    /// </summary>
+    /// <param name="position">위치 월드 좌표</param>
+    /// <param name="angle">z축 회전 정도</param>
+    /// <returns>가져온 작은 운석</returns>
+    public EnemyAsteroidMini GetAsteroidMini(Vector3 position, float angle = 0.0f)
+    {
+        EnemyAsteroidMini mini = enemyAsteroidMiniPool.GetObject();
+        mini.transform.position = position;                 // 위치 지정
+        mini.transform.Rotate(angle * Vector3.forward);     // 회전 시키기
+        mini.Direction = -mini.transform.right;             // 방향 결정
+
+        return mini;
     }
 }

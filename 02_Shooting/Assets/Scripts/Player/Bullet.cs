@@ -38,17 +38,11 @@ public class Bullet : PooledObject
 
     private void OnCollisionEnter2D(Collision2D collision)
     {        
-        GameObject hitExplosion;    // 터지는 이팩트
-        hitExplosion = Factory.Inst.GetObject(PoolObjectType.Hit);
-        //hitExplosion.transform.SetParent(null);     // 이팩트의 부모 제거하기
-        hitExplosion.transform.position = collision.contacts[0].point;  // 충돌한 지점으로 이팩트 옮기기
-        hitExplosion.transform.Rotate(0, 0, UnityEngine.Random.Range(0.0f, 360.0f));// 랜덤하게 회전 시키기
-        //hitExplosion.SetActive(true);               // 이팩트 보여주기
+        Factory.Inst.GetObject(
+            PoolObjectType.Hit,
+            collision.contacts[0].point,                // 충돌한 지점으로 이팩트 옮기기
+            UnityEngine.Random.Range(0.0f, 360.0f));    // 랜덤하게 회전 시키기
 
-
-        // EnemyBase enemy = collision.gameObject.GetComponent<EnemyBase>();   // 태그가 Enemy니까 EnemyBase는 무조건 있음
-        // onEnemyKill?.Invoke(enemy.Score);   // onEnemyKill에 연결된 함수를 모두 실행하기(하나도 없으면 실행안함)
-        //Destroy(this.gameObject);        
         gameObject.SetActive(false);
     }
 }

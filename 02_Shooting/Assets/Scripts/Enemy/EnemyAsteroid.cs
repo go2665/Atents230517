@@ -122,10 +122,9 @@ public class EnemyAsteroid : EnemyBase
         float angle = 360.0f / count;                   // 사이각 구하기
         float startAngle = Random.Range(0.0f, 360.0f);  // 시작각 구하기
         for ( int i=0;i<count; i++ )
-        {            
-            GameObject obj = Factory.Inst.GetObject(PoolObjectType.EnemyAsteroidMini);   // 생성 갯수만큼 운석 생성
-            obj.transform.position = transform.position;    // 위치 옮기고
-            obj.transform.Rotate((startAngle + angle * i) * Vector3.forward);   // 회전시키고
+        {
+            // 생성하면서 위치와 회전도 지정
+            Factory.Inst.GetAsteroidMini(transform.position, startAngle + angle * i);
         }
 
         base.Die();
