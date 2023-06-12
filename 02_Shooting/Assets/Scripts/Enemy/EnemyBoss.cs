@@ -20,8 +20,20 @@ public class EnemyBoss : EnemyBase
     /// </summary>
     public float bulletInterval = 1.0f;
 
+    /// <summary>
+    /// 다음 이동 위치
+    /// </summary>
     Vector3 targetPosition;
+
+    /// <summary>
+    /// 이동 방향
+    /// </summary>
     Vector3 moveDirection;
+
+    /// <summary>
+    /// 보스의 현재 이동 속도
+    /// </summary>
+    float currentSpeed = 0.0f;
 
     /// <summary>
     /// 총알 발사 위치1
@@ -59,8 +71,7 @@ public class EnemyBoss : EnemyBase
 
     IEnumerator AppearProcess()
     {
-        float oldSpeed = speed;         // 기존 속도 저장하고
-        speed = 0.0f;                   // 속도를 0으로 해서 안움직이게 만듬
+        currentSpeed = 0.0f;            // 현재 속도를 0으로 만들기
         float remainDistance = 5;       // 남아있는 거리는 5
 
         while (remainDistance > 0.1f)   // 남아있는 거리가 거의 0이 될 때까지 반복
@@ -71,7 +82,7 @@ public class EnemyBoss : EnemyBase
             transform.Translate(deltaMove * (-Vector3.right));  // deltaMove만큼 왼쪽으로 이동
             yield return null;
         }
-        speed = oldSpeed;
+        currentSpeed = speed;           // 속도를 다시 복구 시키기
         SetNextTargetPosition();        // 다음 위치 결정
 
         StartCoroutine(BulletFire());   // 총알 발사 시작
@@ -79,7 +90,7 @@ public class EnemyBoss : EnemyBase
 
     protected override void OnMoveUpdate(float deltaTime)
     {
-        transform.Translate(deltaTime * speed * moveDirection);
+        transform.Translate(deltaTime * currentSpeed * moveDirection);  // currentSpeed 기준으로 움직임
 
         //if(targetPosition == transform.position)    // 절대 하면 안되는 코드(float은 오차가 있기 때문에 직접비교는 하면 안됨)
 
