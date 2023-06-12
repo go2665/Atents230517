@@ -5,6 +5,7 @@ using UnityEngine;
 public enum PoolObjectType
 {
     PlayerBullet = 0,       // 플레이어의 총알
+    Hit,                    // 플레이어 총알 명중 이팩트
     Boss,                   // 보스
     BossBullet,             // 보스의 총알
     BossMissle,             // 보스의 유도 미사일
@@ -19,6 +20,7 @@ public class Factory : Singleton<Factory>
 {
     //public GameObject playerBullet;
     BulletPool bulletPool;
+    HitPool hitPool;
     BossPool bossPool;
     BossBulletPool bossBulletPool;
     BossMissiletPool bossMissiletPool;
@@ -34,11 +36,13 @@ public class Factory : Singleton<Factory>
         base.OnInitialize();
 
         bulletPool = GetComponentInChildren<BulletPool>();
+        hitPool = GetComponentInChildren<HitPool>();
         bossPool = GetComponentInChildren<BossPool>();
         bossBulletPool = GetComponentInChildren<BossBulletPool>();
         bossMissiletPool = GetComponentInChildren<BossMissiletPool>();
 
         bulletPool?.Initialize();
+        hitPool?.Initialize();
         bossPool?.Initialize();
         bossBulletPool?.Initialize();
         bossMissiletPool?.Initialize();
@@ -51,6 +55,9 @@ public class Factory : Singleton<Factory>
         {
             case PoolObjectType.PlayerBullet:
                 result = bulletPool?.GetObject()?.gameObject;                
+                break;
+            case PoolObjectType.Hit:
+                result = hitPool?.GetObject()?.gameObject; 
                 break;
             case PoolObjectType.Boss:
                 result = bossPool?.GetObject()?.gameObject;

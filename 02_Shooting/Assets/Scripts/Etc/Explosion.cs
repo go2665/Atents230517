@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Explosion : MonoBehaviour
+public class Explosion : PooledObject
 {
     Animator animator;
 
@@ -11,9 +11,12 @@ public class Explosion : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    private void Start()
+    protected override void OnEnable()
     {
-        // gaemObject를 현재 애니메이터의 첫번째 클립의 길이 초 후에 삭제하라.
-        Destroy(gameObject, animator.GetCurrentAnimatorClipInfo(0)[0].clip.length);
+        base.OnEnable();
+        StopAllCoroutines();
+
+        // 애니메이션 재생 후에 비활성화 시키기
+        StartCoroutine(LifeOver(animator.GetCurrentAnimatorClipInfo(0)[0].clip.length));
     }
 }
