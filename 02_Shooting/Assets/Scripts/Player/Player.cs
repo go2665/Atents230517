@@ -88,6 +88,7 @@ public class Player : MonoBehaviour
             {
                 score = value;
                 onScoreChange?.Invoke( score );
+                Debug.Log($"Score : {score}");
             }
         }
     }

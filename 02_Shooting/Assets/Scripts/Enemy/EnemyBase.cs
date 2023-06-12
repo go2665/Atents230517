@@ -46,7 +46,15 @@ public class EnemyBase : PooledObject
         }
     }
 
+    /// <summary>
+    /// 죽었을 때 실행되는 델리게이트
+    /// </summary>
     public Action<int> onDie;
+
+    /// <summary>
+    /// 죽었을 때 점수를 줄 플레이어
+    /// </summary>
+    Player targetPlayer = null;
 
     protected virtual void Awake()
     {
@@ -62,9 +70,9 @@ public class EnemyBase : PooledObject
 
     protected override void OnDisable()
     {
-        if (GameManager.Inst?.Player != null)
+        if (targetPlayer != null)
         {
-            onDie -= GameManager.Inst.Player.AddScore;
+            onDie -= targetPlayer.AddScore;
         }
         base.OnDisable();
     }
@@ -96,9 +104,14 @@ public class EnemyBase : PooledObject
     /// </summary>
     protected virtual void OnInitialize()
     {
-        if(GameManager.Inst.Player != null)
+        if(targetPlayer == null)
         {
-            onDie += GameManager.Inst.Player.AddScore;
+            targetPlayer = GameManager.Inst.Player;
+        }
+
+        if(targetPlayer != null)
+        {
+            onDie += targetPlayer.AddScore;
         }
     }
 

@@ -9,6 +9,7 @@ public class EnemyGuidedMissle : EnemyBase
 
     protected override void OnInitialize()
     {
+        base.OnInitialize();
         target = GameManager.Inst.Player.transform;
         onGuided = true;
     }
