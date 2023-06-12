@@ -22,11 +22,6 @@ public class EnemyBase : PooledObject
     /// </summary>
     public int Score => score;
 
-    /// <summary>
-    /// 적이 터지는 이팩트
-    /// </summary>
-    GameObject explosionEffect;
-
     public int MaxHP = 1;
     int hp = 1;
     public int HP
@@ -59,7 +54,6 @@ public class EnemyBase : PooledObject
     protected virtual void Awake()
     {
         hp = MaxHP;
-        explosionEffect = GetComponentInChildren<Explosion>(true).gameObject;   // 이팩트 찾아 놓기
     }
 
     protected override void OnEnable()
@@ -120,14 +114,13 @@ public class EnemyBase : PooledObject
     /// </summary>
     protected virtual void Die()
     {
-        explosionEffect.transform.SetParent(null);  // 부모와 같이 죽는 것 방지
+        GameObject explosionEffect = Factory.Inst.GetObject(PoolObjectType.Explosion);
 
+        explosionEffect.transform.position = transform.position;
         // 특정 회전으로 설정하기
         //explosionEffect.transform.rotation = Quaternion.Euler(0,0,Random.Range(0.0f,360.0f)); 
         // 현재 회전에서 입력받은만큼 추가 회전
         explosionEffect.transform.Rotate(0, 0, UnityEngine.Random.Range(0.0f, 360.0f)); 
-
-        explosionEffect.SetActive(true);    // 활성화 시켜서 보여주기
 
         onDie?.Invoke(score);               // 죽었다고 알리기
 

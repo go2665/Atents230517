@@ -11,14 +11,6 @@ public class EnemyBullet : PooledObject
     // 총알의 수명
     public float lifeTime = 10.0f;
 
-    // 터지는 이팩트
-    GameObject hitExplosion;
-
-    private void Awake()
-    {
-        hitExplosion = transform.GetChild(0).gameObject;
-    }
-
     protected override void OnEnable()
     {
         base.OnEnable();
@@ -34,10 +26,9 @@ public class EnemyBullet : PooledObject
     {
         if (collision.gameObject.CompareTag("Player"))   // 적과 부딪치면 내가 사라진다.
         {
-            hitExplosion.transform.SetParent(null);     // 이팩트의 부모 제거하기
+            GameObject hitExplosion = Factory.Inst.GetObject(PoolObjectType.Hit);
             hitExplosion.transform.position = collision.contacts[0].point;  // 충돌한 지점으로 이팩트 옮기기
             hitExplosion.transform.Rotate(0, 0, UnityEngine.Random.Range(0.0f, 360.0f));// 랜덤하게 회전 시키기
-            hitExplosion.SetActive(true);               // 이팩트 보여주기
 
             gameObject.SetActive(false);
         }

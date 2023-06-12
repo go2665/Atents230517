@@ -6,6 +6,7 @@ public enum PoolObjectType
 {
     PlayerBullet = 0,       // 플레이어의 총알
     Hit,                    // 플레이어 총알 명중 이팩트
+    Explosion,              // 폭팔 이팩트
     Boss,                   // 보스
     BossBullet,             // 보스의 총알
     BossMissle,             // 보스의 유도 미사일
@@ -21,15 +22,15 @@ public class Factory : Singleton<Factory>
     //public GameObject playerBullet;
     BulletPool bulletPool;
     HitPool hitPool;
+    ExplosionPool expsionPool;
     BossPool bossPool;
     BossBulletPool bossBulletPool;
     BossMissiletPool bossMissiletPool;
-
-    public GameObject enemyAsteroid;
-    public GameObject enemyAsteroidMini;
-    public GameObject enemyCurve;
-    public GameObject enemyFighter;
-    public GameObject enemyStrike;
+    EnemyAsteroidPool enemyAsteroidPool;
+    EnemyAsteroidMiniPool enemyAsteroidMiniPool;
+    EnemyCurvePool enemyCurvePool;
+    EnemyFighterPool enemyFighterPool;
+    EnemyStrikePool enemyStrikePool;
 
     protected override void OnInitialize()
     {
@@ -37,15 +38,27 @@ public class Factory : Singleton<Factory>
 
         bulletPool = GetComponentInChildren<BulletPool>();
         hitPool = GetComponentInChildren<HitPool>();
+        expsionPool = GetComponentInChildren<ExplosionPool>();
         bossPool = GetComponentInChildren<BossPool>();
         bossBulletPool = GetComponentInChildren<BossBulletPool>();
         bossMissiletPool = GetComponentInChildren<BossMissiletPool>();
+        enemyAsteroidPool = GetComponentInChildren<EnemyAsteroidPool>();
+        enemyAsteroidMiniPool = GetComponentInChildren<EnemyAsteroidMiniPool>();
+        enemyCurvePool = GetComponentInChildren<EnemyCurvePool>();
+        enemyFighterPool = GetComponentInChildren<EnemyFighterPool>();
+        enemyStrikePool = GetComponentInChildren<EnemyStrikePool>();
 
         bulletPool?.Initialize();
         hitPool?.Initialize();
+        expsionPool?.Initialize();
         bossPool?.Initialize();
         bossBulletPool?.Initialize();
         bossMissiletPool?.Initialize();
+        enemyAsteroidPool?.Initialize();
+        enemyAsteroidMiniPool?.Initialize();
+        enemyCurvePool?.Initialize();
+        enemyFighterPool?.Initialize();
+        enemyStrikePool?.Initialize();
     }
 
     public GameObject GetObject(PoolObjectType type)
@@ -59,6 +72,9 @@ public class Factory : Singleton<Factory>
             case PoolObjectType.Hit:
                 result = hitPool?.GetObject()?.gameObject; 
                 break;
+            case PoolObjectType.Explosion:
+                    result = expsionPool?.GetObject()?.gameObject;
+                break;
             case PoolObjectType.Boss:
                 result = bossPool?.GetObject()?.gameObject;
                 break;
@@ -69,19 +85,19 @@ public class Factory : Singleton<Factory>
                 result = bossMissiletPool.GetObject()?.gameObject;
                 break;
             case PoolObjectType.EnemyAsteroid:
-                result = Instantiate(enemyAsteroid);
+                result = enemyAsteroidPool.GetObject()?.gameObject;
                 break;
             case PoolObjectType.EnemyAsteroidMini:
-                result = Instantiate(enemyAsteroidMini);
+                result = enemyAsteroidMiniPool.GetObject()?.gameObject;
                 break;
             case PoolObjectType.EnemyCurve:
-                result = Instantiate(enemyCurve);
+                result = enemyCurvePool?.GetObject()?.gameObject;
                 break;
             case PoolObjectType.EnemyFighter:
-                result = Instantiate(enemyFighter);
+                result = enemyFighterPool?.GetObject()?.gameObject;
                 break;
             case PoolObjectType.EnemyStrike:
-                result = Instantiate(enemyStrike);
+                result = enemyStrikePool?.GetObject()?.gameObject;
                 break;
             default:
                 result = new GameObject();

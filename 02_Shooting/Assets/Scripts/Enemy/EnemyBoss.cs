@@ -53,9 +53,9 @@ public class EnemyBoss : EnemyBase
     protected override void Awake()
     {
         base.Awake();
-        firePosition1 = transform.GetChild(2);
-        firePosition2 = transform.GetChild(3);
-        firePosition3 = transform.GetChild(4);
+        firePosition1 = transform.GetChild(1);
+        firePosition2 = transform.GetChild(2);
+        firePosition3 = transform.GetChild(3);
     }
 
     protected override void OnInitialize()

@@ -134,9 +134,9 @@ GameObject:
   - component: {fileID: 64358800}
   - component: {fileID: 64358799}
   - component: {fileID: 64358798}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Square
-  m_TagString: Enemy
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -227,7 +227,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 64358797}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.21310486, y: 0.098843716, z: 0}
+  m_LocalPosition: {x: -3.36, y: -4.13, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -467,6 +467,52 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &341335046
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 341335047}
+  - component: {fileID: 341335048}
+  m_Layer: 0
+  m_Name: CurvePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &341335047
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341335046}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2095728109}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &341335048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341335046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb32ec74721f6994f89afd92b9568ae3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  origianlPrefab: {fileID: 8447904745702531851, guid: b13a5a90adfb4ae4eaadebe58b457fd1, type: 3}
+  poolSize: 64
 --- !u!1 &441644793
 GameObject:
   m_ObjectHideFlags: 0
@@ -721,6 +767,98 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c4018567b961b7408037ba5f9164410, type: 3}
+--- !u!1 &1111147038
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1111147039}
+  - component: {fileID: 1111147040}
+  m_Layer: 0
+  m_Name: StrikePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1111147039
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111147038}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2095728109}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1111147040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111147038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61650bcad9a0bdf4aa458bbaa96cde63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  origianlPrefab: {fileID: 3250833205488058351, guid: f42ba27c95d001048b90be3f1c1f2cac, type: 3}
+  poolSize: 64
+--- !u!1 &1301783306
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1301783307}
+  - component: {fileID: 1301783308}
+  m_Layer: 0
+  m_Name: AsteroidPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1301783307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1301783306}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2095728109}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1301783308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1301783306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed7b4671d14d9234f925296312aa2ee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  origianlPrefab: {fileID: 8125731220776776551, guid: abce40d9621fc154a802f839add2b8d0, type: 3}
+  poolSize: 64
 --- !u!1 &1528212582
 GameObject:
   m_ObjectHideFlags: 0
@@ -767,6 +905,144 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   origianlPrefab: {fileID: 6328145880306186975, guid: ec209ca265c907845837cdafad330d40, type: 3}
   poolSize: 64
+--- !u!1 &1551817269
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1551817270}
+  - component: {fileID: 1551817271}
+  m_Layer: 0
+  m_Name: AsteroidMiniPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1551817270
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1551817269}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2095728109}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1551817271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1551817269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f815cb98880962845bc2f452bbcaaa0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  origianlPrefab: {fileID: 5280670280820572855, guid: 9480827f09f2f504b83492dd77c30608, type: 3}
+  poolSize: 64
+--- !u!1 &1604962858
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1604962859}
+  - component: {fileID: 1604962860}
+  m_Layer: 0
+  m_Name: FighterPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1604962859
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604962858}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2095728109}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1604962860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604962858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59ac761d3a1b1a844a0a75f31b3fec72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  origianlPrefab: {fileID: 883832914604240815, guid: 811c6b914467e004f819067b29bb8949, type: 3}
+  poolSize: 64
+--- !u!1 &1640584670
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1640584671}
+  - component: {fileID: 1640584672}
+  m_Layer: 0
+  m_Name: ExplosionPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1640584671
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640584670}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2095728109}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1640584672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640584670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0911641410b71d4daf8866d0da63b77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  origianlPrefab: {fileID: 3062809618208850328, guid: 304f2a99ff7c3dc478b51b98fb5ed2c0, type: 3}
+  poolSize: 4
 --- !u!1 &1991941250
 GameObject:
   m_ObjectHideFlags: 0
@@ -811,7 +1087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e6398074ce034e4287ae51a00e91666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objType: 1
+  objType: 9
 --- !u!1 &2095728107
 GameObject:
   m_ObjectHideFlags: 0
@@ -841,11 +1117,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813f5b3d5eaf0f54385b3306d811a6db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyAsteroid: {fileID: 8125731220776776551, guid: abce40d9621fc154a802f839add2b8d0, type: 3}
-  enemyAsteroidMini: {fileID: 5280670280820572855, guid: 9480827f09f2f504b83492dd77c30608, type: 3}
-  enemyCurve: {fileID: 8447904745702531851, guid: b13a5a90adfb4ae4eaadebe58b457fd1, type: 3}
-  enemyFighter: {fileID: 883832914604240815, guid: 811c6b914467e004f819067b29bb8949, type: 3}
-  enemyStrike: {fileID: 3250833205488058351, guid: f42ba27c95d001048b90be3f1c1f2cac, type: 3}
 --- !u!4 &2095728109
 Transform:
   m_ObjectHideFlags: 0
@@ -863,6 +1134,12 @@ Transform:
   - {fileID: 1528212583}
   - {fileID: 207379737}
   - {fileID: 795374785}
+  - {fileID: 1640584671}
+  - {fileID: 1301783307}
+  - {fileID: 1551817270}
+  - {fileID: 341335047}
+  - {fileID: 1111147039}
+  - {fileID: 1604962859}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
