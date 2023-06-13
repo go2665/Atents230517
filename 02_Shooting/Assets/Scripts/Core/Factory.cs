@@ -123,7 +123,22 @@ public class Factory : Singleton<Factory>
     {
         GameObject obj = GetObject(type);
         obj.transform.position = position;
-        obj.transform.Rotate(angle * Vector3.forward); 
+        obj.transform.Rotate(angle * Vector3.forward);
+
+        switch (type)
+        {            
+            case PoolObjectType.EnemyAsteroidMini:
+                EnemyAsteroidMini mini = obj.GetComponent<EnemyAsteroidMini>();
+                mini.Direction = -mini.transform.right;             // 방향 결정
+                break;
+            case PoolObjectType.EnemyCurve:
+                EnemyCurve curve = obj.GetComponent<EnemyCurve>();
+                curve.StartY = position.y;
+                break;         
+            default:                
+                break;
+        }
+        
         return obj;
     }
 
@@ -141,5 +156,18 @@ public class Factory : Singleton<Factory>
         mini.Direction = -mini.transform.right;             // 방향 결정
 
         return mini;
+    }
+
+    /// <summary>
+    /// 커브 도는 적을 받아오는 함수
+    /// </summary>
+    /// <param name="position">생성되는 위치(월드좌표)</param>
+    /// <returns>가져온 커브적</returns>
+    public EnemyCurve GetEnemyCurve(Vector3 position)
+    {
+        EnemyCurve curve = enemyCurvePool.GetObject();
+        curve.transform.position = position;
+        curve.StartY = position.y;      // 시작 Y 지정
+        return curve;
     }
 }
