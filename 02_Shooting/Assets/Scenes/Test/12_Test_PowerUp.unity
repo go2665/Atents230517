@@ -294,11 +294,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8041611150017875605, guid: 0cbe0e0b3444b2b4b943c0669b3e9b30, type: 3}
       propertyPath: moveSpeed
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8041611150017875605, guid: 0cbe0e0b3444b2b4b943c0669b3e9b30, type: 3}
       propertyPath: dirChangeInterval
-      value: 100
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8041611150017875606, guid: 0cbe0e0b3444b2b4b943c0669b3e9b30, type: 3}
       propertyPath: m_RootOrder

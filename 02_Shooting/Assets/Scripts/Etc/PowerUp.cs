@@ -25,18 +25,44 @@ public class PowerUp : PooledObject
     int dirChangeCount;
 
     /// <summary>
+    /// 방향 전환 갯수 변경용 프로퍼티
+    /// </summary>
+    int DirChangeCount
+    {
+        get => dirChangeCount;
+        set
+        {            
+            dirChangeCount = value;
+            anim.SetInteger("Count", dirChangeCount);
+            if( dirChangeCount < 1 )    // 튕길 갯수가 0이하면 모든 코루틴 정지(=>시간 변화에 따라 튕기는 것 정지)
+            {
+                StopAllCoroutines();
+            }
+            //Debug.Log($"DirChangeCount : {dirChangeCount}");
+        }
+    }
+
+    /// <summary>
     /// 이동 방향
     /// </summary>
     Vector2 dir;
+
+    Animator anim;
 
     IEnumerator DirChange()
     {
         while(true)
         {
+            yield return new WaitForSeconds(dirChangeInterval);
             dir = Random.insideUnitCircle;
             dir.Normalize();
-            yield return new WaitForSeconds(dirChangeInterval);
+            DirChangeCount--;
         }
+    }
+
+    private void Awake()
+    {
+        anim = GetComponent<Animator>();
     }
 
     protected override void OnEnable()
@@ -56,9 +82,11 @@ public class PowerUp : PooledObject
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if( collision.gameObject.CompareTag("Border"))
+        if( DirChangeCount > 0 && collision.gameObject.CompareTag("Border"))
         {
+            // 튕길 갯수가 남아있고 보더와 부딪치면 반사
             dir = Vector2.Reflect(dir, collision.contacts[0].normal);
+            DirChangeCount--;
         }
     }
 }
