@@ -15,6 +15,7 @@ public enum PoolObjectType
     EnemyCurve,             // 커브로 움직이는 적
     EnemyFighter,           // 물결치듯이 움직이는 적
     EnemyStrike,            // 멈췄다가 돌진하는 적
+    PowerUp,                // 파워업 아이템
 }
 
 public class Factory : Singleton<Factory>
@@ -31,6 +32,7 @@ public class Factory : Singleton<Factory>
     EnemyCurvePool enemyCurvePool;
     EnemyFighterPool enemyFighterPool;
     EnemyStrikePool enemyStrikePool;
+    PowerUpPool powerUpPool;
 
     protected override void OnInitialize()
     {
@@ -47,6 +49,7 @@ public class Factory : Singleton<Factory>
         enemyCurvePool = GetComponentInChildren<EnemyCurvePool>();
         enemyFighterPool = GetComponentInChildren<EnemyFighterPool>();
         enemyStrikePool = GetComponentInChildren<EnemyStrikePool>();
+        powerUpPool = GetComponentInChildren<PowerUpPool>();
 
         bulletPool?.Initialize();
         hitPool?.Initialize();
@@ -59,6 +62,7 @@ public class Factory : Singleton<Factory>
         enemyCurvePool?.Initialize();
         enemyFighterPool?.Initialize();
         enemyStrikePool?.Initialize();
+        powerUpPool?.Initialize();
     }
 
     /// <summary>
@@ -103,6 +107,9 @@ public class Factory : Singleton<Factory>
                 break;
             case PoolObjectType.EnemyStrike:
                 result = enemyStrikePool?.GetObject()?.gameObject;
+                break;
+            case PoolObjectType.PowerUp:
+                result = powerUpPool?.GetObject()?.gameObject; 
                 break;
             default:
                 result = new GameObject();

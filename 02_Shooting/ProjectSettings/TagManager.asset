@@ -7,6 +7,8 @@ TagManager:
   - KillZone
   - Enemy
   - Bullet
+  - PowerUp
+  - Border
   layers:
   - Default
   - TransparentFX
@@ -18,7 +20,7 @@ TagManager:
   - Border
   - Enemy
   - PlayerBullet
-  - 
+  - Item
   - 
   - 
   - 
