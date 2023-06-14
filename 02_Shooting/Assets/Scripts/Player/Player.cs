@@ -121,6 +121,29 @@ public class Player : MonoBehaviour
     }
     public float fireAngle = 30.0f;
 
+    private int life = 0;
+    private int Life
+    {
+        get => life;
+        set
+        {
+            life = value;
+            OnHit(); // 적에게 맞았을 때 처리해야 할 기능이 있는 함수
+
+            if( life <= 0 )
+            {
+                OnDie();
+            }
+            onLifeChange?.Invoke( life );
+            Debug.Log($"Life : {life}");
+        }
+    }
+    public int initialLife = 3;
+    public float invincibleTime = 2.0f;
+
+    public Action<int> onLifeChange;
+
+
     // 게임 오브젝트가 생성이 완료되면 호출되는 함수
     private void Awake()
     {
@@ -186,6 +209,7 @@ public class Player : MonoBehaviour
 
         //transform.position = Vector3.zero;           // 위치를 (0,0,0)으로 변경
         Power = 1;
+        Life = initialLife;
     }
 
     // Update는 매 프레임마다 한번씩 호출된다.(게임 진행 중에 계속 호출된다.)
@@ -320,7 +344,11 @@ public class Player : MonoBehaviour
     {
         // 다른 컬라이더와 충돌했다.(컬라이더는 겹칠 수 없다.)        
         //Debug.Log($"{collision.gameObject.name}와 충돌했다.");
-        if(collision.gameObject.CompareTag("PowerUp"))
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Life--;
+        }
+        else if (collision.gameObject.CompareTag("PowerUp"))
         {
             Power++;
             collision.gameObject.SetActive(false);
@@ -369,5 +397,24 @@ public class Player : MonoBehaviour
 
             fireTransforms[i].gameObject.SetActive(true);
         }
+    }
+
+    private void OnHit()
+    {
+        Power--;
+        StartCoroutine(EnterInvincibleMode());
+    }
+
+    IEnumerator EnterInvincibleMode()
+    {
+        gameObject.layer = LayerMask.NameToLayer("Invincible");
+
+        yield return new WaitForSeconds(invincibleTime);
+
+        gameObject.layer = LayerMask.NameToLayer("Player");
+    }
+
+    private void OnDie()
+    {
     }
 }
