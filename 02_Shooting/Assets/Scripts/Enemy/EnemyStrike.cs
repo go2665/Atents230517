@@ -35,4 +35,10 @@ public class EnemyStrike : EnemyBase
         yield return new WaitForSeconds(waitTime);
         speed = secondSpeed;
     }
+
+    protected override void Die()
+    {
+        Factory.Inst.GetObject(PoolObjectType.PowerUp, transform.position);
+        base.Die();
+    }
 }

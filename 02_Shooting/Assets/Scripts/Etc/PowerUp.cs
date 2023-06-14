@@ -37,7 +37,7 @@ public class PowerUp : PooledObject
 
             StopAllCoroutines();        // 이전 코루틴은 우선 모두 정지(인터벌 간격으로 방향 전환하던 것 취소용도)
 
-            if ( dirChangeCount > 0 )   // 튕길 횟수가 남아있으면    
+            if ( dirChangeCount > 0 && gameObject.activeSelf)   // 튕길 횟수가 남아있으면    
             {
                 StartCoroutine(DirChange());    // 인터벌 이후에 다시 방향 전환
             }
@@ -50,13 +50,28 @@ public class PowerUp : PooledObject
     /// </summary>
     Vector2 dir;
 
+    /// <summary>
+    /// 플레이어의 트랜스폼
+    /// </summary>
+    Transform playerTransform = null;
+
     Animator anim;
 
     IEnumerator DirChange()
     {
         yield return new WaitForSeconds(dirChangeInterval); // 우선 기다리고
-        dir = Random.insideUnitCircle;  // 랜덤 방향 정하기
-        dir.Normalize();                // 방향벡터를 유닛벡터로 변경해서 방향만 남기기
+
+        if( Random.value < 0.4f )   // 40% 확률
+        {
+            // 40% 확률로 플레이어에게서 멀어지는 방향으로 이동하게 만들기
+            Vector2 playerToPowerUp = transform.position - playerTransform.position;
+            dir = Quaternion.Euler(0, 0, Random.Range(-90.0f, 90.0f)) * playerToPowerUp;
+        }
+        else
+        {
+            dir = Random.insideUnitCircle;  // 랜덤 방향 정하기
+        }
+        dir.Normalize();    // 방향벡터를 유닛벡터로 변경해서 방향만 남기기
 
         DirChangeCount--;               // 카운트 감소 시키면서 다음 코루틴 실행 예약
     }
@@ -70,7 +85,15 @@ public class PowerUp : PooledObject
     {
         base.OnEnable();
 
+        StopAllCoroutines();
+        playerTransform = GameManager.Inst.Player.transform;
         DirChangeCount = dirChangeCountMax;
+    }
+
+    protected override void OnDisable()
+    {
+        StopAllCoroutines();
+        base.OnDisable();
     }
 
     private void Update()
