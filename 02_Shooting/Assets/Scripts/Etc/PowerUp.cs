@@ -34,9 +34,12 @@ public class PowerUp : PooledObject
         {            
             dirChangeCount = value;
             anim.SetInteger("Count", dirChangeCount);
-            if( dirChangeCount < 1 )    // 튕길 갯수가 0이하면 모든 코루틴 정지(=>시간 변화에 따라 튕기는 것 정지)
+
+            StopAllCoroutines();        // 이전 코루틴은 우선 모두 정지(인터벌 간격으로 방향 전환하던 것 취소용도)
+
+            if ( dirChangeCount > 0 )   // 튕길 횟수가 남아있으면    
             {
-                StopAllCoroutines();
+                StartCoroutine(DirChange());    // 인터벌 이후에 다시 방향 전환
             }
             //Debug.Log($"DirChangeCount : {dirChangeCount}");
         }
@@ -51,13 +54,11 @@ public class PowerUp : PooledObject
 
     IEnumerator DirChange()
     {
-        while(true)
-        {
-            yield return new WaitForSeconds(dirChangeInterval);
-            dir = Random.insideUnitCircle;
-            dir.Normalize();
-            DirChangeCount--;
-        }
+        yield return new WaitForSeconds(dirChangeInterval); // 우선 기다리고
+        dir = Random.insideUnitCircle;  // 랜덤 방향 정하기
+        dir.Normalize();                // 방향벡터를 유닛벡터로 변경해서 방향만 남기기
+
+        DirChangeCount--;               // 카운트 감소 시키면서 다음 코루틴 실행 예약
     }
 
     private void Awake()
@@ -69,10 +70,7 @@ public class PowerUp : PooledObject
     {
         base.OnEnable();
 
-        dirChangeCount = dirChangeCountMax;
-
-        StopAllCoroutines();
-        StartCoroutine(DirChange());
+        DirChangeCount = dirChangeCountMax;
     }
 
     private void Update()
