@@ -119,6 +119,7 @@ public class Player : MonoBehaviour
             }
         }
     }
+    public float fireAngle = 30.0f;
 
     // 게임 오브젝트가 생성이 완료되면 호출되는 함수
     private void Awake()
@@ -357,6 +358,14 @@ public class Player : MonoBehaviour
             // power 1 : 0도 회전
             // power 2 : -15도 회전, 15도 회전
             // power 3 : -30도, 0도, 30도 회전
+
+            // power로 시작각 정하고 추가로 i * 발사각만큼 추가
+            fireTransforms[i].rotation = Quaternion.Euler(0, 0,
+                (power - 1) * (fireAngle * 0.5f) + (i * -fireAngle) );
+
+            // 총알간에 너무 붙어서 나오는 것 방지
+            fireTransforms[i].localPosition = Vector3.zero;
+            fireTransforms[i].Translate(0.5f, 0, 0);
 
             fireTransforms[i].gameObject.SetActive(true);
         }
