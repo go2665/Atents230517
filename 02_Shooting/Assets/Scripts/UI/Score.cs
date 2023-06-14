@@ -29,7 +29,7 @@ public class Score : MonoBehaviour
 
     private void Start()
     {
-        Player player = FindObjectOfType<Player>(); // 플레이어 찾고
+        Player player = GameManager.Inst.Player; // 플레이어 찾고
 
         currentScore = player.Score;                // 플레이어의 스코어 기준으로 변수 초기화
         targetScore = player.Score;

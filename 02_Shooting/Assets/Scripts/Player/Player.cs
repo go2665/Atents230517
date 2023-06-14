@@ -29,9 +29,9 @@ public class Player : MonoBehaviour
     IEnumerator fireCoroutine;
 
     /// <summary>
-    /// 총알 발사 위치
+    /// 총알 발사 위치들
     /// </summary>
-    Transform fireTransform;
+    Transform[] fireTransforms;
 
     /// <summary>
     /// 코루틴에서 시간 대기용 캐싱(총알 발사 간격)
@@ -95,6 +95,31 @@ public class Player : MonoBehaviour
 
     public Action<int> onScoreChange;
 
+    public int powerBonus = 300;
+    private int power = 0;
+    private int Power
+    {
+        get => power;
+        set
+        {
+            if( power != value ) 
+            { 
+                power = value;
+
+                if( power > 3 )
+                {
+                    AddScore(powerBonus);
+                }
+
+                power = Mathf.Clamp(power, 1, 3);
+
+                RefreshFirePositions(power);
+
+                Debug.Log($"Power : {power}");
+            }
+        }
+    }
+
     // 게임 오브젝트가 생성이 완료되면 호출되는 함수
     private void Awake()
     {
@@ -105,7 +130,14 @@ public class Player : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
 
         fireCoroutine = FireCoroutine();        // 코루틴 함수를 저장하기
-        fireTransform = transform.GetChild(0);  // 총알 발사할 트랜스폼 미리 찾아놓기
+
+        Transform fireRoot = transform.GetChild(0);     // 총알 발사위치의 루트 찾기
+        fireTransforms = new Transform[fireRoot.childCount];    // 루트의 자식수만큼 배열 확보
+        for( int i = 0; i < fireTransforms.Length; i++ )
+        {
+            fireTransforms[i] = fireRoot.GetChild(i);   // 총알 발사할 트랜스폼 미리 찾아놓기
+        }
+        
         fireWait = new WaitForSeconds(fireInterval);    // 코루틴에서 대기용 사용할 것 미리 만들어 놓기
 
         fireFlash = transform.GetChild(1).gameObject;   // 총알 발사 이팩트 찾기
@@ -152,6 +184,7 @@ public class Player : MonoBehaviour
         //transform.position = newPosition;           // 위치를 newPosition으로 변경
 
         //transform.position = Vector3.zero;           // 위치를 (0,0,0)으로 변경
+        Power = 1;
     }
 
     // Update는 매 프레임마다 한번씩 호출된다.(게임 진행 중에 계속 호출된다.)
@@ -235,10 +268,14 @@ public class Player : MonoBehaviour
     {
         while(true)
         {
-            Factory.Inst.GetObject(
-                PoolObjectType.PlayerBullet,
-                fireTransform.position,                 // fireTransform 위치로 옮기기
-                fireTransform.rotation.eulerAngles.z);  // fireTransform의 회전을 적용하기
+            for(int i=0;i<Power;i++)
+            {
+                Transform firePos = fireTransforms[i];
+                Factory.Inst.GetObject(
+                    PoolObjectType.PlayerBullet,
+                    firePos.position,                 // fireTransform 위치로 옮기기
+                    firePos.rotation.eulerAngles.z);  // fireTransform의 회전을 적용하기
+            }
 
             StartCoroutine(FlashEffect());
 
@@ -278,11 +315,16 @@ public class Player : MonoBehaviour
     //    Debug.Log($"{collision.gameObject.name}의 트리거 영역에서 나왔다.");
     //}
 
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    // 다른 컬라이더와 충돌했다.(컬라이더는 겹칠 수 없다.)        
-    //    Debug.Log($"{collision.gameObject.name}와 충돌했다.");
-    //}
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // 다른 컬라이더와 충돌했다.(컬라이더는 겹칠 수 없다.)        
+        //Debug.Log($"{collision.gameObject.name}와 충돌했다.");
+        if(collision.gameObject.CompareTag("PowerUp"))
+        {
+            Power++;
+            collision.gameObject.SetActive(false);
+        }
+    }
 
     //private void OnCollisionStay2D(Collision2D collision)
     //{
@@ -295,4 +337,28 @@ public class Player : MonoBehaviour
     //    // 다른 컬라이더와 떨어졌다.
     //    Debug.Log($"{collision.gameObject.name}와 떨어졌다.");
     //}
+
+    /// <summary>
+    /// 파워에 따라 발사위치의 갯수와 위치를 조절하는 함수
+    /// </summary>
+    /// <param name="power">현재 파워 단계</param>
+    private void RefreshFirePositions(int power)
+    {
+        // 우선 모든 발사 위치를 비활성화
+        for(int i = 0; i < fireTransforms.Length; i++)
+        {
+            fireTransforms[i].gameObject.SetActive(false);
+        }
+
+        // power 단계에 맞게 활성화하기
+        for(int i=0;i<power;i++)
+        {
+            // 총알 간의 사이각은 30도
+            // power 1 : 0도 회전
+            // power 2 : -15도 회전, 15도 회전
+            // power 3 : -30도, 0도, 30도 회전
+
+            fireTransforms[i].gameObject.SetActive(true);
+        }
+    }
 }
