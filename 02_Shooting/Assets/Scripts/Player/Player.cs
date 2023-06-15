@@ -79,49 +79,78 @@ public class Player : MonoBehaviour
     /// 플레이어의 현재 점수
     /// </summary>
     int score = 0;
+
+    /// <summary>
+    /// 점수 확인하고 설정할 수 있는 프로퍼티
+    /// </summary>
     public int Score
     {
         get => score;
         private set
         {
-            if( score != value )
+            if( score != value )    // 점수가 변하면
             {
                 score = value;
-                onScoreChange?.Invoke( score );
+                onScoreChange?.Invoke( score ); // 변했다고 알람 전송
                 //Debug.Log($"Score : {score}");
             }
         }
     }
 
+    /// <summary>
+    /// 점수 변화 알림용 델리게이트
+    /// </summary>
     public Action<int> onScoreChange;
 
+    /// <summary>
+    /// 파워가 최대일때 파워 아이템을 먹으면 얻는 보너스 점수
+    /// </summary>
     public int powerBonus = 300;
+
+    /// <summary>
+    /// 현재 플레이어의 파워 단계
+    /// </summary>
     private int power = 0;
+
+    /// <summary>
+    /// 파워 확인 및 설정용 프로퍼티
+    /// </summary>
     private int Power
     {
         get => power;
         set
         {
-            if( power != value ) 
+            if( power != value )    // 파워가 변경되면
             { 
                 power = value;
 
-                if( power > 3 )
+                if( power > 3 )     // 파워 최대치가 넘어서면
                 {
-                    AddScore(powerBonus);
+                    AddScore(powerBonus);   // 보너스 점수 추가
                 }
 
-                power = Mathf.Clamp(power, 1, 3);
+                power = Mathf.Clamp(power, 1, 3);   // 파워는 1~3 사이로 유지
 
-                RefreshFirePositions(power);
+                RefreshFirePositions(power);        // 파워에 따라 총알 발사구 조정
 
-                Debug.Log($"Power : {power}");
+                //Debug.Log($"Power : {power}");
             }
         }
     }
+
+    /// <summary>
+    /// 총알간의 발사 각도
+    /// </summary>
     public float fireAngle = 30.0f;
 
+    /// <summary>
+    /// 플레이어의 수명
+    /// </summary>
     private int life = 0;
+
+    /// <summary>
+    /// 플레이어의 수명 확인 및 수정용 프로퍼티
+    /// </summary>
     private int Life
     {
         get => life;
@@ -130,18 +159,44 @@ public class Player : MonoBehaviour
             life = value;
             OnHit(); // 적에게 맞았을 때 처리해야 할 기능이 있는 함수
 
-            if( life <= 0 )
+            if( life <= 0 ) // life가 0보다 작거나 같으면 
             {
-                OnDie();
+                OnDie();    // 사망 처리
             }
-            onLifeChange?.Invoke( life );
-            Debug.Log($"Life : {life}");
+            onLifeChange?.Invoke( life );   // 플레이어 사망 알림
+            //Debug.Log($"Life : {life}");
         }
     }
+
+    /// <summary>
+    /// 시작할 때의 플레이어의 수명
+    /// </summary>
     public int initialLife = 3;
+
+    /// <summary>
+    /// 피격 당했을 때 무적 시간
+    /// </summary>
     public float invincibleTime = 2.0f;
 
+    /// <summary>
+    /// 플레이어의 수명이 변경되었음을 알리는 델리게이트
+    /// </summary>
     public Action<int> onLifeChange;
+
+    /// <summary>
+    /// 스프라이트 랜더러
+    /// </summary>
+    SpriteRenderer spriteRenderer;
+
+    /// <summary>
+    /// 무적모드인지 아닌지 확인용 변수
+    /// </summary>
+    bool isInvincibleMode = false;
+
+    /// <summary>
+    /// 무적모드에서 사용할 시간 누적용 변수
+    /// </summary>
+    float timeElapsed = 0.0f;
 
 
     // 게임 오브젝트가 생성이 완료되면 호출되는 함수
@@ -152,6 +207,7 @@ public class Player : MonoBehaviour
 
         anim = GetComponent<Animator>();        // Animator 컴포넌트를 찾아서 리턴하는 함수. 없으면 null
         rigid = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         fireCoroutine = FireCoroutine();        // 코루틴 함수를 저장하기
 
@@ -226,6 +282,13 @@ public class Player : MonoBehaviour
 
         // InputManager : 옛날 방식
         //if( Input.GetKey(KeyCode.Space) ) {}
+
+        if(isInvincibleMode)        // 무적 모드일 때만 처리
+        {
+            timeElapsed += Time.deltaTime * 30;     // 시간 변화를 증폭시켜서(30배) 누적시키기
+            float alpha = (Mathf.Cos(timeElapsed) + 1.0f) * 0.5f;   // 코사인 결과를 0~1사이로 변경
+            spriteRenderer.color = new Color(1, 1, 1, alpha);       // 코사인으로 계산된 알파값 설정
+        }
     }
 
     private void FixedUpdate()
@@ -293,30 +356,38 @@ public class Player : MonoBehaviour
     {
         while(true)
         {
-            for(int i=0;i<Power;i++)
+            for(int i=0;i<Power;i++)                    // 파워 단계에 맞게 총알 생성
             {
                 Transform firePos = fireTransforms[i];
                 Factory.Inst.GetObject(
                     PoolObjectType.PlayerBullet,
-                    firePos.position,                 // fireTransform 위치로 옮기기
-                    firePos.rotation.eulerAngles.z);  // fireTransform의 회전을 적용하기
+                    firePos.position,                   // fireTransform 위치로 옮기기
+                    firePos.rotation.eulerAngles.z);    // fireTransform의 회전을 적용하기
             }
 
-            StartCoroutine(FlashEffect());
+            StartCoroutine(FlashEffect());  // 발사효과 표시용 코루틴 실행
 
             yield return fireWait;
         }
     }
 
-    public void AddScore(int newScore)
+    /// <summary>
+    /// 점수를 추가하는 함수
+    /// </summary>
+    /// <param name="getScore">추가될 점수</param>
+    public void AddScore(int getScore)
     {
-        Score += newScore;
+        Score += getScore;
     }
 
+    /// <summary>
+    /// 총알 발사 효과
+    /// </summary>
+    /// <returns></returns>
     IEnumerator FlashEffect()
     {
         fireFlash.SetActive(true);      // 게임 오브젝트 활성화하기
-        yield return flashWait;
+        yield return flashWait;         // 잠깐 기다리고
         fireFlash.SetActive(false);     // 게임 오브젝트 비활성화하기
     }
 
@@ -346,12 +417,12 @@ public class Player : MonoBehaviour
         //Debug.Log($"{collision.gameObject.name}와 충돌했다.");
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            Life--;
+            Life--;     // 적과 부딪치면 수명 감소
         }
         else if (collision.gameObject.CompareTag("PowerUp"))
         {
-            Power++;
-            collision.gameObject.SetActive(false);
+            Power++;    // 파워업 아이템과 부딪치면 파워 증가
+            collision.gameObject.SetActive(false);  // 파워업 오브젝트 비활성화(풀로 되돌리기)
         }
     }
 
@@ -399,19 +470,30 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 플레이어가 맞았을 때
+    /// </summary>
     private void OnHit()
     {
-        Power--;
-        StartCoroutine(EnterInvincibleMode());
+        Power--;                                // 파워 한단계 떨어트리고 
+        StartCoroutine(EnterInvincibleMode());  // 무적모드 진입
     }
 
+    /// <summary>
+    /// 무적 모드로 들어가고 시간끝나면 원상복귀 되는 코루틴
+    /// </summary>
+    /// <returns></returns>
     IEnumerator EnterInvincibleMode()
     {
-        gameObject.layer = LayerMask.NameToLayer("Invincible");
+        gameObject.layer = LayerMask.NameToLayer("Invincible"); // 레이어 변경해서 적과 충돌 안되게 만듬
+        isInvincibleMode = true;    // 무적모드 들어갔다고 표시
+        timeElapsed = 0.0f;         // 알파값 변화를 위한 시간 누적 변수 초기화
 
-        yield return new WaitForSeconds(invincibleTime);
+        yield return new WaitForSeconds(invincibleTime);        // 무적 시간이 끝날 때까지 대기
 
-        gameObject.layer = LayerMask.NameToLayer("Player");
+        spriteRenderer.color = Color.white;     // 알파값을 원상 복귀 시키기
+        isInvincibleMode = false;               // 무적 모드 끝났다고 표시
+        gameObject.layer = LayerMask.NameToLayer("Player");     // 레이어도 원상복귀
     }
 
     private void OnDie()
