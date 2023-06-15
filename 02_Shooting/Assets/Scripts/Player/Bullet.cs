@@ -38,11 +38,14 @@ public class Bullet : PooledObject
 
     private void OnCollisionEnter2D(Collision2D collision)
     {        
-        Factory.Inst.GetObject(
-            PoolObjectType.Hit,
-            collision.contacts[0].point,                // 충돌한 지점으로 이팩트 옮기기
-            UnityEngine.Random.Range(0.0f, 360.0f));    // 랜덤하게 회전 시키기
+        if(collision.gameObject.CompareTag("Enemy"))
+        {
+            Factory.Inst.GetObject(
+                PoolObjectType.Hit,
+                collision.contacts[0].point,                // 충돌한 지점으로 이팩트 옮기기
+                UnityEngine.Random.Range(0.0f, 360.0f));    // 랜덤하게 회전 시키기
 
-        gameObject.SetActive(false);
+            gameObject.SetActive(false);
+        }
     }
 }

@@ -157,16 +157,25 @@ public class Player : MonoBehaviour
         set
         {
             life = value;
-            OnHit(); // 적에게 맞았을 때 처리해야 할 기능이 있는 함수
-
-            if( life <= 0 ) // life가 0보다 작거나 같으면 
+            if (life > 0)
             {
+                // life가 0보다 크면
+                OnHit();    // 적에게 맞았을 때 처리해야 할 기능이 있는 함수
+            }
+            else
+            {
+                // life가 0보다 작거나 같으면 
                 OnDie();    // 사망 처리
             }
             onLifeChange?.Invoke( life );   // 플레이어 사망 알림
             //Debug.Log($"Life : {life}");
         }
     }
+
+    /// <summary>
+    /// 플레이어의 생존 여부를 알려주는 프로퍼티
+    /// </summary>
+    private bool IsAlive => life > 0;
 
     /// <summary>
     /// 시작할 때의 플레이어의 수명
@@ -197,6 +206,11 @@ public class Player : MonoBehaviour
     /// 무적모드에서 사용할 시간 누적용 변수
     /// </summary>
     float timeElapsed = 0.0f;
+
+    /// <summary>
+    /// 죽었음을 알리는 델리게이트. 파라메터는 최종 점수
+    /// </summary>
+    public Action<int> onDie;
 
 
     // 게임 오브젝트가 생성이 완료되면 호출되는 함수
@@ -295,7 +309,18 @@ public class Player : MonoBehaviour
     {
         //Debug.Log($"FixedUpdate : {Time.fixedDeltaTime}");
         //transform.Translate(Time.fixedDeltaTime * speed * boost * direction);
-        rigid.MovePosition(rigid.position + (Vector2)(Time.fixedDeltaTime * speed * boost * direction));
+        
+        if(IsAlive)
+        {
+            // 살아있을 때만 움직이기
+            rigid.MovePosition(rigid.position + (Vector2)(Time.fixedDeltaTime * speed * boost * direction));
+        }
+        //else
+        //{
+        //    // 죽으면 계속 회전하게 만들기
+        //    //rigid.AddTorque(30.0f);     // 회전력 더하기. z축을 기준으로 30도씩 회전
+        //    //rigid.AddForce(Vector2.left * 0.3f, ForceMode2D.Impulse);   // 특정 방향으로 힘을 더하기. 왼쪽 방향으로 0.3만큼 힘을 더함
+        //}
     }
 
     // WASD 입력이 있을 때 실행되는 함수
@@ -415,7 +440,8 @@ public class Player : MonoBehaviour
     {
         // 다른 컬라이더와 충돌했다.(컬라이더는 겹칠 수 없다.)        
         //Debug.Log($"{collision.gameObject.name}와 충돌했다.");
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag("Enemy") 
+            || collision.gameObject.CompareTag("EnemyBullet"))
         {
             Life--;     // 적과 부딪치면 수명 감소
         }
@@ -496,7 +522,32 @@ public class Player : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Player");     // 레이어도 원상복귀
     }
 
+    /// <summary>
+    /// 죽었을 때 실행되는 함수
+    /// </summary>
     private void OnDie()
     {
+        Collider2D bodyCollider = GetComponent<Collider2D>();
+        bodyCollider.enabled = false;   // 더이상 충돌하지 않기 위해 컬라이더 끄기
+
+        Factory.Inst.GetObject(PoolObjectType.Explosion, transform.position);   // 터지는 이팩트 추가
+
+        inputAction.Player.Disable();   // 플레이어 입력 막기
+
+        direction = Vector3.zero;       // 이동 초기화
+        StopAllCoroutines();            // 총알 연사 코루틴 정지
+
+        rigid.gravityScale = 1.0f;      // 중력 다시 적용
+        rigid.freezeRotation = false;   // 회전 풀기
+
+        rigid.AddTorque(10000);         // 플레이어 회전 시키기
+        rigid.AddForce(Vector2.left * 10.0f, ForceMode2D.Impulse);  // 플레이어를 뒤로 밀기
+
+        onDie?.Invoke(Score);           // 죽었다고 신호 보내기
+    }
+
+    public void TestDie()
+    {
+        Life = 0;
     }
 }

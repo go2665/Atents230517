@@ -9,6 +9,7 @@ TagManager:
   - Bullet
   - PowerUp
   - Border
+  - EnemyBullet
   layers:
   - Default
   - TransparentFX

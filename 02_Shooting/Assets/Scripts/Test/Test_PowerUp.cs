@@ -9,4 +9,9 @@ public class Test_PowerUp : TestBase
     {
         Factory.Inst.GetObject(PoolObjectType.PowerUp);
     }
+
+    protected override void Test2(InputAction.CallbackContext context)
+    {
+        GameManager.Inst.Player.TestDie();
+    }
 }
