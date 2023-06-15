@@ -42,7 +42,11 @@ public class Score : MonoBehaviour
     {
         if (currentScore < targetScore)     // targetScore가 currentScore보다 커지면
         {
-            currentScore += Time.deltaTime * scoreUpSpeed;      // 초당 scoreUpSpeed만큼 currentScore 증가
+            // scoreUpSpeed는 최소 속도.
+            // targetScore와 currentScore의 차이가 크면 클수록 빠르게 증가하도록
+            float speed = Mathf.Max((targetScore - currentScore) * 5.0f, scoreUpSpeed);            
+
+            currentScore += Time.deltaTime * speed;             // 초당 speed만큼 currentScore 증가
             currentScore = Mathf.Min(currentScore, targetScore);// currentScore가 targetScore보다 커지지 않도록
             scoreUI.text = $"Score : {currentScore:f0}";        // 글자 찍기
         }
