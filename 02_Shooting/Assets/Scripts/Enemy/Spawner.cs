@@ -100,8 +100,8 @@ public class Spawner : MonoBehaviour
     {
         while(true)
         {
-            Spawn(data.spawnType);                          // 적 스폰하기
             yield return new WaitForSeconds(data.interval); // interval에 지정된 시간만큼 기다리기
+            Spawn(data.spawnType);                          // 적 스폰하기
         }
     }
 

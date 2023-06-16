@@ -73,6 +73,17 @@ public class EnemyAsteroid : EnemyBase
     public float maxLifeTime = 7.0f;
 
     /// <summary>
+    /// 원래 점수. 재활용할 때 설정할 점수
+    /// </summary>
+    private int originalScore = 0;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        originalScore = Score;  // 만들어졌을 때 원래 점수 저장해 놓기
+    }
+
+    /// <summary>
     /// 업데이트에서 실행되는 이동 처리 함수
     /// </summary>
     /// <param name="deltaTime">프레임간 경과시간</param>
@@ -101,6 +112,8 @@ public class EnemyAsteroid : EnemyBase
 
         speed = Random.Range(minMoveSpeed, maxMoveSpeed);           // 속도만 랜덤으로 처리
         rotateSpeed = Random.Range(minRotateSpeed, maxRotateSpeed);
+
+        score = originalScore;          // 활성화 될 때 점수 복구 시키기
 
         StartCoroutine(SelfCrush());
     }
@@ -134,6 +147,7 @@ public class EnemyAsteroid : EnemyBase
     {
         float lifeTime = Random.Range(minLifeTime, maxLifeTime);
         yield return new WaitForSeconds(lifeTime);
+        score = 0;      // 임시로 점수를 0으로 만들어서 자폭으로 점수가 안들어오게 만들기
         Die();
     }
 
