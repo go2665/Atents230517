@@ -67,6 +67,9 @@ public class EnemyBase : PooledObject
         if (targetPlayer != null)
         {
             onDie -= targetPlayer.AddScore;
+
+            onDie = null;
+            targetPlayer = null;
         }
         base.OnDisable();
     }
