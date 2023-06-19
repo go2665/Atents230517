@@ -203,4 +203,7 @@ public class RankPanel : MonoBehaviour
     {
         RankUpdate(score);        
     }
+
+    // 코드 확인
+    // 플레이어가 죽었을 때 RankUpdate가 실행되도록 수정하기
 }

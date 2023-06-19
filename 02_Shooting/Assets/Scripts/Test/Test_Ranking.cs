@@ -22,4 +22,10 @@ public class Test_Ranking : TestBase
     {
         rankPanel.TestRankUpdate(newScore);
     }
+
+    protected override void Test4(InputAction.CallbackContext context)
+    {
+        GameManager.Inst.Player.AddScore(newScore);
+        GameManager.Inst.Player.TestDie();
+    }
 }
