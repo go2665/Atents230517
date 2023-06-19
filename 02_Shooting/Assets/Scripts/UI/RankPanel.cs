@@ -49,6 +49,9 @@ public class RankPanel : MonoBehaviour
 
     private void Start()
     {
+        Player player = GameManager.Inst.Player;
+        player.onDie += RankUpdate;
+
         //SetDefaultData();
         LoadRankingData();  // 시작할 때 데이터 불러오기
     }
@@ -166,6 +169,7 @@ public class RankPanel : MonoBehaviour
                 }
                 highScores[i] = score;
                 //rankerNames[i] = "akakakak";
+                rankLines[i].SetData("새 랭커", highScores[i]);
                 updatedIndex = i;       // 밀리기 시작한 위치 기록
 
                 Vector3 newPos = inputField.transform.position;
@@ -205,5 +209,5 @@ public class RankPanel : MonoBehaviour
     }
 
     // 코드 확인
-    // 플레이어가 죽었을 때 RankUpdate가 실행되도록 수정하기
+    // 플레이어가 죽었을 때 RankUpdate가 실행되도록 수정하기(RankPanel만)
 }

@@ -334,7 +334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 2.5
   score: 10
-  MaxHP: 1
+  MaxHP: 30
   areaMin: {x: 2, y: -3}
   areaMax: {x: 7, y: 3}
   bulletInterval: 1

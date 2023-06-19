@@ -81,6 +81,11 @@ public class Spawner : MonoBehaviour
         
         switch(spawnType)
         {
+            case PoolObjectType.Boss:
+                Vector3 pos = obj.transform.position;
+                pos.y = 0.0f;
+                obj.transform.position = pos;
+                break;
             case PoolObjectType.EnemyAsteroid:
                 Vector3 destPos = destination.position; // 목적지 x는 destination의 x 사용
                 destPos.y = UnityEngine.Random.Range(minY, maxY);   // 목적지 y 랜덤으로 정하기
