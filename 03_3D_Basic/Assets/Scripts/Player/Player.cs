@@ -134,8 +134,11 @@ public class Player : MonoBehaviour
         // w가 눌려져 있으면 플레이어의 앞방향으로 이동한다.
         // s가 눌려져 있으면 플레이어의 뒷방향으로 이동한다.
 
-        // 현재위치 + 초당 moveSpeed 속도로 앞으로 이동 * moveDir(정방향이냐 역방향이냐 정지냐)
-        rigid.MovePosition(rigid.position + Time.fixedDeltaTime * moveSpeed * moveDir * transform.forward);
+        if( moveDir > 0.01f || moveDir < -0.01f)
+        {
+            // 현재위치 + 초당 moveSpeed 속도로 앞으로 이동 * moveDir(정방향이냐 역방향이냐 정지냐)
+            rigid.MovePosition(rigid.position + Time.fixedDeltaTime * moveSpeed * moveDir * transform.forward);
+        }    
     }
 
     void Rotate()
