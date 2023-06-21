@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,6 +32,32 @@ public class Player : MonoBehaviour
     /// </summary>
     public float rotateSpeed = 180.0f;
 
+    /// <summary>
+    /// 점프력
+    /// </summary>
+    public float jumpPower = 6.0f;
+
+    /// <summary>
+    /// 점프 중인지 표시(true면 점프중)
+    /// </summary>
+    bool isJumping = false;
+
+    /// <summary>
+    /// 점프 쿨타임
+    /// </summary>
+    public float jumpCooltimeMax = 5.0f;
+
+    /// <summary>
+    /// 남아있는 쿨타임 시간
+    /// </summary>
+    //[SerializeField] : private 맴버도 인스팩터 창에서 볼 수 있다.
+    float jumpCooltime = 0.0f;
+
+    /// <summary>
+    /// 쿨타임이 다됬는지 확인하는 프로퍼티
+    /// </summary>
+    bool IsJumpCoolEnd => (jumpCooltime <= 0.0f);
+
     // const int i = 10;   // const는 컴파일타임에 값이 결정되고 수정이 불가능하다.
     // readonly int j;     // readonly는 런타임에 값이 결정되고 그 이후로 수정이 불가능하다.
 
@@ -54,10 +81,14 @@ public class Player : MonoBehaviour
 
         // Player 액션맵의 Move 액션에 바인딩된 키가 때지면 OnMoveInput 실행하도록 연결
         inputActions.Player.Move.canceled += OnMoveInput;
+
+        inputActions.Player.Jump.performed += OnJumpInput;
     }
 
     private void OnDisable()
     {
+        inputActions.Player.Jump.performed -= OnJumpInput;
+
         // Player 액션맵의 Move 액션에 바인딩 된 키가 때실 때 실행되던 OnMoveInput을 연결 해제
         inputActions.Player.Move.canceled -= OnMoveInput;
 
@@ -80,6 +111,16 @@ public class Player : MonoBehaviour
         //Debug.Log(input);
         
         animator.SetBool(isMoveHash, !context.canceled);    // 키가 눌러졌는지 떨어졌는지에 따라 애니메이션 변경
+    }
+
+    private void OnJumpInput(InputAction.CallbackContext context)
+    {
+        Jump();
+    }
+
+    private void Update()
+    {
+        jumpCooltime -= Time.deltaTime;
     }
 
     private void FixedUpdate()
@@ -115,5 +156,26 @@ public class Player : MonoBehaviour
 
         // 현재 회전에 변화할 회전을 곱해서 현재 각도에서 rotate만큼 추가로 회전한 결과 만들기
         rigid.MoveRotation(rigid.rotation * rotate);    
+    }
+
+    /// <summary>
+    /// 점프하는 함수
+    /// </summary>
+    void Jump()
+    {
+        if(!isJumping && IsJumpCoolEnd) // 점프중이 아니고 점프 쿨타임이 다 되었을 때만 점프
+        {
+            rigid.AddForce(jumpPower * Vector3.up, ForceMode.Impulse);  // 위로 힘을 가하고
+            jumpCooltime = jumpCooltimeMax; // 쿨타임 초기화
+            isJumping = true;               // 점프 중이라고 표시
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Ground"))
+        {
+            isJumping = false;  // 바닥에 닿으면 다시 점프 가능
+        }
     }
 }

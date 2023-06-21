@@ -419,6 +419,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ground
       objectReference: {fileID: 0}
+    - target: {fileID: 6007017907133068527, guid: 46ba576b05765fe47be7374ecd248ad5, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46ba576b05765fe47be7374ecd248ad5, type: 3}
 --- !u!1 &617701408
@@ -1023,6 +1027,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7969b481c9f8054495519b3df6f0f7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 5
+  rotateSpeed: 180
+  jumpPower: 6
 --- !u!1 &1961553773
 GameObject:
   m_ObjectHideFlags: 0
