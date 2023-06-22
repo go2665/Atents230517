@@ -77,31 +77,56 @@ public class TurretTrace : TurretBase
     /// </summary>
     void LookTargetAndAttack()
     {
-        if( target != null )    // 타겟이 있을 때만
+        if( target != null )            // 타겟이 있을 때만
         {   
             Vector3 dir = target.position - barrelBodyTransform.position;   // 방향 계산하고
             dir.y = 0;
             //barrelBodyTransform.rotation = Quaternion.LookRotation(dir);    // 특정 방향을 바라보는 회전을 만드는 함수
             //barrelBodyTransform.LookAt(target);   // 트랜스폼이 특정 지점을 바라보게 만드는 함수
 
-            // 천천히 회전 시키기
-            barrelBodyTransform.rotation = Quaternion.Slerp(
-                barrelBodyTransform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * turnSpeed);
-
-            // Vector3.Angle : 두 벡터가 이루는 사이각 중 작은 것을 리턴
-            // Vector3.SignedAngle : 두 벡터의 사이각을 구하는데 축이되는 벡터를 기준으로 계산
-
-            // 목표지점까지의 각도 계산
-            float angle = Vector3.Angle(barrelBodyTransform.forward, dir);
-            if (angle < fireAngle)
+            if (IsVisibleTarget(dir))   // 타겟이 보일 때만
             {
-                StartFire();    // 발사각 안이면 발사
-            } 
-            else
-            {
-                StopFire();     // 밖이면 정지
+                // 천천히 회전 시키기
+                barrelBodyTransform.rotation = Quaternion.Slerp(
+                    barrelBodyTransform.rotation, 
+                    Quaternion.LookRotation(dir), 
+                    Time.deltaTime * turnSpeed);
+
+                // Vector3.Angle : 두 벡터가 이루는 사이각 중 작은 것을 리턴
+                // Vector3.SignedAngle : 두 벡터의 사이각을 구하는데 축이되는 벡터를 기준으로 계산
+
+                // 목표지점까지의 각도 계산
+                float angle = Vector3.Angle(barrelBodyTransform.forward, dir);
+                if (angle < fireAngle)
+                {
+                    StartFire();    // 발사각 안이면 발사
+                }
+                else
+                {
+                    StopFire();     // 밖이면 정지
+                }
             }
         }
+    }
+
+    bool IsVisibleTarget(Vector3 lookDir)
+    {
+        bool result = false;
+        if( target != null )
+        {
+            Ray ray = new(barrelBodyTransform.position, lookDir);
+
+            //int layer = LayerMask.GetMask("Default", "Player", "Wall", "Interactable");
+            if ( Physics.Raycast(ray, out RaycastHit hitInfo, sightRange) )
+            {
+                if( hitInfo.transform == target )
+                {
+                    result = true;
+                }
+            }
+        }
+
+        return result;
     }
 
     /// <summary>
