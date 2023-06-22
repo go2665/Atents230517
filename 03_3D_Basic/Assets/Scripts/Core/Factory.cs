@@ -8,7 +8,7 @@ public enum PoolObjectType
 }
 
 public class Factory : Singleton<Factory>
-{
+{    
     BulletPool bulletPool;
 
     protected override void OnInitialize()
