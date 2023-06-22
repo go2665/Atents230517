@@ -13,9 +13,8 @@ public class Bullet : PooledObject
         rigid = GetComponent<Rigidbody>();        
     }
 
-    protected override void OnEnable()
+    private void OnEnable()
     {
-        base.OnEnable();
         rigid.angularVelocity = Vector3.zero;
         rigid.velocity = initialSpeed * transform.forward;
         StartCoroutine(LifeOver(10.0f));

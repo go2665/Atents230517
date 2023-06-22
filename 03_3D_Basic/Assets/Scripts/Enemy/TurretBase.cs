@@ -54,6 +54,6 @@ public class TurretBase : MonoBehaviour
     /// </summary>
     protected virtual void OnFire()
     {
-        Factory.Inst.GetObject(projectileType, fireTransform.position);
+        Factory.Inst.GetObject(projectileType, fireTransform);
     }
 }

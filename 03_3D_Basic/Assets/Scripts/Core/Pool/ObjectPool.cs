@@ -49,21 +49,34 @@ public class ObjectPool<T> : MonoBehaviour where T : PooledObject
     /// <summary>
     /// 풀에서 오브젝트를 하나 꺼낸 후 돌려주는 함수
     /// </summary>
+    /// <param name="spawnTransform">오브젝트 꺼낼 때 설정할 위치와 회전과 스케일</param>
     /// <returns>레디큐에서 꺼내고 활성화시킨 오브젝트</returns>
-    public T GetObject()
+    public T GetObject(Transform spawnTransform = null)
     {
-        if(readyQueue.Count > 0)    // 레디큐에 남아있는 오브젝트가 있는지 확인
+        if (readyQueue.Count > 0)    // 레디큐에 남아있는 오브젝트가 있는지 확인
         {
             // 남아있으면
             T comp = readyQueue.Dequeue();      // 하나 꺼내고
+            if(spawnTransform != null)          // 미리 설정할 트랜스폼이 있으면 적용
+            {
+                comp.transform.position = spawnTransform.position;
+                comp.transform.rotation = spawnTransform.rotation;
+                comp.transform.localScale = spawnTransform.localScale;
+            }
+            else
+            {
+                comp.transform.position = Vector3.zero;         // 없으면 기본값으로 되돌리기
+                comp.transform.rotation = Quaternion.identity;
+                comp.transform.localScale = Vector3.one;
+            }
             comp.gameObject.SetActive(true);    // 활성화시킨 다음에 
             return comp;                        // 꺼낸 것 리턴
         }
         else
         {
             // 남은 오브젝트가 없으면
-            ExpandPool();           // 풀 확장시키고
-            return GetObject();     // 다시 요청
+            ExpandPool();                       // 풀 확장시키고
+            return GetObject(spawnTransform);   // 다시 요청
         }
     }
 

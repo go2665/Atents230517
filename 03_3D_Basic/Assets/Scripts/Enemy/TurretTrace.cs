@@ -9,11 +9,12 @@ using UnityEditor;
 public class TurretTrace : TurretBase
 {
     public float sightRange = 10.0f;
-    public float turnSpeed = 360.0f;
+    public float turnSpeed = 2.0f;
     public float fireAngle = 10.0f;
 
-    Transform target;
+    bool isFiring = false;
 
+    Transform target;
     SphereCollider sightTrigger;
 
     protected override void Awake()
@@ -51,14 +52,22 @@ public class TurretTrace : TurretBase
     void LookTarget()
     {
         // target을 바라보는 함수
-        //  - 즉시 바라보기
 
         if( target != null )
         {
             Vector3 dir = target.position - barrelBodyTransform.position;
             dir.y = 0;
-            barrelBodyTransform.rotation = Quaternion.LookRotation(dir);    // 특정 방향을 바라보는 회전을 만드는 함수
+            //barrelBodyTransform.rotation = Quaternion.LookRotation(dir);    // 특정 방향을 바라보는 회전을 만드는 함수
             //barrelBodyTransform.LookAt(target);   // 트랜스폼이 특정 지점을 바라보게 만드는 함수
+
+            barrelBodyTransform.rotation = Quaternion.Slerp(
+                barrelBodyTransform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * turnSpeed);
+
+            if(!isFiring)
+            {
+                StartCoroutine(fireCoroutine);
+                isFiring = true;
+            }
         }
     }
 
@@ -67,7 +76,6 @@ public class TurretTrace : TurretBase
     {
         //Gizmos.DrawWireSphere(transform.position, sightRange);
         Handles.DrawWireDisc(transform.position, transform.up, sightRange, 2);
-
 
         if(barrelBodyTransform == null)
         {

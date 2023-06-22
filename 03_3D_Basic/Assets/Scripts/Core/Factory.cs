@@ -25,13 +25,13 @@ public class Factory : Singleton<Factory>
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    public GameObject GetObject(PoolObjectType type)
+    public GameObject GetObject(PoolObjectType type, Transform spawn = null)
     {
         GameObject result;
         switch (type)
         {
             case PoolObjectType.Bullet:
-                result = bulletPool?.GetObject()?.gameObject;                
+                result = bulletPool?.GetObject(spawn)?.gameObject;                
                 break;
             default:
                 result = new GameObject();
