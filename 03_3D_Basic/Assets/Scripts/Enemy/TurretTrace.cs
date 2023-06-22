@@ -106,6 +106,10 @@ public class TurretTrace : TurretBase
                     StopFire();     // 밖이면 정지
                 }
             }
+            else
+            {
+                StopFire();
+            }
         }
     }
 
@@ -119,7 +123,7 @@ public class TurretTrace : TurretBase
             //int layer = LayerMask.GetMask("Default", "Player", "Wall", "Interactable");
             if ( Physics.Raycast(ray, out RaycastHit hitInfo, sightRange) )
             {
-                if( hitInfo.transform == target )
+                if ( hitInfo.transform == target )
                 {
                     result = true;
                 }
