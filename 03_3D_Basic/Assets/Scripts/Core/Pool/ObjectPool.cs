@@ -59,14 +59,14 @@ public class ObjectPool<T> : MonoBehaviour where T : PooledObject
             T comp = readyQueue.Dequeue();      // 하나 꺼내고
             if(spawnTransform != null)          // 미리 설정할 트랜스폼이 있으면 적용
             {
-                comp.transform.position = spawnTransform.position;
-                comp.transform.rotation = spawnTransform.rotation;
+                comp.transform.SetPositionAndRotation(
+                    spawnTransform.position, spawnTransform.rotation);                
                 comp.transform.localScale = spawnTransform.localScale;
             }
             else
             {
-                comp.transform.position = Vector3.zero;         // 없으면 기본값으로 되돌리기
-                comp.transform.rotation = Quaternion.identity;
+                // 없으면 기본값으로 설정                
+                comp.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
                 comp.transform.localScale = Vector3.one;
             }
             comp.gameObject.SetActive(true);    // 활성화시킨 다음에 

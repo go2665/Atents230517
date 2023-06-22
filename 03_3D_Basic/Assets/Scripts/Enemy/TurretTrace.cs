@@ -63,11 +63,18 @@ public class TurretTrace : TurretBase
             barrelBodyTransform.rotation = Quaternion.Slerp(
                 barrelBodyTransform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * turnSpeed);
 
-            if(!isFiring)
+            // Vector3.Angle : 두 벡터가 이루는 사이각 중 작은 것을 리턴
+            // Vector3.SignedAngle : 두 벡터의 사이각을 구하는데 축이되는 벡터를 기준으로 계산
+
+            float angle = Vector3.Angle(barrelBodyTransform.forward, dir);
+            if (angle < fireAngle)
             {
-                StartCoroutine(fireCoroutine);
-                isFiring = true;
-            }
+                if (!isFiring)
+                {
+                    StartCoroutine(fireCoroutine);
+                    isFiring = true;
+                }
+            }            
         }
     }
 
@@ -85,6 +92,9 @@ public class TurretTrace : TurretBase
         // 총알 나가는 선 그리기(시야범위까지만)
         Gizmos.DrawLine(barrelBodyTransform.position, 
             barrelBodyTransform.position + barrelBodyTransform.forward * sightRange);
+
+        // 발사각 그리기
+        // 총알 나가는 선의 색상은 발사각 안에 있을 때는 빨간색, 발사각 밖이면 파란색
     }
 #endif
 }
