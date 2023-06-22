@@ -51,6 +51,15 @@ public class TurretTrace : TurretBase
     void LookTarget()
     {
         // target을 바라보는 함수
+        //  - 즉시 바라보기
+
+        if( target != null )
+        {
+            Vector3 dir = target.position - barrelBodyTransform.position;
+            dir.y = 0;
+            barrelBodyTransform.rotation = Quaternion.LookRotation(dir);    // 특정 방향을 바라보는 회전을 만드는 함수
+            //barrelBodyTransform.LookAt(target);   // 트랜스폼이 특정 지점을 바라보게 만드는 함수
+        }
     }
 
 #if UNITY_EDITOR
@@ -58,6 +67,16 @@ public class TurretTrace : TurretBase
     {
         //Gizmos.DrawWireSphere(transform.position, sightRange);
         Handles.DrawWireDisc(transform.position, transform.up, sightRange, 2);
+
+
+        if(barrelBodyTransform == null)
+        {
+            barrelBodyTransform = transform.GetChild(2);
+        }
+        
+        // 총알 나가는 선 그리기(시야범위까지만)
+        Gizmos.DrawLine(barrelBodyTransform.position, 
+            barrelBodyTransform.position + barrelBodyTransform.forward * sightRange);
     }
 #endif
 }
