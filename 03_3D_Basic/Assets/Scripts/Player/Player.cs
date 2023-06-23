@@ -69,6 +69,9 @@ public class Player : MonoBehaviour
         inputActions = new();                   // 객체 생성
         animator = GetComponent<Animator>();    // 이 스크립트가 들어있는 게임 오브젝트에서 Animator 컴포넌트 찾기(없으면 null)
         rigid = GetComponent<Rigidbody>();
+
+        ItemUseChecker checker = GetComponentInChildren<ItemUseChecker>();
+        checker.onItemUse += UseItem;
     }
 
     private void OnEnable()
@@ -83,10 +86,12 @@ public class Player : MonoBehaviour
         inputActions.Player.Move.canceled += OnMoveInput;
 
         inputActions.Player.Jump.performed += OnJumpInput;
+        inputActions.Player.Use.performed += OnUseInput;
     }
 
     private void OnDisable()
     {
+        inputActions.Player.Use.performed -= OnUseInput;
         inputActions.Player.Jump.performed -= OnJumpInput;
 
         // Player 액션맵의 Move 액션에 바인딩 된 키가 때실 때 실행되던 OnMoveInput을 연결 해제
@@ -113,9 +118,14 @@ public class Player : MonoBehaviour
         animator.SetBool(isMoveHash, !context.canceled);    // 키가 눌러졌는지 떨어졌는지에 따라 애니메이션 변경
     }
 
-    private void OnJumpInput(InputAction.CallbackContext context)
+    private void OnJumpInput(InputAction.CallbackContext _)
     {
         Jump();
+    }
+
+    private void OnUseInput(InputAction.CallbackContext _)
+    {
+        animator.SetTrigger("Use");
     }
 
     private void Update()
@@ -171,6 +181,14 @@ public class Player : MonoBehaviour
             rigid.AddForce(jumpPower * Vector3.up, ForceMode.Impulse);  // 위로 힘을 가하고
             jumpCooltime = jumpCooltimeMax; // 쿨타임 초기화
             isJumping = true;               // 점프 중이라고 표시
+        }
+    }
+
+    private void UseItem(IInteractable interactable)
+    {
+        if (interactable.IsDirectUse)
+        {
+            interactable.Use();
         }
     }
 
