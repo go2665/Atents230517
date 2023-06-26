@@ -63,6 +63,8 @@ public class Player : MonoBehaviour
 
     readonly int isMoveHash = Animator.StringToHash("IsMove");  // "IsMove" 문자열을 숫자로 바꿔서 저장해놓기
 
+    bool isAlive = true;
+
     private void Awake()
     {        
         // inputActions = new PlayerInputActions();
@@ -197,6 +199,25 @@ public class Player : MonoBehaviour
         if(collision.gameObject.CompareTag("Ground"))
         {
             isJumping = false;  // 바닥에 닿으면 다시 점프 가능
+        }
+    }
+
+    public void Die()
+    {
+        if( isAlive )
+        {            
+            animator.SetTrigger("Die");                     // 죽는 애니메이션 재생
+            inputActions.Player.Disable();                  // 입력 처리 중지
+
+            rigid.constraints = RigidbodyConstraints.None;  // 물리 잠금 전부 풀기
+
+            // 뒤로 넘어트리기
+            Transform head = transform.GetChild(0);
+            rigid.AddForceAtPosition(0.5f * (-transform.forward), head.position, ForceMode.Impulse);
+            // 떼굴떼굴 돌기
+            rigid.AddTorque(transform.up * 1.2f, ForceMode.Impulse);
+
+            isAlive = false;
         }
     }
 }
