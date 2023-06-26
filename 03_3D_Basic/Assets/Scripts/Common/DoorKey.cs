@@ -25,17 +25,27 @@ public class DoorKey : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        target.Open();
-        Destroy(this.gameObject);
+        OnConsume();
     }
 
     private void OnValidate()
     {
-        if(target != null)
+        ResetTarget(target);
+    }
+
+    protected virtual void ResetTarget(DoorBase target)
+    {
+        if (this.target != null)
         {
             // as : 왼쪽에 있는 변수가 오른쪽에 있는 타입이면 null이 아니고 오른쪽에 있는 타입이 아니면 null이다.
             // is : 왼쪽에 있는 변수가 오른쪽에 있는 타입이면 true고 오른쪽에 있는 타입이 아니면 false이다.
-            target = target as DoorAuto;    
+            this.target = target as DoorAuto;
         }
+    }
+
+    protected virtual void OnConsume()
+    {
+        target.Open();
+        Destroy(this.gameObject);
     }
 }
