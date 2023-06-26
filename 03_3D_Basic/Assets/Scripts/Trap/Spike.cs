@@ -9,7 +9,7 @@ public class Spike : MonoBehaviour
         Player player = other.GetComponent<Player>();
         if(player != null)
         {
-            player.Die();
+            player.Die();   // 가시에 플레이어가 닿으면 플레이어는 죽는다.
         }
     }
 }

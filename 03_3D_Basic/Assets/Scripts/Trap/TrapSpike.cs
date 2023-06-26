@@ -16,6 +16,6 @@ public class TrapSpike : TrapBase
     protected override void OnTrapActivate(GameObject target)
     {
         base.OnTrapActivate(target);
-        animator.SetTrigger("Activate");
+        animator.SetTrigger("Activate");    // 함정이 발동될 때 애니메이션 재생
     }
 }

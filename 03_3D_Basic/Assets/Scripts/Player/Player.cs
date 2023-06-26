@@ -28,6 +28,11 @@ public class Player : MonoBehaviour
     public float moveSpeed = 5.0f;
 
     /// <summary>
+    /// 현재 이동 속도
+    /// </summary>
+    float currentMoveSpeed = 5.0f;
+
+    /// <summary>
     /// 회전 속도
     /// </summary>
     public float rotateSpeed = 180.0f;
@@ -130,6 +135,11 @@ public class Player : MonoBehaviour
         animator.SetTrigger("Use");
     }
 
+    private void Start()
+    {
+        currentMoveSpeed = moveSpeed;
+    }
+
     private void Update()
     {
         jumpCooltime -= Time.deltaTime;
@@ -148,8 +158,8 @@ public class Player : MonoBehaviour
 
         if( moveDir > 0.01f || moveDir < -0.01f)
         {
-            // 현재위치 + 초당 moveSpeed 속도로 앞으로 이동 * moveDir(정방향이냐 역방향이냐 정지냐)
-            rigid.MovePosition(rigid.position + Time.fixedDeltaTime * moveSpeed * moveDir * transform.forward);
+            // 현재위치 + 초당 currentMoveSpeed 속도로 앞으로 이동 * moveDir(정방향이냐 역방향이냐 정지냐)
+            rigid.MovePosition(rigid.position + Time.fixedDeltaTime * currentMoveSpeed * moveDir * transform.forward);
         }    
     }
 
@@ -219,5 +229,23 @@ public class Player : MonoBehaviour
 
             isAlive = false;
         }
+    }
+
+    /// <summary>
+    /// 강제로 점프 중이라고 설정하는 함수
+    /// </summary>
+    public void SetForceJumpMode()
+    {
+        isJumping = true;
+    }
+
+    public void SetSpeedDebuffe(float ratio)
+    {
+        currentMoveSpeed = moveSpeed * ratio;
+    }
+
+    public void RestoreMoveSpeed()
+    {
+        currentMoveSpeed = moveSpeed;
     }
 }
