@@ -27,6 +27,11 @@ public class WaypointUser : MonoBehaviour
     Vector3 moveDir;
 
     /// <summary>
+    /// 이번 물리 프레임에 이동한 정도
+    /// </summary>
+    protected Vector3 moveDelta = Vector3.zero;
+
+    /// <summary>
     /// 목적지를 지정하는 프로퍼티
     /// </summary>
     protected virtual Transform Target
@@ -74,7 +79,8 @@ public class WaypointUser : MonoBehaviour
     protected virtual void OnMove() 
     {
         //Debug.Log((Time.fixedDeltaTime * moveSpeed * moveDir).sqrMagnitude);
-        transform.Translate(Time.fixedDeltaTime * moveSpeed * moveDir, Space.World);
+        moveDelta = Time.fixedDeltaTime * moveSpeed * moveDir;  // 이번 물리프레임에 움직인 정도를 저장
+        transform.Translate(moveDelta, Space.World);
         
         if(IsArrived)
         {

@@ -9,7 +9,6 @@ public class Blade : WaypointUser
         
     protected override Transform Target 
     { 
-        get => base.Target;
         set
         {
             base.Target = value;

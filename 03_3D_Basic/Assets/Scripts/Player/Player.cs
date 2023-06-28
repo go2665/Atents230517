@@ -196,6 +196,10 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 상호작용 가능한 오브젝트를 사용하는 함수
+    /// </summary>
+    /// <param name="interactable">사용할 대상</param>
     private void UseItem(IInteractable interactable)
     {
         if (interactable.IsDirectUse)
@@ -212,6 +216,36 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        PlatformBase platform = other.GetComponent<PlatformBase>();
+        if (platform != null)
+        {
+            platform.onMove = OnRideMovingObject;   // 플렛폼 베이스에 탑승하면 함수연결
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        PlatformBase platform = other.GetComponent<PlatformBase>();
+        if (platform != null)
+        {
+            platform.onMove = null;             // 플렛폼베이스와 떨어졌을 때 연결 해제
+        }
+    }
+
+    /// <summary>
+    /// 움직이는 물체에 탑승했을 때 움직이는 물체가 보내는 델리게이트를 처리하는 함수
+    /// </summary>
+    /// <param name="delta">이번에 움직인 정도</param>
+    private void OnRideMovingObject(Vector3 delta)
+    {
+        rigid.MovePosition(rigid.position + delta); // delta만큼 추가로 움직임
+    }
+
+    /// <summary>
+    /// 죽는 처리용 함수
+    /// </summary>
     public void Die()
     {
         if( isAlive )
@@ -239,11 +273,18 @@ public class Player : MonoBehaviour
         isJumping = true;
     }
 
+    /// <summary>
+    /// 속도 디버프용 함수
+    /// </summary>
+    /// <param name="ratio">원본대비 새로 적용될 비율</param>
     public void SetSpeedDebuffe(float ratio)
     {
         currentMoveSpeed = moveSpeed * ratio;
     }
 
+    /// <summary>
+    /// 원래 속도로 복구하는 함수
+    /// </summary>
     public void RestoreMoveSpeed()
     {
         currentMoveSpeed = moveSpeed;
