@@ -73,7 +73,7 @@ public class WaypointUser : MonoBehaviour
     /// </summary>
     protected virtual void OnMove() 
     {
-        Debug.Log((Time.fixedDeltaTime * moveSpeed * moveDir).sqrMagnitude);
+        //Debug.Log((Time.fixedDeltaTime * moveSpeed * moveDir).sqrMagnitude);
         transform.Translate(Time.fixedDeltaTime * moveSpeed * moveDir, Space.World);
         
         if(IsArrived)
