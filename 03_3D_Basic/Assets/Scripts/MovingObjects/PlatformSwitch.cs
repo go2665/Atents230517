@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlatfirnSwitch : PlatformBase, IInteractable
+public class PlatformSwitch : PlatformBase, IInteractable
 {
     public bool IsDirectUse => true;
 
