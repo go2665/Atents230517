@@ -16,3 +16,5 @@ public class PlatformBase : WaypointUser
         onMove?.Invoke(moveDelta); // 실제로 움직이고 나서 신호보내기
     }
 }
+
+// 2. 스위치를 누르면 동작하는 발판

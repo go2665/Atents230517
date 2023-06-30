@@ -11,12 +11,13 @@ public class ItemUseChecker : MonoBehaviour
     {
         // 체커의 트리거 영역에 다른 컬라이더가 들어왔을 때
         Transform target = other.transform;
-        while (target.parent != null)
+        IInteractable obj = null;
+        do
         {
-            target = target.parent;     // 최상위 부모까지 올라간 후
-        }
+            obj = target.GetComponent<IInteractable>(); // IInteractable 가져오기 시도
+            target = target.parent;                     // target은 부모로 변경
+        } while (obj == null && target != null);        // obj를 찾거나 더이상 부모가 없으면 루프 종료
 
-        IInteractable obj = target.GetComponent<IInteractable>();
         if( obj != null)
         {
             onItemUse?.Invoke(obj);     // IInteractable를 상속받은 컴포넌트가 있으면 실행
