@@ -105,15 +105,23 @@ public class Player : MonoBehaviour
         get => lifeTime;
         private set
         {
-            lifeTime = value;
-            if(lifeTime <= 0.0f )
+            if (!isClear)
             {
-                lifeTime = 0.0f;
-                Die();      // 수명이 0보다 작거나 같으면 사망
+                lifeTime = value;
+                if (lifeTime <= 0.0f)
+                {
+                    lifeTime = 0.0f;
+                    Die();      // 수명이 0보다 작거나 같으면 사망
+                }
+                onLifeTimeChange?.Invoke(lifeTime / lifeTimeMax);   // 변경이 있을 때마다 신호를 보낸다.
             }
-            onLifeTimeChange?.Invoke(lifeTime / lifeTimeMax);   // 변경이 있을 때마다 신호를 보낸다.
         }
     }
+
+    /// <summary>
+    /// 클리어 여부 표현
+    /// </summary>
+    bool isClear = false;
 
     /// <summary>
     /// 수명 변화가 있을 때 실행되는 델리게이트
@@ -210,6 +218,12 @@ public class Player : MonoBehaviour
         {
             button.onClick += Jump;
             onJumpCoolTimeChange += button.RefreshCoolTime;
+        }
+
+        Goal goal = FindObjectOfType<Goal>();
+        if (goal != null)
+        {
+            goal.onGoalIn += () => isClear = true;
         }
     }
 
