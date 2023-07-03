@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
     //[SerializeField] : private 맴버도 인스팩터 창에서 볼 수 있다.
     float jumpCooltime = 0.0f;
 
-    float JumpCoolTime
+    private float JumpCoolTime
     {
         get => jumpCooltime;
         set
@@ -86,6 +86,38 @@ public class Player : MonoBehaviour
     // readonly int j;     // readonly는 런타임에 값이 결정되고 그 이후로 수정이 불가능하다.
 
     readonly int isMoveHash = Animator.StringToHash("IsMove");  // "IsMove" 문자열을 숫자로 바꿔서 저장해놓기
+
+    /// <summary>
+    /// 플레이어의 최대 수명
+    /// </summary>
+    public float lifeTimeMax = 10.0f;
+
+    /// <summary>
+    /// 플레이어의 현재 수명
+    /// </summary>
+    float lifeTime = 10.0f;
+
+    /// <summary>
+    /// 수명 확인 및 설정용 프로퍼티
+    /// </summary>
+    public float LifeTime
+    {
+        get => lifeTime;
+        private set
+        {
+            lifeTime = value;
+            onLifeTimeChange?.Invoke(lifeTime / lifeTimeMax);   // 변경이 있을 때마다 신호를 보낸다.
+            if(lifeTime <= 0.0f )
+            {
+                Die();      // 수명이 0보다 작거나 같으면 사망
+            }
+        }
+    }
+
+    /// <summary>
+    /// 수명 변화가 있을 때 실행되는 델리게이트
+    /// </summary>
+    public Action<float> onLifeTimeChange;
 
     /// <summary>
     /// 플레이어가 살아있는지 여부
@@ -160,6 +192,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        LifeTime = lifeTimeMax;
         currentMoveSpeed = moveSpeed;
 
         // 가상 스틱 UI 찾아서 플레이어와 연결하기
@@ -181,6 +214,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        LifeTime -= Time.deltaTime;
         JumpCoolTime -= Time.deltaTime;
     }
 
