@@ -106,11 +106,12 @@ public class Player : MonoBehaviour
         private set
         {
             lifeTime = value;
-            onLifeTimeChange?.Invoke(lifeTime / lifeTimeMax);   // 변경이 있을 때마다 신호를 보낸다.
             if(lifeTime <= 0.0f )
             {
+                lifeTime = 0.0f;
                 Die();      // 수명이 0보다 작거나 같으면 사망
             }
+            onLifeTimeChange?.Invoke(lifeTime / lifeTimeMax);   // 변경이 있을 때마다 신호를 보낸다.
         }
     }
 
