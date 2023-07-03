@@ -68,7 +68,15 @@ public class Player : MonoBehaviour
 
     readonly int isMoveHash = Animator.StringToHash("IsMove");  // "IsMove" 문자열을 숫자로 바꿔서 저장해놓기
 
+    /// <summary>
+    /// 플레이어가 살아있는지 여부
+    /// </summary>
     bool isAlive = true;
+
+    /// <summary>
+    /// 죽었다고 알리는 델리게이트. 파라메터는 죽은 당사자.
+    /// </summary>
+    public Action<Player> onDie;
 
     private void Awake()
     {        
@@ -262,6 +270,8 @@ public class Player : MonoBehaviour
             rigid.AddTorque(transform.up * 1.2f, ForceMode.Impulse);
 
             isAlive = false;
+
+            onDie?.Invoke(this);    // 자신이 죽었음을 알림
         }
     }
 
