@@ -58,10 +58,29 @@ public class Player : MonoBehaviour
     //[SerializeField] : private 맴버도 인스팩터 창에서 볼 수 있다.
     float jumpCooltime = 0.0f;
 
+    float JumpCoolTime
+    {
+        get => jumpCooltime;
+        set
+        {
+            jumpCooltime = value;
+            if( jumpCooltime < 0.0f ) 
+            {
+                jumpCooltime = 0.0f;
+            }
+            onJumpCoolTimeChange?.Invoke(jumpCooltime / jumpCooltimeMax);
+        }
+    }
+
     /// <summary>
     /// 쿨타임이 다됬는지 확인하는 프로퍼티
     /// </summary>
     bool IsJumpCoolEnd => (jumpCooltime <= 0.0f);
+
+    /// <summary>
+    /// 쿨타임에 변화가 있으면 실행되는 델리게이트
+    /// </summary>
+    Action<float> onJumpCoolTimeChange;
 
     // const int i = 10;   // const는 컴파일타임에 값이 결정되고 수정이 불가능하다.
     // readonly int j;     // readonly는 런타임에 값이 결정되고 그 이후로 수정이 불가능하다.
@@ -143,17 +162,26 @@ public class Player : MonoBehaviour
     {
         currentMoveSpeed = moveSpeed;
 
+        // 가상 스틱 UI 찾아서 플레이어와 연결하기
         VirtualStick stick = FindObjectOfType<VirtualStick>();
         if (stick != null)
         {
             stick.onMoveInput += (input) => SetInput(input, input != Vector2.zero);            
             //stick.onMoveInput += (input) => SetInput(input, input.sqrMagnitude < 0.01f);            
         }
+
+        // 가상 버튼 UI 찾아서 플레이어와 연결하기
+        VirtualButton button = FindObjectOfType<VirtualButton>();
+        if(button != null)
+        {
+            button.onClick += Jump;
+            onJumpCoolTimeChange += button.RefreshCoolTime;
+        }
     }
 
     private void Update()
     {
-        jumpCooltime -= Time.deltaTime;
+        JumpCoolTime -= Time.deltaTime;
     }
 
     private void FixedUpdate()
@@ -202,7 +230,7 @@ public class Player : MonoBehaviour
         if(!isJumping && IsJumpCoolEnd) // 점프중이 아니고 점프 쿨타임이 다 되었을 때만 점프
         {
             rigid.AddForce(jumpPower * Vector3.up, ForceMode.Impulse);  // 위로 힘을 가하고
-            jumpCooltime = jumpCooltimeMax; // 쿨타임 초기화
+            JumpCoolTime = jumpCooltimeMax; // 쿨타임 초기화
             isJumping = true;               // 점프 중이라고 표시
         }
     }
