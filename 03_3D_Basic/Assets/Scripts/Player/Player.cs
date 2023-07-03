@@ -126,11 +126,7 @@ public class Player : MonoBehaviour
     private void OnMoveInput(InputAction.CallbackContext context)
     {
         Vector2 input = context.ReadValue<Vector2>();       // 어떻게 입력이 들어왔는지 받기
-        rotateDir = input.x;
-        moveDir = input.y;
-        //Debug.Log(input);
-        
-        animator.SetBool(isMoveHash, !context.canceled);    // 키가 눌러졌는지 떨어졌는지에 따라 애니메이션 변경
+        SetInput(input, !context.canceled);
     }
 
     private void OnJumpInput(InputAction.CallbackContext _)
@@ -146,6 +142,13 @@ public class Player : MonoBehaviour
     private void Start()
     {
         currentMoveSpeed = moveSpeed;
+
+        VirtualStick stick = FindObjectOfType<VirtualStick>();
+        if (stick != null)
+        {
+            stick.onMoveInput += (input) => SetInput(input, input != Vector2.zero);            
+            //stick.onMoveInput += (input) => SetInput(input, input.sqrMagnitude < 0.01f);            
+        }
     }
 
     private void Update()
@@ -298,5 +301,13 @@ public class Player : MonoBehaviour
     public void RestoreMoveSpeed()
     {
         currentMoveSpeed = moveSpeed;
+    }
+
+    private void SetInput(Vector2 input, bool isMove)
+    {
+        rotateDir = input.x;
+        moveDir = input.y;
+
+        animator.SetBool(isMoveHash, isMove);    // 키가 눌러졌는지 떨어졌는지에 따라 애니메이션 변경
     }
 }

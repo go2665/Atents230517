@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,11 @@ public class VirtualStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoi
     /// </summary>
     float stickRange;
 
+    /// <summary>
+    /// 가상 스틱의 입력을 알리는 델리게이트
+    /// </summary>
+    public Action<Vector2> onMoveInput;
+
     void Awake()
     {
         containerRect = transform as RectTransform;
@@ -30,6 +36,10 @@ public class VirtualStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoi
         stickRange = (containerRect.rect.width - handleRect.rect.width) * 0.5f;
     }
 
+    /// <summary>
+    /// 드래그가 될 때 실행되는 함수
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnDrag(PointerEventData eventData)
     {
         // containerRect 안에서 eventData.position 위치가 containerRect 피봇에서
@@ -42,24 +52,37 @@ public class VirtualStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoi
 
         position = Vector2.ClampMagnitude(position, stickRange);    // 최대 영역 안벗어나게 만들기
 
-        handleRect.anchoredPosition = position; // 위치 적용
+        InputUpdate(position);        
     }
 
+    /// <summary>
+    /// 마우스가 떨어졌을 때 실행되는 함수
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnPointerUp(PointerEventData eventData)
     {
         Debug.Log($"Up : {eventData.position}");
-        handleRect.localPosition = Vector3.zero;
+        
+        InputUpdate(Vector2.zero);  // 스틱 중립으로 바꾸고 멈추라는 신호 보내기
     }
 
+    /// <summary>
+    /// 마우스가 눌러졌을 때 실행되는 함수
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnPointerDown(PointerEventData eventData)
     {
         //Debug.Log($"Down : {eventData.position}");        
         // 없으면 Up핸들러가 동작하지 않는다.
     }
 
+    /// <summary>
+    /// 입력에 따라 핸들 움직이고 신호 보내는 함수
+    /// </summary>
+    /// <param name="position">움직인 정도(스크린좌표로)</param>
     private void InputUpdate(Vector2 position)
-    {
-        // 델리게이트를 실행
-        // 플레이어는 이 델리게이트에 연결이 되어있으면 델리게이트 신호에 맞게 움직인다.
+    {        
+        handleRect.anchoredPosition = position;     // 위치 적용
+        onMoveInput?.Invoke(position/stickRange);   // 입력 신호 보내기( (-1,-1) ~ (1,1)로 변환해서 보냄 )
     }
 }
