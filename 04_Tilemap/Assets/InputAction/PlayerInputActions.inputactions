@@ -1,0 +1,151 @@
+{
+    "name": "PlayerInputActions",
+    "maps": [
+        {
+            "name": "Test",
+            "id": "bb0c023c-4e3c-48b2-b40c-d29338eedcee",
+            "actions": [
+                {
+                    "name": "Test1",
+                    "type": "Button",
+                    "id": "01997a77-306c-4583-a0d0-e7805d7835a3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Test2",
+                    "type": "Button",
+                    "id": "ec57a4f4-4684-4501-87c3-b8a044ac5adf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Test3",
+                    "type": "Button",
+                    "id": "e170d6a8-941f-4125-acb7-774a5782bc0c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Test4",
+                    "type": "Button",
+                    "id": "9be8a9ff-9f45-4af3-a505-6decd32bdd83",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Test5",
+                    "type": "Button",
+                    "id": "1010e832-5050-4879-9053-b118ae6dadc4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TestClick",
+                    "type": "Value",
+                    "id": "f6f7a2b5-e459-40b6-a6d5-b7b74615baad",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "0d49e9ff-d467-43ba-843e-3af73a25c900",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KM",
+                    "action": "Test1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "019531c7-a0fc-4259-9fbe-98739010cecf",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KM",
+                    "action": "Test2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f8a70095-21da-442f-a8d3-301b7375468d",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KM",
+                    "action": "Test3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4ab0924e-acfe-4661-9c6c-124cd41e92fa",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KM",
+                    "action": "Test4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9e241d1e-03e9-4250-85e7-32824620a526",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KM",
+                    "action": "Test5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c49a9760-cbfb-476e-a6ac-62ddd2b25120",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KM",
+                    "action": "TestClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "KM",
+            "bindingGroup": "KM",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}
