@@ -161,5 +161,3 @@ public class Player : MonoBehaviour
         isAttacking = false;
     }
 }
-
-// 2. 공격 쿨타임 추가
