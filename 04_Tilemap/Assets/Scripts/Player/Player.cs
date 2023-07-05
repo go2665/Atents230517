@@ -25,6 +25,26 @@ public class Player : MonoBehaviour
     bool isMove = false;
 
     /// <summary>
+    /// 현재 공격 중인지 아닌지 표시용
+    /// </summary>
+    bool isAttacking = false;
+
+    /// <summary>
+    /// 현재 남아있는 쿨타임. 0 이하일 때만 공격 가능
+    /// </summary>
+    float currentAttackCoolTime = 0.0f;
+
+    /// <summary>
+    /// 공격 쿨타임
+    /// </summary>
+    public float attackCoolTime = 1.0f;
+
+    /// <summary>
+    /// 쿨타임이 다 됬는지 확인하는 프로퍼티(코드 가독성을 위한 것)
+    /// </summary>
+    bool IsAttackReady => currentAttackCoolTime < 0;
+
+    /// <summary>
     /// 인풋 액션
     /// </summary>
     PlayerInputActions inputActions;
@@ -62,6 +82,11 @@ public class Player : MonoBehaviour
         inputActions.Player.Disable();
     }
 
+    private void Update()
+    {
+        currentAttackCoolTime -= Time.deltaTime;
+    }
+
     private void FixedUpdate()
     {
         // 이동 처리
@@ -76,9 +101,17 @@ public class Player : MonoBehaviour
     {
         Vector2 input = context.ReadValue<Vector2>();   // 입력 받고
 
-        inputDir = input;                               // 방향 기록하고
-        animator.SetFloat(InputX_Hash, inputDir.x);     // 애니메이터 파라메터 변경(블랜드 트리 조정)
-        animator.SetFloat(InputY_Hash, inputDir.y);
+        if(isAttacking)
+        {
+            oldInputDir = input;                        // 공격 중일 때는 백업에 입력 저장하기
+        }
+        else
+        {
+            // 공격 중이 아닐 때(일반적인 상황)
+            inputDir = input;                               // 방향 기록하고
+            animator.SetFloat(InputX_Hash, inputDir.x);     // 애니메이터 파라메터 변경(블랜드 트리 조정)
+            animator.SetFloat(InputY_Hash, inputDir.y);
+        }
 
         isMove = true;                                  // 이동 중이라고 표시
         animator.SetBool(IsMove_Hash, true);            // 이동 애니메이션 시작
@@ -102,9 +135,15 @@ public class Player : MonoBehaviour
     /// <param name="_"></param>
     private void OnAttack(UnityEngine.InputSystem.InputAction.CallbackContext _)
     {
-        animator.SetTrigger(Attack_Hash);   // 공격 애니메이션 시작
-        oldInputDir = inputDir;             // 이동 방향을 백업
-        inputDir = Vector2.zero;            // 이동 방향 zero로 설정
+        if( IsAttackReady )   // 쿨타임이 다됬는지 확인
+        {
+            isAttacking = true;
+            animator.SetTrigger(Attack_Hash);   // 공격 애니메이션 시작
+            oldInputDir = inputDir;             // 이동 방향을 백업
+            inputDir = Vector2.zero;            // 이동 방향 zero로 설정
+
+            currentAttackCoolTime = attackCoolTime; // 쿨타임 초기화
+        }
     }
 
     /// <summary>
@@ -114,7 +153,13 @@ public class Player : MonoBehaviour
     {
         if( isMove )                    // 여전히 이동 키를 누르고 있을 때만
         {
-            inputDir = oldInputDir;     // 이동 방향 복구
+            inputDir = oldInputDir;                     // 이동 방향 복구
+            animator.SetFloat(InputX_Hash, inputDir.x); // 캐릭터 방향 조정(보이는 방향)
+            animator.SetFloat(InputY_Hash, inputDir.y);
         }
+
+        isAttacking = false;
     }
 }
+
+// 2. 공격 쿨타임 추가
