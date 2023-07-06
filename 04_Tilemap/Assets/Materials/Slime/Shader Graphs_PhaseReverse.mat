@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_Innerline
-  m_Shader: {fileID: -6465566751694194690, guid: a9bb5ac5c2143b64b9faacaa59b47c65, type: 3}
+  m_Name: Shader Graphs_PhaseReverse
+  m_Shader: {fileID: -6465566751694194690, guid: 401d1a284c596294c83fad37709f5a77, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -38,7 +38,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Thickness: 0.0076
+    - _Split: 0
+    - _Thickness: 0.1
     m_Colors:
-    - _Color: {r: 0, g: 0.047551893, b: 4.5412054, a: 0}
+    - _Color: {r: 0, g: 2.368628, b: 4, a: 0}
   m_BuildTextureStacks: []

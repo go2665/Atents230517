@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_Innerline
-  m_Shader: {fileID: -6465566751694194690, guid: a9bb5ac5c2143b64b9faacaa59b47c65, type: 3}
+  m_Name: Shader Graphs_Dissolve
+  m_Shader: {fileID: -6465566751694194690, guid: 4f550469bddcf7c469c2d32f67336b55, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -38,7 +38,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Thickness: 0.0076
+    - _Fade: 0.597
+    - _Scale: 40
     m_Colors:
-    - _Color: {r: 0, g: 0.047551893, b: 4.5412054, a: 0}
+    - _Color: {r: 4, g: 0.142062, b: 0, a: 0}
   m_BuildTextureStacks: []
