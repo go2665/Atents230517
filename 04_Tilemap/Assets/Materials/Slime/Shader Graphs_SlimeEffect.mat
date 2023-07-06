@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_Innerline
-  m_Shader: {fileID: -6465566751694194690, guid: a9bb5ac5c2143b64b9faacaa59b47c65, type: 3}
+  m_Name: Shader Graphs_SlimeEffect
+  m_Shader: {fileID: -6465566751694194690, guid: 1f0170bb44302c844950c3090dd98b1d, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -38,7 +38,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Thickness: 0.03
+    - _DissolveFade: 1
+    - _DissolveScale: 40
+    - _OutlineThickness: 0
+    - _PhaseSplit: 0
+    - _PhaseThickness: 0.1
     m_Colors:
-    - _Color: {r: 0, g: 0.047551893, b: 4.5412054, a: 0}
+    - _DissolveColor: {r: 4, g: 0.3378111, b: 0, a: 0}
+    - _OutlineColor: {r: 4, g: 0, b: 0, a: 0}
+    - _PhaseColor: {r: 0, g: 3.733333, b: 4, a: 0}
   m_BuildTextureStacks: []
