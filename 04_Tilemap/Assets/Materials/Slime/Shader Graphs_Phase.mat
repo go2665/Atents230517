@@ -38,7 +38,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Split: 1
+    - _Split: 0.484
     - _Thickness: 0.1
     m_Colors:
     - _Color: {r: 0, g: 2.368628, b: 4, a: 0}
