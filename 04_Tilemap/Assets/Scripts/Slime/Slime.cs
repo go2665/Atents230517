@@ -121,6 +121,12 @@ public class Slime : PooledObject
         mainMaterial.SetFloat(DissolveFade, 0.0f);
     }
 
+    public void Die()
+    {
+        // 디졸브 실행
+        // 디졸브 실행이 완료되면 오브젝트 비활성화해서 풀로 되돌리기
+    }
+
 
     /// <summary>
     /// 테스트용 코드

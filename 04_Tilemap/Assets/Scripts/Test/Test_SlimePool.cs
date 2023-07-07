@@ -26,5 +26,8 @@ public class Test_SlimePool : TestBase
             obj.SetActive( false );
         }
     }
-
 }
+
+// 실습
+// 1. 슬라임이 풀에서 나올 때 셰이더 프로퍼티가 초기화되고 페이즈가 실행된다.
+// 2. 슬라임의 Die 함수 구현하기
