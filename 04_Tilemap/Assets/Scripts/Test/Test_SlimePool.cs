@@ -30,4 +30,3 @@ public class Test_SlimePool : TestBase
     }
 }
 
-// 2. 슬라임의 Die 함수 구현하기

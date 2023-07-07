@@ -49,9 +49,24 @@ public class Player : MonoBehaviour
     /// </summary>
     PlayerInputActions inputActions;
 
+    /// <summary>
+    /// 공격이 현재 유효한지 표시하는 변수(true면 공격이 유효, false면 유효하지 않음)
+    /// </summary>
+    bool isAttackValid = false;
+
+    /// <summary>
+    /// 플레이어의 공격 범위안에 들어와 있는 모든 슬라임
+    /// </summary>
+    List<Slime> attackTargetList;
+
+    /// <summary>
+    /// 공격 영역의 회전 중심 축
+    /// </summary>
+    Transform attackSensorAxis;
+
     // 컴포넌트들    
     Animator animator;
-    Rigidbody2D rigid;
+    Rigidbody2D rigid;    
 
     // 애니메이터 파라메터 해쉬들
     readonly int InputX_Hash = Animator.StringToHash("InputX");
@@ -64,6 +79,28 @@ public class Player : MonoBehaviour
         inputActions = new PlayerInputActions();
         animator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
+
+        attackSensorAxis = transform.GetChild(0);
+
+        attackTargetList = new List<Slime>(4);
+        AttackSensor sensor = attackSensorAxis.GetComponentInChildren<AttackSensor>();
+        sensor.onEnemyEnter += (slime) =>
+        {
+            if(isAttackValid)
+            {
+                slime.Die();
+            }
+            else
+            {
+                attackTargetList.Add(slime);
+                slime.ShowOutline();
+            }
+        };
+        sensor.onEnemyExit += (slime) =>
+        {
+            attackTargetList.Remove(slime);
+            slime.ShowOutline(false);
+        };
     }
 
     private void OnEnable()
@@ -111,6 +148,8 @@ public class Player : MonoBehaviour
             inputDir = input;                               // 방향 기록하고
             animator.SetFloat(InputX_Hash, inputDir.x);     // 애니메이터 파라메터 변경(블랜드 트리 조정)
             animator.SetFloat(InputY_Hash, inputDir.y);
+
+            AttackSensorRotate(inputDir);
         }
 
         isMove = true;                                  // 이동 중이라고 표시
@@ -156,8 +195,42 @@ public class Player : MonoBehaviour
             inputDir = oldInputDir;                     // 이동 방향 복구
             animator.SetFloat(InputX_Hash, inputDir.x); // 캐릭터 방향 조정(보이는 방향)
             animator.SetFloat(InputY_Hash, inputDir.y);
+
+            AttackSensorRotate(inputDir);
         }
 
         isAttacking = false;
+    }
+
+    /// <summary>
+    /// 공격 애니메이션 중에 공격이 유효하기 시작하면 실행
+    /// </summary>
+    public void AttackValid()
+    {
+        isAttackValid = true;
+
+        foreach(var slime in attackTargetList)
+        {
+            slime.Die();
+        }
+        attackTargetList.Clear();
+    }
+
+    /// <summary>
+    /// 공격 애니메이션 중에 공격이 유효하지 않게 되면 실행
+    /// </summary>
+    public void AttackNotValid()
+    {
+        isAttackValid = false;
+    }
+
+    void AttackSensorRotate(Vector2 dir)
+    {
+        // 4방향 구분하기
+        // 대각선일 경우 위 아래로 처리하기
+
+
+
+        attackSensorAxis.rotation = Quaternion.identity;
     }
 }
