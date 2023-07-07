@@ -227,10 +227,27 @@ public class Player : MonoBehaviour
     void AttackSensorRotate(Vector2 dir)
     {
         // 4방향 구분하기
-        // 대각선일 경우 위 아래로 처리하기
+        // 대각선일 경우 위 아래를 우선하기
 
-
-
-        attackSensorAxis.rotation = Quaternion.identity;
+        if( dir.y < 0 )
+        {
+            attackSensorAxis.rotation = Quaternion.identity;
+        }
+        else if( dir.y > 0)
+        {
+            attackSensorAxis.rotation = Quaternion.Euler(0, 0, 180.0f);
+        }
+        else if( dir.x > 0 )
+        {
+            attackSensorAxis.rotation = Quaternion.Euler(0, 0, 90.0f);
+        }
+        else if( dir.x < 0 )
+        {
+            attackSensorAxis.rotation = Quaternion.Euler(0, 0, -90.0f);
+        }
+        else
+        {
+            attackSensorAxis.rotation = Quaternion.identity;
+        }
     }
 }
