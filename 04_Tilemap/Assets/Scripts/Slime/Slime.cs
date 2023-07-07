@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,9 +19,19 @@ public class Slime : PooledObject
     public float phaseDuration = 0.5f;
 
     /// <summary>
+    /// 페이즈가 끝났음을 알리는 델리게이트
+    /// </summary>
+    Action onPhaseEnd;
+
+    /// <summary>
     /// 디졸브가 진행되는 시간
     /// </summary>
     public float dissolveDuration = 1.0f;
+
+    /// <summary>
+    /// 디졸브가 끝났음을 알리는 델리게이트
+    /// </summary>
+    Action onDissolveEnd;
 
     // 컴포넌트들
     SpriteRenderer spriteRenderer;
@@ -47,6 +58,14 @@ public class Slime : PooledObject
         // 랜더러와 머티리얼 미리 찾아놓기
         spriteRenderer = GetComponent<SpriteRenderer>();
         mainMaterial = spriteRenderer.material;
+
+        onDissolveEnd += ReturnToPool;
+    }
+
+    private void OnEnable()
+    {
+        ResetShaderProperty();
+        StartCoroutine(StartPhase());
     }
 
     /// <summary>
@@ -82,6 +101,8 @@ public class Slime : PooledObject
         // 페이즈가 끝난 상황
         mainMaterial.SetFloat(PhaseThickness, 0.0f);    // 페이즈 선 안보이게 두께 조절
         mainMaterial.SetFloat(PhaseSplit, 0.0f);        // 혹시 -값이 들어갈 수도 있어서 만약을 대비해 0으로 초기화 
+
+        onPhaseEnd?.Invoke();
     }
 
     /// <summary>
@@ -119,12 +140,24 @@ public class Slime : PooledObject
             yield return null;
         }
         mainMaterial.SetFloat(DissolveFade, 0.0f);
+
+        onDissolveEnd?.Invoke();
     }
 
+    /// <summary>
+    /// 슬라임이 죽을 때 실행되는 함수
+    /// </summary>
     public void Die()
+    {        
+        StartCoroutine(StartDissolve());    // 디졸브 이팩트 실행
+    }
+
+    /// <summary>
+    /// 디졸브가 끝났을 때 호출될 함수(디졸브가 끝났을 때 실행되는 델리게이트에 연결되어 있음)
+    /// </summary>
+    void ReturnToPool()
     {
-        // 디졸브 실행
-        // 디졸브 실행이 완료되면 오브젝트 비활성화해서 풀로 되돌리기
+        gameObject.SetActive(false);
     }
 
 

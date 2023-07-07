@@ -23,11 +23,11 @@ public class Test_SlimePool : TestBase
         {
             GameObject obj = slimeList[0];
             slimeList.RemoveAt(0);
-            obj.SetActive( false );
+
+            Slime slime = obj.GetComponent<Slime>();
+            slime.Die();
         }
     }
 }
 
-// 실습
-// 1. 슬라임이 풀에서 나올 때 셰이더 프로퍼티가 초기화되고 페이즈가 실행된다.
 // 2. 슬라임의 Die 함수 구현하기
