@@ -4,20 +4,20 @@ using UnityEngine;
 
 public enum PoolObjectType
 {
-    Bullet = 0,       // 총알
+    Slime = 0,       // 총알
 }
 
 public class Factory : Singleton<Factory>
 {    
-    //BulletPool bulletPool;
+    SlimePool slimePool;
 
     protected override void OnInitialize()
     {
         base.OnInitialize();
 
-        //bulletPool = GetComponentInChildren<BulletPool>();
+        slimePool = GetComponentInChildren<SlimePool>();
 
-        //bulletPool?.Initialize();
+        slimePool?.Initialize();
     }
 
     /// <summary>
@@ -30,8 +30,8 @@ public class Factory : Singleton<Factory>
         GameObject result = null;
         switch (type)
         {
-            case PoolObjectType.Bullet:
-                //result = bulletPool?.GetObject(spawn)?.gameObject;                
+            case PoolObjectType.Slime:
+                result = slimePool?.GetObject(spawn)?.gameObject;                
                 break;
             default:
                 result = new GameObject();

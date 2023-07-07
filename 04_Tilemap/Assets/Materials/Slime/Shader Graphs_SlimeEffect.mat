@@ -40,9 +40,9 @@ Material:
     m_Floats:
     - _DissolveFade: 1
     - _DissolveScale: 40
-    - _OutlineThickness: 0
+    - _OutlineThickness: 0.005
     - _PhaseSplit: 0
-    - _PhaseThickness: 0.1
+    - _PhaseThickness: 0
     m_Colors:
     - _DissolveColor: {r: 4, g: 0.3378111, b: 0, a: 0}
     - _OutlineColor: {r: 4, g: 0, b: 0, a: 0}
