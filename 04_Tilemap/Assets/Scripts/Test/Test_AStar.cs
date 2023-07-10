@@ -10,10 +10,21 @@ public class Test_AStar : TestBase
 
     private void Start()
     {
-        GridMap grid = new GridMap(3, 3);
-        int i = 0;
+        GridMap map = new GridMap(4, 3);
+        Node node = map.GetNode(1, 0);
+        node.nodeType = Node.NodeType.Wall;
+        node = map.GetNode(2, 2);
+        node.nodeType = Node.NodeType.Wall;
 
-        //AStar a = new AStar();
+        List<Vector2Int> path = AStar.PathFind(map, new Vector2Int(0,0), new Vector2Int(3,2));
+
+        string pathStr = "Path : ";
+        foreach(var pos in path)
+        {
+            pathStr += $" ({pos.x}, {pos.y}) ->";
+        }
+        pathStr += "끝";
+        Debug.Log(pathStr);
     }
 
     private void Test_Node()

@@ -137,7 +137,28 @@ public class GridMap
         return IsValidPosition(gridPos.x, gridPos.y);
     }
 
-    // public bool IsWall();
+    /// <summary>
+    /// 입력 받은 위치가 벽인지 아닌지 확인하는 함수
+    /// </summary>
+    /// <param name="x">x 위치</param>
+    /// <param name="y">y 위치</param>
+    /// <returns>true면 벽, 아니면 false</returns>
+    public bool IsWall(int x, int y)
+    {
+        Node node = GetNode(x, y);
+        return node != null && node.nodeType == Node.NodeType.Wall;
+    }
+
+    /// <summary>
+    /// 입력 받은 위치가 벽인지 아닌지 확인하는 함수
+    /// </summary>
+    /// <param name="gridPos">위치</param>
+    /// <returns>true면 벽, 아니면 false</returns>
+    public bool IsWall(Vector2Int gridPos)
+    {
+        return IsWall(gridPos.x, gridPos.y);
+    }
+
     // public bool IsMonster();
 
 }
