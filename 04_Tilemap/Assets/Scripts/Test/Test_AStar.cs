@@ -10,7 +10,13 @@ public class Test_AStar : TestBase
 
     private void Start()
     {
-        list.Clear();   
+        GridMap grid = new GridMap(3, 3);
+        int i = 0;
+    }
+
+    private void Test_Node()
+    {
+        list.Clear();
         list.Add(10);
         list.Add(40);
         list.Add(30);
@@ -42,7 +48,7 @@ public class Test_AStar : TestBase
 
         i = 20;
 
-        Vector2Int dest = new Vector2Int(3,5);
+        Vector2Int dest = new Vector2Int(3, 5);
         Node destNode = new Node(5, 2);
         if (destNode == dest)
             Debug.Log("같다");
@@ -60,12 +66,12 @@ public class Test_AStar : TestBase
 
     protected override void Test1(InputAction.CallbackContext context)
     {
-        PrintList(list);
+        //PrintList(list);
     }
 
     protected override void Test2(InputAction.CallbackContext context)
     {
-        list.Sort();
+        //list.Sort();
     }
 
     protected override void Test3(InputAction.CallbackContext context)
