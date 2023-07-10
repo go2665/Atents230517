@@ -74,7 +74,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""TestClick"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""f6f7a2b5-e459-40b6-a6d5-b7b74615baad"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",

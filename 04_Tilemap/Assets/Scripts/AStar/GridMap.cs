@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using static UnityEngine.UI.Image;
 
 // 그리드 1칸 = 1
 
@@ -22,10 +24,15 @@ public class GridMap
     /// </summary>
     int height;
 
-    ///// <summary>
-    ///// 맵 원점
-    ///// </summary>
-    //Vector2Int origin;
+    /// <summary>
+    /// 맵 원점
+    /// </summary>
+    Vector2Int origin = Vector2Int.zero;
+
+    /// <summary>
+    /// 맵을 만드는데 사용한 배경 타일맵(크기 확인 및 계산용)
+    /// </summary>
+    Tilemap background;
 
     /// <summary>
     /// index가 잘못됬다는 것을 표시하는 상수
@@ -55,6 +62,51 @@ public class GridMap
                 //}
             }
         }
+    }
+
+    /// <summary>
+    /// 타일맵을 이용해 그리드맵을 생성하는 생성자
+    /// </summary>
+    /// <param name="background">전체 크기를 나타낼 타일맵</param>
+    /// <param name="obstacle">못가는 지역을 표시하는 타일맵</param>
+    public GridMap(Tilemap background, Tilemap obstacle)
+    {
+        //backgroud.size.x;     // background의 가로에 셀이 몇개 들어있다.
+        //backgroud.size.y;     // background의 세로에 셀이 몇개 들어있다.
+        //backgroud.origin;     // background의 왼쪽 아래 셀의 위치가 (,)이다.
+        //backgroud.cellBounds.xMin;    // background의 가장 왼쪽 x좌표
+        //backgroud.cellBounds.xMax;    // background의 가장 오른쪽 x좌표
+        //backgroud.cellBounds.yMin;    // background의 가장 아래쪽 y좌표
+        //backgroud.cellBounds.yMax;    // background의 가장 위쪽 y좌표
+        //obstacle.GetTile() // 결과가 null이 아니면 벽
+
+        width = background.size.x;  // 가로 크기 저장
+        height = background.size.y; // 세로 크기 저장
+
+        origin = (Vector2Int)background.origin; // 원점 위치 기록
+
+        nodes = new Node[width * height];   // 가로세로 크기에 맞게 노드 생성
+
+        // for문이 너무 길어져서 미리 변수로 뽑아놓은 것
+        Vector2Int min = new(background.cellBounds.xMin, background.cellBounds.yMin);
+        Vector2Int max = new(background.cellBounds.xMax, background.cellBounds.yMax);
+
+        for (int y = min.y; y < max.y; y++)
+        {
+            for (int x = min.x; x < max.x; x++)
+            {
+                GridToIndex(x, y, out int index);           // 인덱스 구하기
+                TileBase tile = obstacle.GetTile(new(x, y));
+                Node.NodeType tileType = Node.NodeType.Plain;
+                if( tile != null)
+                {
+                    tileType = Node.NodeType.Wall;          // 장애물 타일이 있으면 벽으로 표시
+                }
+                nodes[index] = new Node(x, y, tileType);    // 노드 생성 후 배열에 저장
+            }
+        }
+
+        this.background = background;   // 월드 좌표 계산에 필요해서 저장
     }
 
     /// <summary>
@@ -104,12 +156,13 @@ public class GridMap
     bool GridToIndex(int x, int y, out int index)
     {
         // 왼쪽 아래가 (0,0)으로 가정하고 작성
+        // index = x + (height - 1 - y) * width;
 
         bool result = false;
         index = Error_Not_Valid_Position;
         if( IsValidPosition(x,y) )                  // 적절한 위치인지 판단
         {
-            index = x + (height - 1 - y) * width;   // 변환작업
+            index = (x - origin.x) + (height - 1 - (y - origin.y)) * width;   // 변환작업
             result = true;
         }
 
@@ -124,7 +177,7 @@ public class GridMap
     /// <returns>true면 맵 안, false면 맵 바깥</returns>
     public bool IsValidPosition(int x, int y)
     {
-        return x < width && y < height && x >= 0 && y >= 0;
+        return x < (width + origin.x) && y < (height + origin.y) && x >= origin.x && y >= origin.y;
     }
 
     /// <summary>
@@ -160,5 +213,35 @@ public class GridMap
     }
 
     // public bool IsMonster();
+
+    /// <summary>
+    /// 월드 좌표를 그리드 좌표로 변경하는 함수
+    /// </summary>
+    /// <param name="worldPos">월드 좌표</param>
+    /// <returns>월드 좌표가 변경된 그리드 좌표</returns>
+    public Vector2Int WorldToGrid(Vector3 worldPos)
+    {
+        if( background != null )
+        {
+            return (Vector2Int)background.WorldToCell(worldPos);    // 타일맵이 있으면 타일맵이 제공하는 함수 사용
+        }
+
+        return new Vector2Int((int)worldPos.x, (int)worldPos.y);    // (0,0)을 기준으로 계산
+    }
+
+    /// <summary>
+    /// 그리드 좌표를 월드 좌표로 변경하는 함수
+    /// </summary>
+    /// <param name="gridPos">그리드 좌표</param>
+    /// <returns>그리드 좌표가 변경된 월드 좌표</returns>
+    public Vector2 GridToWorld(Vector2Int gridPos)
+    {
+        if( background != null )
+        {
+            return background.CellToWorld((Vector3Int)gridPos) + new Vector3(0.5f,0.5f);
+        }
+
+        return new Vector2(gridPos.x + 0.5f, gridPos.y + 0.5f);
+    }
 
 }

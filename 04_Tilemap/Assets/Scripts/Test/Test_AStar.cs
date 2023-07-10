@@ -2,13 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 public class Test_AStar : TestBase
 {
+    public Tilemap background;
+    public Tilemap obstacle;
+    GridMap map;
+
     List<int> list = new List<int>();
     List<Node> listNode = new List<Node>();
 
     private void Start()
+    {
+        map = new GridMap(background, obstacle);
+    }
+
+    protected override void TestClick(InputAction.CallbackContext context)
+    {
+        Vector2 screenPos = Mouse.current.position.ReadValue();
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+        Vector2Int gridPos = map.WorldToGrid(worldPos);
+        Debug.Log(gridPos);
+    }
+
+    private void Test_PathFind()
     {
         GridMap map = new GridMap(4, 3);
         Node node = map.GetNode(1, 0);
@@ -16,10 +34,10 @@ public class Test_AStar : TestBase
         node = map.GetNode(2, 2);
         node.nodeType = Node.NodeType.Wall;
 
-        List<Vector2Int> path = AStar.PathFind(map, new Vector2Int(0,0), new Vector2Int(3,2));
+        List<Vector2Int> path = AStar.PathFind(map, new Vector2Int(0, 0), new Vector2Int(3, 2));
 
         string pathStr = "Path : ";
-        foreach(var pos in path)
+        foreach (var pos in path)
         {
             pathStr += $" ({pos.x}, {pos.y}) ->";
         }
@@ -77,9 +95,12 @@ public class Test_AStar : TestBase
         Debug.Log(str +"End");
     }
 
+    public int x = 0;
+    public int y = 0;
+
     protected override void Test1(InputAction.CallbackContext context)
     {
-        //PrintList(list);
+        Debug.Log(map.GridToWorld(new(x, y)));
     }
 
     protected override void Test2(InputAction.CallbackContext context)
