@@ -122,7 +122,7 @@ public class GridMap
     /// <param name="x">그리드맵상의 x위치</param>
     /// <param name="y">그리드맵상의 y위치</param>
     /// <returns>true면 맵 안, false면 맵 바깥</returns>
-    private bool IsValidPosition(int x, int y)
+    public bool IsValidPosition(int x, int y)
     {
         return x < width && y < height && x >= 0 && y >= 0;
     }
@@ -132,7 +132,7 @@ public class GridMap
     /// </summary>
     /// <param name="gridPos">그리드맵상의 위치</param>
     /// <returns>true면 맵 안, false면 맵 바깥</returns>
-    private bool IsValidPosition(Vector2Int gridPos)
+    public bool IsValidPosition(Vector2Int gridPos)
     {
         return IsValidPosition(gridPos.x, gridPos.y);
     }

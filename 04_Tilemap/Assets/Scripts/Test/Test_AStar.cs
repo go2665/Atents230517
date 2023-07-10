@@ -12,6 +12,8 @@ public class Test_AStar : TestBase
     {
         GridMap grid = new GridMap(3, 3);
         int i = 0;
+
+        //AStar a = new AStar();
     }
 
     private void Test_Node()
