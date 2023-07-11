@@ -239,6 +239,23 @@ public class GridMap
     }
 
     /// <summary>
+    /// 스폰 가능한 위치인지 확인하는 함수(이동 가능한 지역이 늘어날 것을 대비해서 작성)
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    public bool IsSpawnable(int x, int y)
+    {
+        Node node = GetNode(x, y);
+        return node != null && node.nodeType == Node.NodeType.Plain;
+    }
+
+    public bool IsSpawnable(Vector2Int gridPos)
+    {
+        return IsSpawnable(gridPos.x, gridPos.y);
+    }
+
+    /// <summary>
     /// 월드 좌표를 그리드 좌표로 변경하는 함수
     /// </summary>
     /// <param name="worldPos">월드 좌표</param>
