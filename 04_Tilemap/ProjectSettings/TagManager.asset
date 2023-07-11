@@ -53,12 +53,15 @@ TagManager:
   - name: Object
     uniqueID: 99966395
     locked: 0
+  - name: DebugInfo
+    uniqueID: 1966497813
+    locked: 0
   - name: Smlie
     uniqueID: 1786978803
     locked: 0
-  - name: Effect
-    uniqueID: 3056814885
-    locked: 0
   - name: Player
     uniqueID: 1479440219
+    locked: 0
+  - name: Effect
+    uniqueID: 3056814885
     locked: 0

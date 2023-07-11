@@ -33,9 +33,39 @@ public class Slime : PooledObject
     /// </summary>
     Action onDissolveEnd;
 
+    /// <summary>
+    /// 슬라임의 이동 속도
+    /// </summary>
+    public float moveSpeed = 2.0f;
+
+    /// <summary>
+    /// 이 슬라임이 있는 그리드 맵
+    /// </summary>
+    GridMap map;
+
+    /// <summary>
+    /// 슬라임이 이동할 경로
+    /// </summary>
+    List<Vector2Int> path = new List<Vector2Int>();
+
+    /// <summary>
+    /// 슬라임이 이동할 경로를 그리는 클래스
+    /// </summary>
+    PathLine pathline;
+
+    /// <summary>
+    /// PathLine 읽기 전용 프로퍼티
+    /// </summary>
+    public PathLine PathLine => pathline;
+
+    /// <summary>
+    /// 슬라임의 그리드 좌표 확인용 프로퍼티
+    /// </summary>
+    Vector2Int GridPosition => map.WorldToGrid(transform.position);
+
     // 컴포넌트들
     SpriteRenderer spriteRenderer;
-    Material mainMaterial;
+    Material mainMaterial;    
 
     /// <summary>
     /// 아웃라인이 보일때 설정할 두께
@@ -60,12 +90,54 @@ public class Slime : PooledObject
         mainMaterial = spriteRenderer.material;
 
         onDissolveEnd += ReturnToPool;
+
+        pathline = GetComponentInChildren<PathLine>();
     }
 
     private void OnEnable()
     {
         ResetShaderProperty();
         StartCoroutine(StartPhase());
+    }
+
+    protected override void OnDisable()
+    {
+        path.Clear();
+        PathLine.ClearPath();
+     
+        base.OnDisable();
+    }
+
+    private void Update()
+    {
+        if( path != null && path.Count > 0 )
+        {
+            Vector2Int destGrid = path[0];
+
+            Vector3 dest = map.GridToWorld(destGrid);
+            Vector3 dir = dest - transform.position;
+
+            if( dir.sqrMagnitude < 0.001f )
+            {
+                transform.position = dest;
+                path.RemoveAt(0);
+            }
+            else
+            {
+                transform.Translate(Time.deltaTime * moveSpeed * dir.normalized);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 슬라임 초기화용 함수
+    /// </summary>
+    /// <param name="gridMap">슬라임이 있는 맵</param>
+    /// <param name="pos">시작 위치(월드좌표)</param>
+    public void Initialize(GridMap gridMap, Vector3 pos)
+    {
+        map = gridMap;
+        transform.position = map.GridToWorld(map.WorldToGrid(pos));
     }
 
     /// <summary>
@@ -158,6 +230,16 @@ public class Slime : PooledObject
     void ReturnToPool()
     {
         gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// 슬라임의 목적지를 설정하는 함수
+    /// </summary>
+    /// <param name="destination">목적지</param>
+    public void SetDestination(Vector2Int destination)
+    {
+        path = AStar.PathFind(map, GridPosition, destination);
+        PathLine.DrawPath(map, path);
     }
 
 

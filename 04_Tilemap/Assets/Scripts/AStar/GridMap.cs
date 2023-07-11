@@ -212,7 +212,16 @@ public class GridMap
         return IsWall(gridPos.x, gridPos.y);
     }
 
-    // public bool IsMonster();
+    public bool IsMonster(int x, int y)
+    {
+        Node node = GetNode(x, y);
+        return node != null && node.nodeType == Node.NodeType.Monster;
+    }
+
+    public bool IsMonster(Vector2Int gridPos)
+    {
+        return IsMonster(gridPos.x, gridPos.y);
+    }
 
     /// <summary>
     /// 월드 좌표를 그리드 좌표로 변경하는 함수

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
@@ -37,12 +38,15 @@ public class Test_AStar : TestBase
 
     protected override void TestClick(InputAction.CallbackContext _)
     {
+        // 왼쪽 클릭하면 start 변수에 해당 그리드 좌표 설정
         Vector2 screenPos = Mouse.current.position.ReadValue();
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
         Vector2Int gridPos = map.WorldToGrid(worldPos);
-        Debug.Log(gridPos);
 
-        // 왼쪽 클릭하면 start 변수에 해당 그리드 좌표 설정
+        if( map.IsValidPosition(gridPos) && !map.IsWall(gridPos) && !map.IsMonster(gridPos) ) 
+        { 
+            start = gridPos;
+        }
     }
 
     private void TestRClick(InputAction.CallbackContext _)
@@ -50,6 +54,18 @@ public class Test_AStar : TestBase
         // 우클릭하면 end변수에 해당 그리드 좌표 설정
         // A* 알고리즘으로 경로 찾고
         // PathLine으로 표시하기
+
+        Vector2 screenPos = Mouse.current.position.ReadValue();
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+        Vector2Int gridPos = map.WorldToGrid(worldPos);
+
+        if (map.IsValidPosition(gridPos) && !map.IsWall(gridPos) && !map.IsMonster(gridPos))
+        {
+            end = gridPos;
+
+            List<Vector2Int> path = AStar.PathFind(map, start, end);            
+            pathline.DrawPath(map, path);
+        }
     }
 
     private void Test_PathFind()
