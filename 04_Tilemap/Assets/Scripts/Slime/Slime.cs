@@ -140,16 +140,17 @@ public class Slime : PooledObject
 
     private void Update()
     {
-        if( isActivate )
+        if( isActivate )    // 활성화 되어 있을 때만 이동
         {
             if( path.Count > 0 )
             {
+                // 경로가 남아있을 경우
                 Vector2Int destGrid = path[0];
 
                 Vector3 dest = map.GridToWorld(destGrid);
                 Vector3 dir = dest - transform.position;
 
-                if( dir.sqrMagnitude < 0.001f )
+                if( dir.sqrMagnitude < 0.001f ) // 중간 지점에 도착했는지 확인
                 {
                     transform.position = dest;
                     path.RemoveAt(0);
@@ -161,7 +162,8 @@ public class Slime : PooledObject
             }
             else
             {
-                onGoalArrive();
+                // 경로가 남아있지 않은 경우
+                onGoalArrive();     // 도착했다고 알림
             }
         }
     }
