@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class Slime : PooledObject
@@ -63,6 +64,16 @@ public class Slime : PooledObject
     /// </summary>
     Vector2Int GridPosition => map.WorldToGrid(transform.position);
 
+    /// <summary>
+    /// 목적지에 도착했음을 알리는 델리게이트
+    /// </summary>
+    Action onGoalArrive;
+
+    /// <summary>
+    /// 슬라임이 활동 중인지 아닌지 표시용
+    /// </summary>
+    bool isActivate = false;
+
     // 컴포넌트들
     SpriteRenderer spriteRenderer;
     Material mainMaterial;    
@@ -89,13 +100,31 @@ public class Slime : PooledObject
         spriteRenderer = GetComponent<SpriteRenderer>();
         mainMaterial = spriteRenderer.material;
 
+        pathline = GetComponentInChildren<PathLine>();
+
+        onPhaseEnd += () =>
+        {
+            isActivate = true;
+        };
+
         onDissolveEnd += ReturnToPool;
 
-        pathline = GetComponentInChildren<PathLine>();
+        onGoalArrive = () =>
+        {
+            Vector2Int pos;
+            do
+            {
+                pos = map.GetRandomMovablePosition();
+            } while (pos == GridPosition);
+
+            SetDestination(pos);
+        };
     }
 
     private void OnEnable()
     {
+        isActivate = false;
+        path = new List<Vector2Int>();
         ResetShaderProperty();
         StartCoroutine(StartPhase());
     }
@@ -103,6 +132,7 @@ public class Slime : PooledObject
     protected override void OnDisable()
     {
         path.Clear();
+        path = null;
         PathLine.ClearPath();
      
         base.OnDisable();
@@ -110,21 +140,28 @@ public class Slime : PooledObject
 
     private void Update()
     {
-        if( path != null && path.Count > 0 )
+        if( isActivate )
         {
-            Vector2Int destGrid = path[0];
-
-            Vector3 dest = map.GridToWorld(destGrid);
-            Vector3 dir = dest - transform.position;
-
-            if( dir.sqrMagnitude < 0.001f )
+            if( path.Count > 0 )
             {
-                transform.position = dest;
-                path.RemoveAt(0);
+                Vector2Int destGrid = path[0];
+
+                Vector3 dest = map.GridToWorld(destGrid);
+                Vector3 dir = dest - transform.position;
+
+                if( dir.sqrMagnitude < 0.001f )
+                {
+                    transform.position = dest;
+                    path.RemoveAt(0);
+                }
+                else
+                {
+                    transform.Translate(Time.deltaTime * moveSpeed * dir.normalized);
+                }
             }
             else
             {
-                transform.Translate(Time.deltaTime * moveSpeed * dir.normalized);
+                onGoalArrive();
             }
         }
     }
@@ -220,7 +257,8 @@ public class Slime : PooledObject
     /// 슬라임이 죽을 때 실행되는 함수
     /// </summary>
     public void Die()
-    {        
+    {
+        isActivate = false;
         StartCoroutine(StartDissolve());    // 디졸브 이팩트 실행
     }
 

@@ -40,6 +40,11 @@ public class GridMap
     const int Error_Not_Valid_Position = -1;
 
     /// <summary>
+    /// 이동 가능한 지역(평지)의 위치 모음
+    /// </summary>
+    Vector2Int[] movablePositions;
+
+    /// <summary>
     /// GridMap 생성자
     /// </summary>
     /// <param name="width">그리드맵의 가로 길이</param>
@@ -50,8 +55,10 @@ public class GridMap
         this.height = height;
 
         nodes = new Node[width * height];   // 가로세로 크기에 맞게 노드 생성
-
-        for(int y = 0; y < height; y++)
+        
+        movablePositions = new Vector2Int[width * height];
+        
+        for (int y = 0; y < height; y++)
         {
             for(int x = 0; x < width; x++)
             {
@@ -59,6 +66,7 @@ public class GridMap
                 //{
                     GridToIndex(x, y, out int index);   // x,y의 범위를 확인할 필요가 없기에 if는 생략
                     nodes[index] = new Node(x, y);      // 인덱스에 맞게 노드 저장
+                    movablePositions[index] = new Vector2Int(x, y);
                 //}
             }
         }
@@ -91,6 +99,8 @@ public class GridMap
         Vector2Int min = new(background.cellBounds.xMin, background.cellBounds.yMin);
         Vector2Int max = new(background.cellBounds.xMax, background.cellBounds.yMax);
 
+        List<Vector2Int> movable = new List<Vector2Int>(width * height);
+
         for (int y = min.y; y < max.y; y++)
         {
             for (int x = min.x; x < max.x; x++)
@@ -102,10 +112,15 @@ public class GridMap
                 {
                     tileType = Node.NodeType.Wall;          // 장애물 타일이 있으면 벽으로 표시
                 }
+                else
+                {
+                    movable.Add(new Vector2Int(x, y));
+                }
                 nodes[index] = new Node(x, y, tileType);    // 노드 생성 후 배열에 저장
             }
         }
 
+        movablePositions = movable.ToArray();
         this.background = background;   // 월드 좌표 계산에 필요해서 저장
     }
 
@@ -251,6 +266,16 @@ public class GridMap
         }
 
         return new Vector2(gridPos.x + 0.5f, gridPos.y + 0.5f);
+    }
+
+    /// <summary>
+    /// 랜덤으로 이동 가능한 지역을 하나 리턴하는 함수
+    /// </summary>
+    /// <returns>이동 가능한 위치(그리드 좌표)</returns>
+    public Vector2Int GetRandomMovablePosition()
+    {
+        int index = UnityEngine.Random.Range(0, movablePositions.Length);
+        return movablePositions[index];
     }
 
 }
