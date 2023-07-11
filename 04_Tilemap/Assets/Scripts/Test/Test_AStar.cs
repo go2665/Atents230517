@@ -8,6 +8,11 @@ public class Test_AStar : TestBase
 {
     public Tilemap background;
     public Tilemap obstacle;
+    public PathLine pathline;
+
+    public Vector2Int start;
+    public Vector2Int end;
+
     GridMap map;
 
     List<int> list = new List<int>();
@@ -18,12 +23,33 @@ public class Test_AStar : TestBase
         map = new GridMap(background, obstacle);
     }
 
-    protected override void TestClick(InputAction.CallbackContext context)
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        inputActions.Test.TestRClick.performed += TestRClick;
+    }
+
+    protected override void OnDisable()
+    {
+        inputActions.Test.TestRClick.performed -= TestRClick;
+        base.OnDisable();
+    }
+
+    protected override void TestClick(InputAction.CallbackContext _)
     {
         Vector2 screenPos = Mouse.current.position.ReadValue();
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
         Vector2Int gridPos = map.WorldToGrid(worldPos);
         Debug.Log(gridPos);
+
+        // 왼쪽 클릭하면 start 변수에 해당 그리드 좌표 설정
+    }
+
+    private void TestRClick(InputAction.CallbackContext _)
+    {
+        // 우클릭하면 end변수에 해당 그리드 좌표 설정
+        // A* 알고리즘으로 경로 찾고
+        // PathLine으로 표시하기
     }
 
     private void Test_PathFind()
@@ -95,12 +121,11 @@ public class Test_AStar : TestBase
         Debug.Log(str +"End");
     }
 
-    public int x = 0;
-    public int y = 0;
 
     protected override void Test1(InputAction.CallbackContext context)
     {
-        Debug.Log(map.GridToWorld(new(x, y)));
+        List<Vector2Int> path = AStar.PathFind(map, start, end);
+        pathline.DrawPath(map, path);
     }
 
     protected override void Test2(InputAction.CallbackContext context)

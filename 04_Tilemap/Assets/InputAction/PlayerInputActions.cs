@@ -79,7 +79,16 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TestRClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""c1d50a03-ff8f-4828-8f47-70d6d446d819"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -146,6 +155,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""KM"",
                     ""action"": ""TestClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ffaccde3-34db-41ba-80df-816c3120bba3"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KM"",
+                    ""action"": ""TestRClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -326,6 +346,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Test_Test4 = m_Test.FindAction("Test4", throwIfNotFound: true);
         m_Test_Test5 = m_Test.FindAction("Test5", throwIfNotFound: true);
         m_Test_TestClick = m_Test.FindAction("TestClick", throwIfNotFound: true);
+        m_Test_TestRClick = m_Test.FindAction("TestRClick", throwIfNotFound: true);
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
@@ -397,6 +418,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Test_Test4;
     private readonly InputAction m_Test_Test5;
     private readonly InputAction m_Test_TestClick;
+    private readonly InputAction m_Test_TestRClick;
     public struct TestActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -407,6 +429,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Test4 => m_Wrapper.m_Test_Test4;
         public InputAction @Test5 => m_Wrapper.m_Test_Test5;
         public InputAction @TestClick => m_Wrapper.m_Test_TestClick;
+        public InputAction @TestRClick => m_Wrapper.m_Test_TestRClick;
         public InputActionMap Get() { return m_Wrapper.m_Test; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -434,6 +457,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @TestClick.started += instance.OnTestClick;
             @TestClick.performed += instance.OnTestClick;
             @TestClick.canceled += instance.OnTestClick;
+            @TestRClick.started += instance.OnTestRClick;
+            @TestRClick.performed += instance.OnTestRClick;
+            @TestRClick.canceled += instance.OnTestRClick;
         }
 
         private void UnregisterCallbacks(ITestActions instance)
@@ -456,6 +482,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @TestClick.started -= instance.OnTestClick;
             @TestClick.performed -= instance.OnTestClick;
             @TestClick.canceled -= instance.OnTestClick;
+            @TestRClick.started -= instance.OnTestRClick;
+            @TestRClick.performed -= instance.OnTestRClick;
+            @TestRClick.canceled -= instance.OnTestRClick;
         }
 
         public void RemoveCallbacks(ITestActions instance)
@@ -544,6 +573,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnTest4(InputAction.CallbackContext context);
         void OnTest5(InputAction.CallbackContext context);
         void OnTestClick(InputAction.CallbackContext context);
+        void OnTestRClick(InputAction.CallbackContext context);
     }
     public interface IPlayerActions
     {

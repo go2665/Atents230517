@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class TestBase : MonoBehaviour
 {
-    PlayerInputActions inputActions;
+    protected PlayerInputActions inputActions;
 
     private void Awake()
     {
         inputActions = new PlayerInputActions();
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         inputActions.Test.Enable();
         inputActions.Test.Test1.performed += Test1;
@@ -22,7 +22,7 @@ public class TestBase : MonoBehaviour
         inputActions.Test.TestClick.performed += TestClick;
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         inputActions.Test.TestClick.performed -= TestClick;
         inputActions.Test.Test5.performed -= Test5;
