@@ -65,6 +65,38 @@ public class Slime : PooledObject
     Vector2Int GridPosition => map.WorldToGrid(transform.position);
 
     /// <summary>
+    /// 이 슬라임이 위치하고 있는 노드
+    /// </summary>
+    Node current = null;
+    Node Current
+    {
+        get => current;
+        set
+        {
+            if(current != value)
+            {
+                if(current != null) // 처음 생성되었을 때는 null이라 어쩔수 없이 추가
+                {
+                    current.nodeType = Node.NodeType.Plain; // 이전 노드를 Plain으로 되돌리기
+                }
+
+                current = value;
+                current.nodeType |= Node.NodeType.Monster;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 다른 슬라임에 의해 경로가 막혔을 때 기다린 시간
+    /// </summary>
+    float pathWaitTime = 0.0f;
+
+    /// <summary>
+    /// 경로가 막혔을 때 최대로 기다리는 시간
+    /// </summary>
+    const float MaxPathWaitTime = 1.0f;
+
+    /// <summary>
     /// 목적지에 도착했음을 알리는 델리게이트
     /// </summary>
     Action onGoalArrive;
@@ -166,28 +198,42 @@ public class Slime : PooledObject
     {
         if( isActivate )    // 활성화 되어 있을 때만 이동
         {
-            if( path.Count > 0 )
+            if( path.Count > 0 && pathWaitTime < MaxPathWaitTime )  // 경로와 기다린 시간 확인
             {
                 // 경로가 남아있을 경우
                 Vector2Int destGrid = path[0];
 
-                Vector3 dest = map.GridToWorld(destGrid);
-                Vector3 dir = dest - transform.position;
-
-                if( dir.sqrMagnitude < 0.001f ) // 중간 지점에 도착했는지 확인
+                // destGrid에 몬스터가 없거나 destGrid가 current일때(=내 위치일때) 이동 가능
+                if (!map.IsMonster(destGrid) || map.GetNode(destGrid) == Current)
                 {
-                    transform.position = dest;
-                    path.RemoveAt(0);
+                    // 실제 이동하기
+                    Vector3 dest = map.GridToWorld(destGrid);
+                    Vector3 dir = dest - transform.position;
+
+                    if( dir.sqrMagnitude < 0.001f ) // 중간 지점에 도착했는지 확인
+                    {
+                        transform.position = dest;
+                        path.RemoveAt(0);
+                    }
+                    else
+                    {
+                        transform.Translate(Time.deltaTime * moveSpeed * dir.normalized);
+                        Current = map.GetNode(transform.position);
+                    }
+                    pathWaitTime = 0.0f;
                 }
                 else
                 {
-                    transform.Translate(Time.deltaTime * moveSpeed * dir.normalized);
+                    // 다른 몬스터에 의해 대기했다.
+                    pathWaitTime += Time.deltaTime;
                 }
             }
             else
             {
                 // 경로가 남아있지 않은 경우
-                onGoalArrive();     // 도착했다고 알림
+                // 또는 오래 기다렸을 때
+                pathWaitTime = 0.0f;
+                onGoalArrive();     // 도착했다고 알림(= 새 경로 찾기)
             }
         }
     }
@@ -201,6 +247,7 @@ public class Slime : PooledObject
     {
         map = gridMap;
         transform.position = map.GridToWorld(map.WorldToGrid(pos));
+        Current = map.GetNode(pos);
     }
 
     /// <summary>

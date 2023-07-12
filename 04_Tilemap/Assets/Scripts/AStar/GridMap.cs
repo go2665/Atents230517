@@ -144,10 +144,20 @@ public class GridMap
     /// 특정 위치에 있는 노드를 리턴하는 함수
     /// </summary>
     /// <param name="gridPos">맵에서 위치</param>
-    /// <returns>x,y가 정상일 경우 노드의 참조가 리턴, 비정상일 경우 null 리턴</returns>
+    /// <returns>gridPos가 정상일 경우 노드의 참조가 리턴, 비정상일 경우 null 리턴</returns>
     public Node GetNode(Vector2Int gridPos)
     {
         return GetNode(gridPos.x, gridPos.y);
+    }
+
+    /// <summary>
+    /// 특정 월드 좌표에 있는 노드를 리턴하는 함수
+    /// </summary>
+    /// <param name="worldPos">월드 좌표</param>
+    /// <returns>월드 좌표에 노드가 있으면 노드의 참조 리턴, 없으면 null 리턴</returns>
+    public Node GetNode(Vector3 worldPos)
+    {
+        return GetNode(WorldToGrid(worldPos));
     }
 
     /// <summary>
