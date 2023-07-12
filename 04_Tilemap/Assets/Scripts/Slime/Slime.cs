@@ -81,7 +81,14 @@ public class Slime : PooledObject
                 }
 
                 current = value;
-                current.nodeType |= Node.NodeType.Monster;
+
+                if( current != null)    // 마지막에 null로 세팅되었을 때를 대비해서 추가
+                { 
+                    current.nodeType = Node.NodeType.Monster;
+                }
+
+                // 아래쪽에 있는 슬라임이 위에 그려지도록 순서 조정
+                spriteRenderer.sortingOrder = -Mathf.FloorToInt(transform.position.y * 100);
             }
         }
     }
@@ -341,6 +348,7 @@ public class Slime : PooledObject
     /// </summary>
     void ReturnToPool()
     {
+        Current = null;
         onDie = null;                   // onDie 델리게이트 초기화
         transform.SetParent(pool);      // 풀을 다시 부모로 설정
         gameObject.SetActive(false);    // 비활성화
@@ -383,3 +391,6 @@ public class Slime : PooledObject
         }
     }
 }
+
+
+// 두 슬라임이 겹쳤을 때 아래쪽 슬라임이 위쪽에 그려지게 만들기
