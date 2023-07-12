@@ -74,6 +74,30 @@ public class Slime : PooledObject
     /// </summary>
     bool isActivate = false;
 
+    /// <summary>
+    /// 슬라임이 죽었다는 신호를 보내는 델리게이트
+    /// </summary>
+    public Action onDie;
+
+    /// <summary>
+    /// 슬라임들이 생성되어 있는 풀의 트랜스폼
+    /// </summary>
+    Transform pool = null;
+
+    /// <summary>
+    /// pool에 단 한번만 값을 설정하는 프로퍼티
+    /// </summary>
+    public Transform Pool
+    {
+        set
+        {
+            if(pool == null)
+            {
+                pool = value;
+            }
+        }
+    }
+
     // 컴포넌트들
     SpriteRenderer spriteRenderer;
     Material mainMaterial;    
@@ -260,7 +284,8 @@ public class Slime : PooledObject
     /// </summary>
     public void Die()
     {
-        isActivate = false;
+        isActivate = false;     // 활동이 끝났다고 표시
+        onDie?.Invoke();        // 죽었다고 신호보내기
         StartCoroutine(StartDissolve());    // 디졸브 이팩트 실행
     }
 
@@ -269,7 +294,9 @@ public class Slime : PooledObject
     /// </summary>
     void ReturnToPool()
     {
-        gameObject.SetActive(false);
+        onDie = null;                   // onDie 델리게이트 초기화
+        transform.SetParent(pool);      // 풀을 다시 부모로 설정
+        gameObject.SetActive(false);    // 비활성화
     }
 
     /// <summary>

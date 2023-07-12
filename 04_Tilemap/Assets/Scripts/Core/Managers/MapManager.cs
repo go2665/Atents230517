@@ -5,10 +5,29 @@ using UnityEngine.Tilemaps;
 
 public class MapManager : MonoBehaviour
 {
+    /// <summary>
+    /// 맵의 배경(전체 크기)용 타일맵
+    /// </summary>
     Tilemap background;
+
+    /// <summary>
+    /// 맵의 벽 확인용 타일맵
+    /// </summary>
     Tilemap obstacle;
+
+    /// <summary>
+    /// 타일맵으로 생성한 그리드맵(A*용)
+    /// </summary>
     GridMap gridMap;
 
+    /// <summary>
+    /// 그리드맵 확인용 프로퍼티
+    /// </summary>
+    public GridMap GridMap => gridMap;
+
+    /// <summary>
+    /// 이 맵에 있는 모든 스포너
+    /// </summary>
     Spawner[] spawners;
 
     private void Awake()

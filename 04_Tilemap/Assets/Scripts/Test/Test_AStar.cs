@@ -115,11 +115,11 @@ public class Test_AStar : TestBase
         listNode.Add(b);
         listNode.Add(c);
 
-        int i = 0;
+        //int i = 0;
 
         listNode.Sort();
 
-        i = 20;
+        //i = 20;
 
         Vector2Int dest = new Vector2Int(3, 5);
         Node destNode = new Node(5, 2);

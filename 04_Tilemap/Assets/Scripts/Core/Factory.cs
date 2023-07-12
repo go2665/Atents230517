@@ -62,4 +62,15 @@ public class Factory : Singleton<Factory>
         
         return obj;
     }
+
+    /// <summary>
+    /// 슬라임을 하나 가져오는 함수
+    /// </summary>
+    /// <returns></returns>
+    public Slime GetSlime()
+    {
+        GameObject obj = GetObject(PoolObjectType.Slime);
+        Slime slime = obj.GetComponent<Slime>();
+        return slime;
+    }
 }
