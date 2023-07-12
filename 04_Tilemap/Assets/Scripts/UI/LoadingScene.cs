@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoadingScene : MonoBehaviour
@@ -40,11 +43,94 @@ public class LoadingScene : MonoBehaviour
     TextMeshProUGUI loadingText;
     PlayerInputActions inputActions;
 
-    //실습
-    // 0. nextSceneName의 이름을 가진씬을 비동기로딩 시작한다.
-    // 1. loadingText가 반복해서 변경된다.
-    //   "Loading", "Loading .", "Loading . .", "Loading . . .", "Loading . . . .", "Loading . . . . ."
-    // 2. 로딩이 완료되면 loadingText가 "Loading Complete!"로 변경된다.(단 Complete는 줄바꿈을 하고 출력된다.)
-    // 3. gauge의 value는 loadRatio를 목표로 loadingBarSpeed로 증가한다.
-    // 4. 로딩이 완료된 이후에(gauge의 value가 1이 된 이후) 키를 입력하거나 클릭이 일어나면 nextSceneName으로 전환된다.
+    private void Awake()
+    {
+        inputActions = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
+        inputActions.UI.Enable();
+        inputActions.UI.AnyKey.performed += Press;
+        inputActions.UI.Click.performed += Press;
+    }
+
+    private void OnDisable()
+    {
+        inputActions.UI.Click.performed -= Press;
+        inputActions.UI.AnyKey.performed -= Press;
+        inputActions.UI.Disable();
+    }
+
+    private void Start()
+    {
+        gauge = FindObjectOfType<Slider>();
+        loadingText = FindObjectOfType<TextMeshProUGUI>();
+
+        loadingTextCoroutine = LoadingTextProgress();
+        StartCoroutine(loadingTextCoroutine);
+        StartCoroutine(LoadScene());
+    }
+
+    private void Update()
+    {
+        if(gauge.value < loadRatio)
+        {
+            gauge.value += (Time.deltaTime * loadingBarSpeed);
+        }
+    }
+
+    private IEnumerator LoadingTextProgress()
+    {
+        float waitTime = 0.2f;
+        WaitForSeconds wait = new WaitForSeconds(waitTime);
+
+        string[] texts = { 
+            "Loading", 
+            "Loading .", 
+            "Loading . .", 
+            "Loading . . .", 
+            "Loading . . . .", 
+            "Loading . . . . ." };
+
+        int index = 0;
+        
+        while(true)
+        {
+            loadingText.text = texts[index];
+            index++;
+            index %= texts.Length;
+
+            yield return wait;
+        }
+    }
+
+    IEnumerator LoadScene()
+    {
+        gauge.value = 0;
+        loadRatio = 0;
+
+        async = SceneManager.LoadSceneAsync(nextSceneName);
+        async.allowSceneActivation = false;
+
+        while(loadRatio < 1.0f)
+        {
+            loadRatio = async.progress + 0.1f;
+            yield return null;
+        }
+
+        yield return new WaitForSeconds( (loadRatio - gauge.value) / loadingBarSpeed );
+
+        StopCoroutine(loadingTextCoroutine);
+        loadingDone = true;
+        loadingText.text = "Loading\nComplete!";
+    }
+
+    private void Press(InputAction.CallbackContext _)
+    {        
+        if( loadingDone )
+        {
+            async.allowSceneActivation = true;
+        }
+    }
 }

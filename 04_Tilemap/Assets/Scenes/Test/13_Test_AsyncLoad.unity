@@ -991,4 +991,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextSceneName: 12_Test_AsyncSample
-  loadingBarSpeed: 1
+  loadingBarSpeed: 0.3
