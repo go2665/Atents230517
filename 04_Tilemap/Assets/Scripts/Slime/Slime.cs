@@ -200,7 +200,8 @@ public class Slime : PooledObject
 
     protected override void OnDisable()
     {
-        path.Clear();
+        if(path != null) 
+            path.Clear();
         path = null;
         PathLine.ClearPath();
      
@@ -211,7 +212,9 @@ public class Slime : PooledObject
     {
         if( isActivate )    // 활성화 되어 있을 때만 이동
         {
-            if( path.Count > 0 && pathWaitTime < MaxPathWaitTime )  // 경로와 기다린 시간 확인
+            // 경로가 있는지 확인(못가는 지역으로 목적지가 설정되면 경로 못구함)
+            // 남은 경로 개수와 기다린 시간 확인
+            if ( path != null && path.Count > 0 && pathWaitTime < MaxPathWaitTime )  
             {
                 // 경로가 남아있을 경우
                 Vector2Int destGrid = path[0];

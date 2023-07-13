@@ -80,13 +80,11 @@ public class WorldManager : MonoBehaviour
     /// <summary>
     /// 로딩을 시도할 목록
     /// </summary>
-    [SerializeField]
     List<int> loadWork = new List<int>();
 
     /// <summary>
     /// 로딩 시도가 완료된 목록
     /// </summary>
-    [SerializeField]
     List<int> loadWorkComplete = new List<int>();
 
     /// <summary>
@@ -272,7 +270,33 @@ public class WorldManager : MonoBehaviour
     /// <param name="gridY">지정된 y위치</param>
     private void RefreshScenes(int gridX, int gridY)
     {
+        int startX = Mathf.Max(0, gridX - 1);
+        int endX = Mathf.Min(WidthCount, gridX + 2);    // +2가 되는 이유는 for문에서 작다로 체크하기 위해
+        int startY = Mathf.Max(0, gridY - 1);
+        int endY = Mathf.Min(HeightCount, gridY + 2);
 
+        List<Vector2Int> open = new List<Vector2Int>(WidthCount * HeightCount);
+        for(int y = startY; y < endY; y++)
+        { 
+            for(int x = startX; x < endX; x++)
+            {
+                RequestAsyncSceneLoad(x, y);
+                open.Add(new Vector2Int(x, y));
+            }
+        }
+
+        for(int y = 0; y < HeightCount; y++)
+        {
+            for(int x =  0; x < WidthCount ; x++) 
+            {
+                // Contains : 단순히 있다 없다 확인용
+                // Exits : 내가 설정한 조건과 맞는 것을 확인하기 위한 것
+                if (!open.Contains(new Vector2Int(x,y))) 
+                {
+                    RequestAsyncSceneUnload(x, y);
+                }
+            }
+        }
     }
 
     /// <summary>
