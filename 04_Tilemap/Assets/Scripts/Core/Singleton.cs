@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class Singleton<T> : MonoBehaviour where T : Component
 {
+    private bool initialized = false;
+
     /// <summary>
     /// 이미 종료처리에 들어갔는지 확인하기 위한 변수
     /// </summary>
@@ -78,7 +80,14 @@ public class Singleton<T> : MonoBehaviour where T : Component
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        OnInitialize();
+        if( !initialized )
+        {
+            OnPreInitialize();
+        }
+        if( mode == LoadSceneMode.Single )
+        {            
+            OnInitialize();
+        }
     }
 
     /// <summary>
@@ -89,7 +98,20 @@ public class Singleton<T> : MonoBehaviour where T : Component
         isShutDown = true;  // 종료 표시
     }
 
+    /// <summary>
+    /// 싱글톤이 만들어질 때 단 한번만 호출될 초기화 함수
+    /// </summary>
+    protected virtual void OnPreInitialize()
+    {
+        initialized = true;
+    }
+
+    /// <summary>
+    /// 싱글톤이 만들어지고 씬이 Single로 로드될 때마다 호출될 초기화 함수
+    /// </summary>
     protected virtual void OnInitialize()
     {
     }
+
+
 }
