@@ -360,7 +360,7 @@ public class Slime : PooledObject
     /// <summary>
     /// 디졸브가 끝났을 때 호출될 함수(디졸브가 끝났을 때 실행되는 델리게이트에 연결되어 있음)
     /// </summary>
-    void ReturnToPool()
+    public void ReturnToPool()
     {
         Current = null;
         onDie = null;                   // onDie 델리게이트 초기화

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,16 @@ public class Player : MonoBehaviour
     /// 현재 이동중인지 표시하는 변수(공격이 끝났을 때 여전히 이동키를 누르고 있었을 때만 복구를 위해)
     /// </summary>
     bool isMove = false;
+
+    /// <summary>
+    /// 플레이어가 있는 서브맵이 변경되었을 때 실행디는 델리게이트(파라메터:진입한 맵의 그리드 좌표)
+    /// </summary>
+    public Action<Vector2Int> onMapMoved;
+
+    /// <summary>
+    /// 플레이어가 죽었을 때 실행될 델리게이트, (파라메터:전체플레이시간, 킬 카운트)
+    /// </summary>
+    public Action<float, int> onDie;
 
     /// <summary>
     /// 현재 공격 중인지 아닌지 표시용

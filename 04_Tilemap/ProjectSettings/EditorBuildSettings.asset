@@ -6,9 +6,33 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Test/00_Test_SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Scenes/Seemless/Seemless_Base.unity
+    guid: 42390b6a71652f543aa858a37238b842
   - enabled: 1
-    path: Assets/Scenes/Test/12_Test_AsyncSample.unity
-    guid: cfeeb22cbe8f3ba489fa9632fe8416ab
+    path: Assets/Scenes/Seemless/Seemless_0_0.unity
+    guid: 2994ca0b521440c4cb66aed5a564c891
+  - enabled: 1
+    path: Assets/Scenes/Seemless/Seemless_0_1.unity
+    guid: 5d9d56fe143bb444fbb6b429a1970279
+  - enabled: 1
+    path: Assets/Scenes/Seemless/Seemless_0_2.unity
+    guid: b2e5e811fd9e752428369c579371837a
+  - enabled: 1
+    path: Assets/Scenes/Seemless/Seemless_1_0.unity
+    guid: dda661e9a97b08840b7e7e7f3c0d74fa
+  - enabled: 1
+    path: Assets/Scenes/Seemless/Seemless_1_1.unity
+    guid: c4ce800571025d64c92342cb00b47bde
+  - enabled: 1
+    path: Assets/Scenes/Seemless/Seemless_1_2.unity
+    guid: 66304f8d90a0dd649ae0dcbcaa4be65f
+  - enabled: 1
+    path: Assets/Scenes/Seemless/Seemless_2_0.unity
+    guid: 9ae6630ec9430684cb50a016aa475cbe
+  - enabled: 1
+    path: Assets/Scenes/Seemless/Seemless_2_1.unity
+    guid: 2ad5563731e3d534e988d6c84c50dab7
+  - enabled: 1
+    path: Assets/Scenes/Seemless/Seemless_2_2.unity
+    guid: f04f37b1e2a986647b7129b70987fff2
   m_configObjects: {}

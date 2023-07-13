@@ -84,7 +84,7 @@ public class Singleton<T> : MonoBehaviour where T : Component
         {
             OnPreInitialize();
         }
-        if( mode == LoadSceneMode.Single )
+        if( mode != LoadSceneMode.Additive )    // 그냥 자동으로 씬로딩될 때는 4번이 들어옴
         {            
             OnInitialize();
         }

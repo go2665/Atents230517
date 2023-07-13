@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WorldManager : MonoBehaviour
 {
@@ -79,11 +80,13 @@ public class WorldManager : MonoBehaviour
     /// <summary>
     /// 로딩을 시도할 목록
     /// </summary>
+    [SerializeField]
     List<int> loadWork = new List<int>();
 
     /// <summary>
     /// 로딩 시도가 완료된 목록
     /// </summary>
+    [SerializeField]
     List<int> loadWorkComplete = new List<int>();
 
     /// <summary>
@@ -96,15 +99,86 @@ public class WorldManager : MonoBehaviour
     /// </summary>
     List<int> unloadWorkComplete = new List<int>();
 
-
+    /// <summary>
+    /// 싱글톤이 처음 만들어졌을 때 단 한번 실행되는 함수
+    /// </summary>
     public void PreInitialize()
     {
+        sceneNames = new string[HeightCount * WidthCount];              // 배열 크기 확보
+        sceneLoadState = new SceneLoadState[HeightCount * WidthCount];
 
+        for(int y = 0; y < HeightCount; y++)
+        {
+            for(int x = 0; x < WidthCount; x++)
+            {
+                int index = GetIndex(x, y);
+                sceneNames[index] = $"{SceneNameBase}_{x}_{y}"; // 배열 채워넣기
+                sceneLoadState[index] = SceneLoadState.Unload;
+            }
+        }
     }
 
+    /// <summary>
+    /// 싱글톤이 만들어지고 씬이 Single로 로드될 때마다 호출될 초기화 함수
+    /// </summary>
     public void Initialize()
     {
+        for(int i=0;i<sceneLoadState.Length;i++)
+        {
+            sceneLoadState[i] = SceneLoadState.Unload;  // 씬이 불려졌을 때 서브맵들의 로딩상태 초기화
+        }
 
+        Player player = GameManager.Inst.Player;
+        if(player != null)
+        {
+            player.onDie += (_, _) =>   // 플레이어가 죽었을 때 실행될 람다함수(파라메터는 둘 다 무시)
+            {
+                for(int y =0;y<HeightCount;y++)
+                {
+                    for(int x =0;x<WidthCount;x++)
+                    {
+                        RequestAsyncSceneUnload(x, y);  // 모든 씬을 로딩 해제 요청
+                    }
+                }
+            };
+            player.onMapMoved += (gridPos) => // 플레이어가 맵을 옮겼을 때 실행될 람다함수
+            {
+                RefreshScenes(gridPos.x, gridPos.y);    // 플레이어 주변 맵 상태 갱신요청
+            };
+
+            Vector2Int grid = WorldToGrid(player.transform.position);   // 플레이어가 있는 서브맵 그리드 가져오기
+            RequestAsyncSceneLoad(grid.x, grid.y);  // 플레이어가 있는 맵을 최우선으로 로딩 요청
+            RefreshScenes(grid.x, grid.y);          // 플레이어 주변 맵 로딩 요청
+        }
+    }
+
+    private void Update()
+    {
+        // 완료된 로딩 작업은 loadWork에서 제거
+        foreach(var index in loadWorkComplete)  
+        {
+            loadWork.RemoveAll( (x) => x == index );// loadWork에 있는 것들 중에서 index와 같은 것을 전부 삭제
+        }
+        loadWorkComplete.Clear();
+
+        // 로딩 요청 받은 것들을 로딩 시작
+        foreach(var index in loadWork)
+        {
+            AsyncSceneLoad(index);  // loadWork에 있는 것들은 전부 비동기 로딩 시작
+        }
+
+        // 완료된 언로드 작업은 unloadWork에서 제거
+        foreach (var index in unloadWorkComplete)
+        {
+            unloadWork.RemoveAll((x) => x == index);// unloadWork에 있는 것들 중에서 index와 같은 것을 전부 삭제
+        }
+        loadWorkComplete.Clear();
+
+        // 로딩 해제 요청 받은 것들을 로딩 시작
+        foreach (var index in unloadWork)
+        {
+            AsyncSceneUnload(index);  // unloadWork에 있는 것들은 전부 비동기 로딩 해제 시작
+        }
     }
 
     /// <summary>
@@ -114,7 +188,11 @@ public class WorldManager : MonoBehaviour
     /// <param name="y">서브맵의 y위치</param>
     private void RequestAsyncSceneLoad(int x, int y)
     {
-
+        int index = GetIndex(x, y);
+        if(sceneLoadState[index] == SceneLoadState.Unload)
+        {
+            loadWork.Add(index);
+        }
     }
 
     /// <summary>
@@ -124,7 +202,27 @@ public class WorldManager : MonoBehaviour
     /// <param name="y">서브맵의 y위치</param>
     private void RequestAsyncSceneUnload(int x, int y)
     {
+        int index = GetIndex(x, y);
+        if (sceneLoadState[index] == SceneLoadState.Loaded)
+        {
+            unloadWork.Add(index);  // 작업 리스트에 등록
+        }
 
+        // 서브맵에 있는 슬라임을 풀로 되돌리기
+        Scene scene = SceneManager.GetSceneByName(sceneNames[index]);   // 씬 찾고
+        if(scene.isLoaded)  // 씬이 로딩 상태일 때
+        {
+            GameObject[] sceneRoots = scene.GetRootGameObjects();   // 부모가 없는 게임오브젝트 전부 찾고
+            if( sceneRoots != null && sceneRoots.Length > 0 )
+            {
+                // 그 중 첫번째(Grid)에서 슬라임 전부 찾기
+                Slime[] slimes = sceneRoots[0].GetComponentsInChildren<Slime>();    
+                foreach(Slime slime in slimes)
+                {
+                    slime.ReturnToPool();   // 찾은 슬라임을 전부 풀로 되돌리기
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -133,7 +231,18 @@ public class WorldManager : MonoBehaviour
     /// <param name="index">로딩할 씬의 인덱스</param>
     private void AsyncSceneLoad(int index)
     {
+        if(sceneLoadState[index] == SceneLoadState.Unload)      // Unload 상태일 때만 로딩 시도
+        {
+            sceneLoadState[index] = SceneLoadState.PendingLoad; // 진행중이라고 표시
 
+            // 비동기 로딩 시작
+            AsyncOperation async = SceneManager.LoadSceneAsync(sceneNames[index], LoadSceneMode.Additive);
+            async.completed += (_) =>   // 비동기 작업이 끝날 때 실행되는 델리게이트에 람다 함수 추가
+            {
+                sceneLoadState[index] = SceneLoadState.Loaded;  // 로드 상태로 변경
+                loadWorkComplete.Add(index);                    // 로드 완료 목록에 추가
+            };
+        }
     }
 
     /// <summary>
@@ -142,7 +251,18 @@ public class WorldManager : MonoBehaviour
     /// <param name="index">로딩해제 할 씬의 인덱스</param>
     private void AsyncSceneUnload(int index)
     {
+        if (sceneLoadState[index] == SceneLoadState.Loaded)         // 로딩 완료된 상태일 때만 진행
+        {
+            sceneLoadState[index] = SceneLoadState.PendingUnload;   // 진행중이라고 표시
 
+            // 비동기 언로딩 시작
+            AsyncOperation async = SceneManager.UnloadSceneAsync(sceneNames[index]);
+            async.completed += (_) =>   // 비동기 작업이 끝날 때 실행되는 델리게이트에 람다 함수 추가
+            {
+                sceneLoadState[index] = SceneLoadState.Unload;      // 언로드 상태로 변경
+                unloadWorkComplete.Add(index);                      // 언로드 완료 목록에 추가
+            };
+        }
     }
 
     /// <summary>
@@ -187,6 +307,11 @@ public class WorldManager : MonoBehaviour
     public void TestUnloadScene(int x, int y)
     {
         RequestAsyncSceneUnload(x, y);
+    }
+
+    public void TestRefreshScenes(int x, int y)
+    {
+        RefreshScenes(x, y);
     }
 #endif
 }
