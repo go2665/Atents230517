@@ -60,6 +60,11 @@ public class Slime : PooledObject
     public PathLine PathLine => pathline;
 
     /// <summary>
+    /// PathLine이 보일지 안보일지 결정하는 변수(true면 보여주고 false면 안보여준다.)
+    /// </summary>
+    public bool isShowPathLine = false;
+
+    /// <summary>
     /// 슬라임의 그리드 좌표 확인용 프로퍼티
     /// </summary>
     Vector2Int GridPosition => map.WorldToGrid(transform.position);
@@ -168,6 +173,7 @@ public class Slime : PooledObject
         onPhaseEnd += () =>
         {
             isActivate = true;
+            PathLine.gameObject.SetActive(isShowPathLine);
         };
 
         onDissolveEnd += ReturnToPool;
@@ -242,6 +248,14 @@ public class Slime : PooledObject
                 pathWaitTime = 0.0f;
                 onGoalArrive();     // 도착했다고 알림(= 새 경로 찾기)
             }
+        }
+    }
+
+    private void OnValidate()
+    {
+        if(PathLine != null )
+        {
+            PathLine.gameObject.SetActive(isShowPathLine);
         }
     }
 

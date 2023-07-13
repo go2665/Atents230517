@@ -47,6 +47,6 @@ public class PathLine : MonoBehaviour
         {
             lineRenderer.positionCount = 0; // 갯수 0으로 해서 안보이게 만들기
         }
-        //gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 }
