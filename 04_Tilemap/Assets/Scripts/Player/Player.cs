@@ -197,11 +197,14 @@ public class Player : MonoBehaviour
     private void Start()
     {
         world = GameManager.Inst.World;
+        LifeTime = maxLifeTime;
+        Debug.Log("플레이어 탄생");
     }
 
     private void Update()
     {
         currentAttackCoolTime -= Time.deltaTime;
+        LifeTime -= Time.deltaTime;
     }
 
     private void FixedUpdate()
@@ -209,7 +212,7 @@ public class Player : MonoBehaviour
         // 이동 처리
         rigid.MovePosition(rigid.position + Time.fixedDeltaTime * speed * inputDir);
         
-        CurrentMapPos = world.WorldToGrid(rigid.position);
+        // CurrentMapPos = world.WorldToGrid(rigid.position);
     }
 
     /// <summary>
@@ -342,5 +345,7 @@ public class Player : MonoBehaviour
         lifeTime = 0.0f;                // 수명을 깔끔하게 0으로 세팅
         inputActions.Player.Disable();  // 입력막기
         onDie?.Invoke(0, 0);            // 죽었다고 알리기
+
+        Debug.Log("플레이어 사망");
     }
 }
