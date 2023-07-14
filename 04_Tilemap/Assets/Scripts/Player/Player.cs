@@ -26,9 +26,68 @@ public class Player : MonoBehaviour
     bool isMove = false;
 
     /// <summary>
+    /// 플레이어가 현재 위치하고 있는 맵의 그리드 좌표
+    /// </summary>
+    Vector2Int currentMapPos;
+    Vector2Int CurrentMapPos
+    {
+        get => currentMapPos;
+        set
+        {
+            if (value != currentMapPos)
+            {
+                currentMapPos = value;
+                onMapMoved?.Invoke(currentMapPos);  // currentMapPos가 변경되는 순간 델리게이트 실행
+            }
+        }
+    }
+
+    /// <summary>
     /// 플레이어가 있는 서브맵이 변경되었을 때 실행디는 델리게이트(파라메터:진입한 맵의 그리드 좌표)
     /// </summary>
     public Action<Vector2Int> onMapMoved;
+
+    /// <summary>
+    /// 플레이어의 최대 수명
+    /// </summary>
+    public float maxLifeTime = 10.0f;
+
+    /// <summary>
+    /// 플레이어의 현재 수명
+    /// </summary>
+    float lifeTime;
+
+    /// <summary>
+    /// 플레이어의 수명 확인 및 설정용 프로퍼티
+    /// </summary>
+    public float LifeTime
+    {
+        get => lifeTime;
+        set
+        {
+            lifeTime = value;
+            if(lifeTime < 0.0f && !isDead)  
+            {
+                Die();  // 수명이 0 미만이고 살아있는 상태일때만 죽여라
+            }
+            else
+            {
+                // 살아있는 상태면 수명을 최소 0, 최대 maxLifeTime으로 클램프
+                lifeTime = Mathf.Clamp(lifeTime, 0.0f, maxLifeTime);
+            }
+            onLifeTimeChange?.Invoke(lifeTime/maxLifeTime); // 수명이 변했음을 알림
+        }
+    }
+
+    /// <summary>
+    /// 수명이 변경되었을 때 실행되는 델리게이트
+    /// </summary>
+    public Action<float> onLifeTimeChange;
+
+    /// <summary>
+    /// 플레이어가 살았는지 죽었는지 표시하는 변수
+    /// </summary>
+    bool isDead = false;
 
     /// <summary>
     /// 플레이어가 죽었을 때 실행될 델리게이트, (파라메터:전체플레이시간, 킬 카운트)
@@ -74,6 +133,11 @@ public class Player : MonoBehaviour
     /// 공격 영역의 회전 중심 축
     /// </summary>
     Transform attackSensorAxis;
+
+    /// <summary>
+    /// 월드 매니저
+    /// </summary>
+    WorldManager world;
 
     // 컴포넌트들    
     Animator animator;
@@ -130,6 +194,11 @@ public class Player : MonoBehaviour
         inputActions.Player.Disable();
     }
 
+    private void Start()
+    {
+        world = GameManager.Inst.World;
+    }
+
     private void Update()
     {
         currentAttackCoolTime -= Time.deltaTime;
@@ -139,6 +208,8 @@ public class Player : MonoBehaviour
     {
         // 이동 처리
         rigid.MovePosition(rigid.position + Time.fixedDeltaTime * speed * inputDir);
+        
+        CurrentMapPos = world.WorldToGrid(rigid.position);
     }
 
     /// <summary>
@@ -260,5 +331,16 @@ public class Player : MonoBehaviour
         {
             attackSensorAxis.rotation = Quaternion.identity;
         }
+    }
+
+    /// <summary>
+    /// 플레이어가 죽을 때 실행되는 함수
+    /// </summary>
+    private void Die()
+    {
+        isDead = true;                  // 죽었다고 표시
+        lifeTime = 0.0f;                // 수명을 깔끔하게 0으로 세팅
+        inputActions.Player.Disable();  // 입력막기
+        onDie?.Invoke(0, 0);            // 죽었다고 알리기
     }
 }

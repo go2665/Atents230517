@@ -162,7 +162,7 @@ MonoBehaviour:
   phaseDuration: 0.5
   dissolveDuration: 1
   moveSpeed: 2
-  isShowPathLine: 1
+  isShowPathLine: 0
 --- !u!1001 &3505254831846068722
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -170,7 +170,7 @@ public class WorldManager : MonoBehaviour
         {
             unloadWork.RemoveAll((x) => x == index);// unloadWork에 있는 것들 중에서 index와 같은 것을 전부 삭제
         }
-        loadWorkComplete.Clear();
+        unloadWorkComplete.Clear();
 
         // 로딩 해제 요청 받은 것들을 로딩 시작
         foreach (var index in unloadWork)
