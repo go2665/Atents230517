@@ -135,6 +135,32 @@ public class Player : MonoBehaviour
     Transform attackSensorAxis;
 
     /// <summary>
+    /// 전체 플레이 시간
+    /// </summary>
+    float totalPlayTime = 0.0f;
+
+    /// <summary>
+    /// 잡은 슬라임 수
+    /// </summary>
+    int killCount = int.MinValue;
+    int KillCount
+    {
+        get => killCount;
+        set
+        {
+            if(killCount != value)
+            {
+                killCount = value;
+                onKillCountChange?.Invoke(killCount);   // 값이 변경되었을 때만 델리게이트 실행
+            }
+        }
+    }
+    /// <summary>
+    /// 잡은 슬라임 수가 변경될 때 실행될 델리게이트
+    /// </summary>
+    public Action<int> onKillCountChange;
+
+    /// <summary>
     /// 월드 매니저
     /// </summary>
     WorldManager world;
@@ -198,13 +224,14 @@ public class Player : MonoBehaviour
     {
         world = GameManager.Inst.World;
         LifeTime = maxLifeTime;
-        Debug.Log("플레이어 탄생");
+        KillCount = 0;
     }
 
     private void Update()
     {
         currentAttackCoolTime -= Time.deltaTime;
         LifeTime -= Time.deltaTime;
+        totalPlayTime += Time.deltaTime;
     }
 
     private void FixedUpdate()
@@ -212,7 +239,7 @@ public class Player : MonoBehaviour
         // 이동 처리
         rigid.MovePosition(rigid.position + Time.fixedDeltaTime * speed * inputDir);
         
-        // CurrentMapPos = world.WorldToGrid(rigid.position);
+        CurrentMapPos = world.WorldToGrid(rigid.position);
     }
 
     /// <summary>
@@ -344,7 +371,7 @@ public class Player : MonoBehaviour
         isDead = true;                  // 죽었다고 표시
         lifeTime = 0.0f;                // 수명을 깔끔하게 0으로 세팅
         inputActions.Player.Disable();  // 입력막기
-        onDie?.Invoke(0, 0);            // 죽었다고 알리기
+        onDie?.Invoke(totalPlayTime, killCount);    // 죽었다고 알리기
 
         Debug.Log("플레이어 사망");
     }
@@ -358,6 +385,7 @@ public class Player : MonoBehaviour
         if ( !isDead ) 
         {
             LifeTime += bonus;
+            KillCount++;
         }
     }
 }

@@ -35,4 +35,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Seemless/Seemless_2_2.unity
     guid: f04f37b1e2a986647b7129b70987fff2
+  - enabled: 1
+    path: Assets/Scenes/Seemless/LoadingScene.unity
+    guid: 65ffb98cd3e34f449b79bfdc175b6b4e
   m_configObjects: {}

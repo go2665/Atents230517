@@ -990,5 +990,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ba6e6ed67c8feb41a24bf856d461961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextSceneName: 12_Test_AsyncSample
+  nextSceneName: Seemless_Base
   loadingBarSpeed: 0.3
