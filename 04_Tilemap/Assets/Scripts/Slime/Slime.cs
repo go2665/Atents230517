@@ -124,6 +124,11 @@ public class Slime : PooledObject
     public Action onDie;
 
     /// <summary>
+    /// 슬라임이 죽을 때 증가시키는 플레이어의 수명
+    /// </summary>
+    public float lifeTimeBonus = 2.0f;
+
+    /// <summary>
     /// 슬라임들이 생성되어 있는 풀의 트랜스폼
     /// </summary>
     Transform pool = null;

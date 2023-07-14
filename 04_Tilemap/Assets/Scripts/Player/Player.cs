@@ -348,4 +348,16 @@ public class Player : MonoBehaviour
 
         Debug.Log("플레이어 사망");
     }
+
+    /// <summary>
+    /// 몬스터를 잡았을 때 실행될 함수
+    /// </summary>
+    /// <param name="bonus">몬스터를 죽임으로써 얻는 추가시간</param>
+    public void MonsterKill(float bonus)
+    {
+        if ( !isDead ) 
+        {
+            LifeTime += bonus;
+        }
+    }
 }

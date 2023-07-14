@@ -44,10 +44,16 @@ public class Spawner : MonoBehaviour
     /// </summary>
     MapManager mapManager;
 
+    /// <summary>
+    /// 플레이어 미리 찾아놓은 것
+    /// </summary>
+    Player player;
+
     private void Start()
     {
         mapManager = GetComponentInParent<MapManager>();
         spawnAreaList = mapManager.CalcSpawnArea(this);
+        player = GameManager.Inst.Player;
     }
 
     private void Update()
@@ -75,6 +81,7 @@ public class Spawner : MonoBehaviour
             slime.onDie += () =>
             {
                 count--;            // 슬라임이 죽을 때 스폰 카운트 감소
+                player.MonsterKill(slime.lifeTimeBonus);    // 플레이어가 몬스터 잡을 때 일어나는 일 처리
             };
             slime.transform.SetParent(transform);   // 슬라임을 스포너의 자식으로 옮김
             count++;                                // 스폰 카운트 증가
