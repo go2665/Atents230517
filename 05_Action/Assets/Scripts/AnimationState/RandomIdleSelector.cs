@@ -22,7 +22,30 @@ public class RandomIdleSelector : StateMachineBehaviour
         // 각 번호별로 확률이 달라야 한다.
         // 0 이 나올 확률 : 40%
         // 나머지는 각각 : 15%
+        int select = 0;
 
-        return 0;
+        float num = Random.value;
+        if( num < 0.4f )
+        {
+            select = 0;
+        }
+        else if( num < 0.55f )
+        {
+            select = 1;
+        }
+        else if ( num < 0.7f )
+        {
+            select = 2;
+        }    
+        else if( num < 0.85f )
+        {
+            select = 3;
+        }
+        else
+        {
+            select = 4;
+        }
+
+        return select;
     }
 }
