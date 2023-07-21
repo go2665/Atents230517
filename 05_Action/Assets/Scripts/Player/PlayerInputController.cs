@@ -90,10 +90,9 @@ public class PlayerInputController : MonoBehaviour
     CharacterController characterController;
     Animator animator;
 
-    /// <summary>
-    /// 애니메이터의 Speed 파라메터의 해시
-    /// </summary>
+   /// 애니메이터 파라메터의 해시
     readonly int Speed_Hash = Animator.StringToHash("Speed");
+    readonly int Attack_Hash = Animator.StringToHash("Attack");
 
     private void Awake()
     {
@@ -108,10 +107,12 @@ public class PlayerInputController : MonoBehaviour
         inputActions.Player.Move.performed += OnMove;
         inputActions.Player.Move.canceled += OnMove;
         inputActions.Player.MoveModeChange.performed += OnMoveModeChange;
+        inputActions.Player.Attack.performed += OnAttack;
     }
 
     private void OnDisable()
     {
+        inputActions.Player.Attack.performed -= OnAttack;
         inputActions.Player.MoveModeChange.performed -= OnMoveModeChange;
         inputActions.Player.Move.canceled -= OnMove;
         inputActions.Player.Move.performed -= OnMove;
@@ -149,9 +150,11 @@ public class PlayerInputController : MonoBehaviour
             switch ( MoveSpeedMode)    // 현재 이동 모드에 따라 애니메이터의 Speed 변경
             {
                 case MoveMode.Walk:
+                    currentSpeed = walkSpeed;
                     animator.SetFloat(Speed_Hash, AnimatorWalkSpeed);
                     break;
                 case MoveMode.Run:
+                    currentSpeed = runSpeed;
                     animator.SetFloat(Speed_Hash, AnimatorRunSpeed);
                     break;
             }
@@ -159,6 +162,7 @@ public class PlayerInputController : MonoBehaviour
         else
         {
             // Move 액션에 바인딩된 키가 떨어졌을 때
+            currentSpeed = 0.0f;
             animator.SetFloat(Speed_Hash, AnimatorStopSpeed);   // 애니메이터의 Speed를 0으로 설정
         }
 
@@ -176,6 +180,14 @@ public class PlayerInputController : MonoBehaviour
         {
             MoveSpeedMode = MoveMode.Walk;  // run이면 walk로
         }        
+    }
+
+    private void OnAttack(UnityEngine.InputSystem.InputAction.CallbackContext _)
+    {
+        if( moveSpeedMode == MoveMode.Walk || currentSpeed < 0.001f)    // 걷는 상태이거나 정지 상태일 때만 공격 가능
+        {
+            animator.SetTrigger(Attack_Hash);
+        }
     }
 
 }
