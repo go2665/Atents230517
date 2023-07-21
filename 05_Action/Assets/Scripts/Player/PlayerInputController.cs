@@ -93,6 +93,7 @@ public class PlayerInputController : MonoBehaviour
    /// 애니메이터 파라메터의 해시
     readonly int Speed_Hash = Animator.StringToHash("Speed");
     readonly int Attack_Hash = Animator.StringToHash("Attack");
+    readonly int Skill_Hash = Animator.StringToHash("Skill");
 
     private void Awake()
     {
@@ -108,10 +109,12 @@ public class PlayerInputController : MonoBehaviour
         inputActions.Player.Move.canceled += OnMove;
         inputActions.Player.MoveModeChange.performed += OnMoveModeChange;
         inputActions.Player.Attack.performed += OnAttack;
+        inputActions.Player.Skill.performed += OnSkill;
     }
 
     private void OnDisable()
     {
+        inputActions.Player.Skill.performed -= OnSkill;
         inputActions.Player.Attack.performed -= OnAttack;
         inputActions.Player.MoveModeChange.performed -= OnMoveModeChange;
         inputActions.Player.Move.canceled -= OnMove;
@@ -188,6 +191,11 @@ public class PlayerInputController : MonoBehaviour
         {
             animator.SetTrigger(Attack_Hash);
         }
+    }
+
+    private void OnSkill(UnityEngine.InputSystem.InputAction.CallbackContext _)
+    {
+        animator.SetTrigger(Skill_Hash);
     }
 
 }
