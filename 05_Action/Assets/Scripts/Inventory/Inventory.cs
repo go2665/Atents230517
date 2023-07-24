@@ -191,9 +191,136 @@ public class Inventory
         }
     }
 
-    // 인벤토리의 특정 위치에서 다른 위치로 아이템을 이동시키는 함수
-    // 인벤토리에서 아이템을 일정량 덜어내어 임시 슬롯으로 보내는 함수
-    // 인벤토리를 정렬하는 함수
+
+    /// <summary>
+    /// 인벤토리의 아이템을 from위치에서 to위치로 아이템을 이동시키는 함수
+    /// </summary>
+    /// <param name="from">위치 변경이 시작되는 인덱스</param>
+    /// <param name="to">위치 변경이 끝나는 인덱스</param>
+    public void MoveItem(uint from, uint to)
+    {
+        // from지점과 to지점이 다르고 from과 to가 모두 valid해야 한다.
+        if( (from != to) &&  IsValidIndex(from) && IsValidIndex(to) )
+        {
+            InvenSlot fromSlot = (from == TempSlotIndex) ? TempSlot : slots[from];  // 임시 슬롯을 감안해서 삼항연산자로 처리
+            if( !fromSlot.IsEmpty )
+            {
+                InvenSlot toSlot = (to == TempSlotIndex) ? TempSlot : slots[to];
+                if( fromSlot.ItemData == toSlot.ItemData )  // 같은 종류의 아이템이면
+                {
+                    toSlot.IncreaseSlotItem(out uint overCount, fromSlot.ItemCount);    // 일단 from이 가진 개수만큼 to 감소 시도
+                    fromSlot.DecreaseSlotItem(fromSlot.ItemCount - overCount);          // from에서 실제로 넘어간 숫자만큼 from 감소
+                    Debug.Log($"{from}번 슬롯에서 {to}번 슬롯으로 아이템 합치기");
+                }
+                else
+                {
+                    // 다른 종류의 아이템이면 서로 스왑
+                    ItemData tempData = fromSlot.ItemData;
+                    uint tempCount = fromSlot.ItemCount;
+                    fromSlot.AssignSlotItem(toSlot.ItemData, toSlot.ItemCount);
+                    toSlot.AssignSlotItem(tempData, tempCount);
+                    Debug.Log($"{from}번 슬롯과 {to}번 슬롯의 아이템 교체");
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 인벤토리 특정 슬롯에서 아이템을 일정량 덜어내어 임시 슬롯으로 보내는 함수
+    /// </summary>
+    /// <param name="slotIndex">아이템을 덜어낼 슬롯</param>
+    /// <param name="count">덜어낼 개수</param>
+    public void SplitItem(uint slotIndex, uint count)
+    {
+        if(IsValidIndex(slotIndex))
+        {
+            InvenSlot slot = slots[slotIndex];
+            slot.DecreaseSlotItem(count);                   // 슬롯에서 덜어내고
+            TempSlot.AssignSlotItem(slot.ItemData, count);  // 임시 슬롯에 할당하기
+        }
+    }
+
+    /// <summary>
+    /// 인벤토리를 정렬하는 함수 
+    /// </summary>
+    /// <param name="sortBy">정렬 기준</param>
+    /// <param name="isAcending">true면 오름차순, false면 내림차순</param>
+    public void SlotSorting(ItemSortBy sortBy, bool isAcending = true)
+    {
+        List<InvenSlot> beforeSlots = new List<InvenSlot>(SlotCount);
+        foreach( InvenSlot slot in slots)
+        {
+            beforeSlots.Add(slot);
+        }
+
+        switch(sortBy)
+        {
+            case ItemSortBy.Code:
+                beforeSlots.Sort((x, y) =>
+                {
+                    if (x.ItemData == null)
+                        return 1;
+                    if (y.ItemData == null)
+                        return -1;
+                    if( isAcending )
+                    {
+                        return x.ItemData.code.CompareTo(y.ItemData.code);
+                    }
+                    else
+                    {
+                        return y.ItemData.code.CompareTo(x.ItemData.code);
+                    }
+                });
+                break;
+            case ItemSortBy.Name:
+                beforeSlots.Sort((x, y) =>
+                {
+                    if (x.ItemData == null)
+                        return 1;
+                    if (y.ItemData == null)
+                        return -1;
+                    if (isAcending)
+                    {
+                        return x.ItemData.itemName.CompareTo(y.ItemData.itemName);
+                    }
+                    else
+                    {
+                        return y.ItemData.itemName.CompareTo(x.ItemData.itemName);
+                    }
+                });
+                break;
+            case ItemSortBy.Price:
+                beforeSlots.Sort((x, y) =>
+                {
+                    if (x.ItemData == null)
+                        return 1;
+                    if (y.ItemData == null)
+                        return -1;
+                    if (isAcending)
+                    {
+                        return x.ItemData.price.CompareTo(y.ItemData.price);
+                    }
+                    else
+                    {
+                        return y.ItemData.price.CompareTo(x.ItemData.price);
+                    }
+                });
+                break;
+        }
+
+        List<(ItemData, uint)> sortedData = new List<(ItemData, uint)>(SlotCount);
+        foreach(var slot in beforeSlots)
+        {
+            sortedData.Add((slot.ItemData, slot.ItemCount));
+        }
+
+        int index = 0;
+        foreach(var data in sortedData)
+        {
+            slots[index].AssignSlotItem(data.Item1, data.Item2);
+            index++;
+        }
+    }
 
     /// <summary>
     /// 인벤토리에 파라메터와 같은 종류의 아이템이 들어있는 슬롯(여유공간이 있는 슬롯)을 찾는 함수
@@ -248,5 +375,32 @@ public class Inventory
     {
         // 예시
         // [ 루비(1/3), 사파이어(1/5), 에메랄드(2/5), (빈칸), (빈칸), (빈칸) ]
+
+        string printText = "[ ";
+
+        for(int i=0;i<SlotCount-1;i++)
+        {
+            if (!slots[i].IsEmpty)
+            {
+                printText += $"{slots[i].ItemData.itemName}({slots[i].ItemCount}/{slots[i].ItemData.maxStackCount})";
+            }
+            else
+            {
+                printText += "(빈칸)";
+            }
+            printText += ", ";
+        }
+        InvenSlot last = slots[SlotCount - 1];
+        if(!last.IsEmpty)
+        {
+            printText += $"{last.ItemData.itemName}({last.ItemCount}/{last.ItemData.maxStackCount})";
+        }
+        else
+        {
+            printText += "(빈칸)";
+        }
+        printText += " ]";
+
+        Debug.Log(printText);
     }
 }
