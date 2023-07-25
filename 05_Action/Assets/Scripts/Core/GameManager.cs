@@ -16,6 +16,12 @@ public class GameManager : Singleton<GameManager>
     ItemDataManager itemDataManager;
     public ItemDataManager ItemData => itemDataManager;
 
+    /// <summary>
+    /// 인벤토리 UI
+    /// </summary>
+    InventoryUI inventoryUI;
+    public InventoryUI InvenUI => inventoryUI;
+
     protected override void OnPreInitialize()
     {
         base.OnPreInitialize();
@@ -26,5 +32,6 @@ public class GameManager : Singleton<GameManager>
     {
         base.OnInitialize();
         player = FindObjectOfType<Player>();
+        inventoryUI = FindObjectOfType<InventoryUI>();
     }
 }
