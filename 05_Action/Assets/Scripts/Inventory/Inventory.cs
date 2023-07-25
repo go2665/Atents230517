@@ -235,8 +235,8 @@ public class Inventory
         if(IsValidIndex(slotIndex))
         {
             InvenSlot slot = slots[slotIndex];
-            slot.DecreaseSlotItem(count);                   // 슬롯에서 덜어내고
             TempSlot.AssignSlotItem(slot.ItemData, count);  // 임시 슬롯에 할당하기
+            slot.DecreaseSlotItem(count);                   // 슬롯에서 덜어내고
         }
     }
 
@@ -247,28 +247,24 @@ public class Inventory
     /// <param name="isAcending">true면 오름차순, false면 내림차순</param>
     public void SlotSorting(ItemSortBy sortBy, bool isAcending = true)
     {
-        List<InvenSlot> beforeSlots = new List<InvenSlot>(SlotCount);
-        foreach( InvenSlot slot in slots)
-        {
-            beforeSlots.Add(slot);
-        }
+        List<InvenSlot> beforeSlots = new List<InvenSlot>(slots);   // slots 배열을 이용해서 리스트 만들기
 
-        switch(sortBy)
+        switch (sortBy) // 정렬 기준에 따라 다르게 처리하기(Sort 함수의 파라메터로 들어갈 람다함수를 다르게 작성)
         {
             case ItemSortBy.Code:
-                beforeSlots.Sort((x, y) =>
+                beforeSlots.Sort((x, y) =>  // x, y는 서로 비교할 2개(beforeSlots에 들어있는 2개)
                 {
-                    if (x.ItemData == null)
+                    if (x.ItemData == null) // itemData는 비어있을 수 있으니 비어있으면 비어있는 것이 뒤쪽으로 설정
                         return 1;
                     if (y.ItemData == null)
                         return -1;
                     if( isAcending )
                     {
-                        return x.ItemData.code.CompareTo(y.ItemData.code);
+                        return x.ItemData.code.CompareTo(y.ItemData.code);  // enum이 가지는 CompareTo 함수로 비교(오름차순일 때)
                     }
                     else
                     {
-                        return y.ItemData.code.CompareTo(x.ItemData.code);
+                        return y.ItemData.code.CompareTo(x.ItemData.code);  // enum이 가지는 CompareTo 함수로 비교(내림차순일 때)
                     }
                 });
                 break;
@@ -307,18 +303,36 @@ public class Inventory
                 });
                 break;
         }
+        // beforeSlots은 정해진 기준에 따라 정렬 완료
 
-        List<(ItemData, uint)> sortedData = new List<(ItemData, uint)>(SlotCount);
-        foreach(var slot in beforeSlots)
-        {
-            sortedData.Add((slot.ItemData, slot.ItemCount));
-        }
+        //// 아이템 종류와 개수를 따로 저장하기
+        //List<(ItemData, uint)> sortedData = new List<(ItemData, uint)>(SlotCount);
+        //foreach(var slot in beforeSlots)
+        //{
+        //    sortedData.Add((slot.ItemData, slot.ItemCount));
+        //}
 
-        int index = 0;
-        foreach(var data in sortedData)
+        //// 슬롯에 아이템 종류와 개수를 순서대로 할당하기
+        //int index = 0;
+        //foreach(var data in sortedData)
+        //{
+        //    slots[index].AssignSlotItem(data.Item1, data.Item2);
+        //    index++;
+        //}
+
+        // 정렬 완료된 것을 다시 배열로 만들기
+        slots = beforeSlots.ToArray();
+        RefreshInventory();
+    }
+
+    /// <summary>
+    /// 모든 슬롯이 변경되었음을 알리는 함수
+    /// </summary>
+    void RefreshInventory()
+    {
+        foreach (var slot in slots)
         {
-            slots[index].AssignSlotItem(data.Item1, data.Item2);
-            index++;
+            slot.onSlotItemChange?.Invoke();
         }
     }
 

@@ -9,6 +9,9 @@ public class Test_Inventory2 : TestBase
     public ItemCode code = ItemCode.Ruby;
     public uint from = 0;
     public uint to = 1;
+    public uint splitCount = 1;
+    public ItemSortBy sortBy = ItemSortBy.Code;
+    public bool isAcending = true;
 
     Inventory inven;
 
@@ -33,6 +36,19 @@ public class Test_Inventory2 : TestBase
 
     protected override void Test2(InputAction.CallbackContext context)
     {
-        inven.SlotSorting(ItemSortBy.Code);
+        inven.SplitItem(from, splitCount);
+        inven.PrintInventory();
+    }
+
+    protected override void Test3(InputAction.CallbackContext context)
+    {
+        inven.MoveItem(Inventory.TempSlotIndex, to);
+        inven.PrintInventory();
+    }
+
+    protected override void Test4(InputAction.CallbackContext context)
+    {
+        inven.SlotSorting(sortBy, isAcending);
+        inven.PrintInventory();
     }
 }
