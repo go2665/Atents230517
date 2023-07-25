@@ -33,11 +33,15 @@ public class InventoryUI : MonoBehaviour
         tempSlotUI = GetComponentInChildren<TempSlotUI>();
     }
 
+    /// <summary>
+    /// 인벤토리 UI 초기화 함수
+    /// </summary>
+    /// <param name="playerInven">이 UI와 연결될 인벤토리</param>
     public void InitializeInventory(Inventory playerInven)
     {
         inven = playerInven;
 
-        // 슬롯 초기화
+        // 슬롯 초기화(초기화 함수 실행 및 델리게이트 연결하기)
         for(uint i=0;i<slotsUI.Length;i++)
         {
             slotsUI[i].InitializeSlot(inven[i]);
@@ -54,38 +58,60 @@ public class InventoryUI : MonoBehaviour
         tempSlotUI.onTempSlotOpenClose += OnDetailPause;
     }
 
+    /// <summary>
+    /// 슬롯UI에서 드래그가 시작되면 실행될 함수
+    /// </summary>
+    /// <param name="index">드래그가 시작된 슬롯의 인덱스</param>
     private void OnItemMoveBegin(uint index)
     {
-        throw new NotImplementedException();
+        inven.MoveItem(index, tempSlotUI.Index);    // 시작 슬롯에서 임시 슬롯으로 아이템 옮기기
+        tempSlotUI.Open();                          // 임시 슬롯 열기
     }
 
+    /// <summary>
+    /// 슬롯UI에서 드래그가 끝났을 때 실행될 함수
+    /// </summary>
+    /// <param name="index">드래그가 끝난 슬롯의 인덱스</param>
+    /// <param name="isSuccess">드래그가 성공적인지 여부</param>
     private void OnItemMoveEnd(uint index, bool isSuccess)
     {
-        throw new NotImplementedException();
+        inven.MoveItem(tempSlotUI.Index, index);    // 임시 슬롯에서 도착 슬롯으로 아이템 옮기기
+        if( tempSlotUI.InvenSlot.IsEmpty )          // 비었다면(같은 종류의 아이템일 때 일부만 들어가는 경우가 있을 수 있으므로)
+        {
+            tempSlotUI.Close();                     // 임시 슬롯 닫기
+        }
     }
 
+    /// <summary>
+    /// 슬롯UI에 마우스가 클릭이 되었을 때 실행될 함수
+    /// </summary>
+    /// <param name="index">클릭된 슬롯의 인덱스</param>
     private void OnSlotClick(uint index)
     {
-        throw new NotImplementedException();
+        if( tempSlotUI.InvenSlot.IsEmpty )
+        {
+            // 아이템 사용, 장비 등등
+        }
+        else
+        {
+            // 임시 슬롯에 아이템이 있을 때 클릭이 되었으면
+            OnItemMoveEnd(index, true); // 클릭된 슬롯으로 아이템 이동
+        }
     }
 
     private void OnItemDetailOn(uint index)
     {
-        throw new NotImplementedException();
     }
 
     private void OnItemDetailOff(uint index)
     {
-        throw new NotImplementedException();
     }
 
     private void OnSlotPointerMove(Vector2 screenPos)
     {
-        throw new NotImplementedException();
     }
 
     private void OnDetailPause(bool isPause)
     {
-        throw new NotImplementedException();
     }
 }

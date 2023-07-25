@@ -97,7 +97,7 @@ public class Inventory
             else
             {
                 // 비어있는 슬롯이 없다.
-                Debug.Log("아이템 추가 실패 : 인벤토리가 가득 차있습니다.");
+                //Debug.Log("아이템 추가 실패 : 인벤토리가 가득 차있습니다.");
             }
         }
 
@@ -132,14 +132,14 @@ public class Inventory
                 else
                 {
                     // 다른 종류이면 실패
-                    Debug.Log($"아이템 추가 실패 : 인벤토리 {slotIndex}번 슬롯에 다른 아이템이 들어있습니다.");
+                    //Debug.Log($"아이템 추가 실패 : 인벤토리 {slotIndex}번 슬롯에 다른 아이템이 들어있습니다.");
                 }
             }
         }
         else
         {
             // 인덱스가 잘못된 경우도 실패
-            Debug.Log($"아이템 추가 실패 : {slotIndex}번은 없는 인덱스입니다.");
+            //Debug.Log($"아이템 추가 실패 : {slotIndex}번은 없는 인덱스입니다.");
         }
 
         return result;
@@ -159,7 +159,7 @@ public class Inventory
         }
         else
         {
-            Debug.Log($"아이템 감소 실패 : {slotIndex}는 없는 인덱스입니다.");
+            //Debug.Log($"아이템 감소 실패 : {slotIndex}는 없는 인덱스입니다.");
         }
     }
 
@@ -176,7 +176,7 @@ public class Inventory
         }
         else
         {
-            Debug.Log($"아이템 삭제 실패 : {slotIndex}는 없는 인덱스입니다.");
+            //Debug.Log($"아이템 삭제 실패 : {slotIndex}는 없는 인덱스입니다.");
         }
     }
 
@@ -210,7 +210,7 @@ public class Inventory
                 {
                     toSlot.IncreaseSlotItem(out uint overCount, fromSlot.ItemCount);    // 일단 from이 가진 개수만큼 to 감소 시도
                     fromSlot.DecreaseSlotItem(fromSlot.ItemCount - overCount);          // from에서 실제로 넘어간 숫자만큼 from 감소
-                    Debug.Log($"{from}번 슬롯에서 {to}번 슬롯으로 아이템 합치기");
+                    //Debug.Log($"{from}번 슬롯에서 {to}번 슬롯으로 아이템 합치기");
                 }
                 else
                 {
@@ -219,7 +219,7 @@ public class Inventory
                     uint tempCount = fromSlot.ItemCount;
                     fromSlot.AssignSlotItem(toSlot.ItemData, toSlot.ItemCount);
                     toSlot.AssignSlotItem(tempData, tempCount);
-                    Debug.Log($"{from}번 슬롯과 {to}번 슬롯의 아이템 교체");
+                    //Debug.Log($"{from}번 슬롯과 {to}번 슬롯의 아이템 교체");
                 }
             }
         }
