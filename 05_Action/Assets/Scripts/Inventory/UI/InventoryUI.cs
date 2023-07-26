@@ -90,6 +90,11 @@ public class InventoryUI : MonoBehaviour
         {
             tempSlotUI.Close();                     // 임시 슬롯 닫기
         }
+
+        if( isSuccess )
+        {
+            detail.Open(inven[index].ItemData);     // 드래그가 성공적으로 끝났으면 상세 정보창도 열기
+        }
     }
 
     /// <summary>
@@ -136,7 +141,12 @@ public class InventoryUI : MonoBehaviour
         detail.MovePosition(screenPos);
     }
 
+    /// <summary>
+    /// 임시 슬롯이 열리면 상세정보창을 일시 정지하고, 닫히면 일시 정지를 푸는 함수
+    /// </summary>
+    /// <param name="isPause">true면 일시 정지, false 해제</param>
     private void OnDetailPause(bool isPause)
     {
+        detail.IsPause = isPause;
     }
 }
