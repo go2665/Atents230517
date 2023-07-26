@@ -21,6 +21,11 @@ public class InventoryUI : MonoBehaviour
     TempSlotUI tempSlotUI;
 
     /// <summary>
+    /// 아이템의 상세정보를 표시하는 패널
+    /// </summary>
+    DetailInfo detail;
+
+    /// <summary>
     /// 이 인벤토리의 소유자를 확인하기 위한 프로퍼티
     /// </summary>
     public Player Owner => inven.Owner;
@@ -31,6 +36,8 @@ public class InventoryUI : MonoBehaviour
         slotsUI = child.GetComponentsInChildren<InvenSlotUI>();
 
         tempSlotUI = GetComponentInChildren<TempSlotUI>();
+
+        detail = GetComponentInChildren<DetailInfo>();
     }
 
     /// <summary>
@@ -56,6 +63,9 @@ public class InventoryUI : MonoBehaviour
         // 임시 슬롯 초기화
         tempSlotUI.InitializeSlot(inven.TempSlot);
         tempSlotUI.onTempSlotOpenClose += OnDetailPause;
+
+        // 상세 정보창 닫아 놓기
+        detail.Close();
     }
 
     /// <summary>
@@ -99,16 +109,31 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 마우스 포인터가 슬롯위에 올라왔을 때 실행되는 함수
+    /// </summary>
+    /// <param name="index">올라간 슬롯의 인덱스</param>
     private void OnItemDetailOn(uint index)
     {
+        detail.Open(slotsUI[index].InvenSlot.ItemData); // 상세정보창 열기
     }
 
+    /// <summary>
+    /// 마우스 포인터가 슬롯위에서 나갔을 때 실행되는 함수
+    /// </summary>
+    /// <param name="index">나간 슬롯의 인덱스</param>
     private void OnItemDetailOff(uint index)
     {
+        detail.Close(); // 상세정보창 닫기
     }
 
+    /// <summary>
+    /// 마우스 포인터가 슬롯위에서 움직일 때 실행되는 함수
+    /// </summary>
+    /// <param name="index">슬롯의 인덱스</param>
     private void OnSlotPointerMove(Vector2 screenPos)
     {
+        detail.MovePosition(screenPos);
     }
 
     private void OnDetailPause(bool isPause)
