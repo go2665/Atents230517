@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -9,6 +10,11 @@ public class InventoryUI : MonoBehaviour
     /// 이 UI가 보여줄 인벤토리 
     /// </summary>
     Inventory inven;
+
+    /// <summary>
+    /// 쉬프트키가 눌려졌는지 여부를 기록하는 변수
+    /// </summary>
+    bool isShiftPress = false;
 
     /// <summary>
     /// 이 인벤토리가 가지고 있는 모든 슬롯의 UI
@@ -23,12 +29,22 @@ public class InventoryUI : MonoBehaviour
     /// <summary>
     /// 아이템의 상세정보를 표시하는 패널
     /// </summary>
-    DetailInfo detail;
+    DetailInfoUI detail;
+
+    /// <summary>
+    /// 아이탬을 덜어내는 패널
+    /// </summary>
+    ItemSpliterUI spliter;
 
     /// <summary>
     /// 이 인벤토리의 소유자를 확인하기 위한 프로퍼티
     /// </summary>
     public Player Owner => inven.Owner;
+
+    /// <summary>
+    /// 인풋 액션
+    /// </summary>
+    PlayerInputActions inputActions;
 
     private void Awake()
     {
@@ -37,7 +53,26 @@ public class InventoryUI : MonoBehaviour
 
         tempSlotUI = GetComponentInChildren<TempSlotUI>();
 
-        detail = GetComponentInChildren<DetailInfo>();
+        detail = GetComponentInChildren<DetailInfoUI>();
+
+        spliter = GetComponentInChildren<ItemSpliterUI>();
+        spliter.onOkClick += OnSpliterOk;
+
+        inputActions = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
+        inputActions.UI.Enable();
+        inputActions.UI.Shift.performed += OnShiftPress;
+        inputActions.UI.Shift.canceled += OnShiftPress;
+    }
+
+    private void OnDisable()
+    {
+        inputActions.UI.Shift.performed -= OnShiftPress;
+        inputActions.UI.Shift.canceled -= OnShiftPress;
+        inputActions.UI.Disable();
     }
 
     /// <summary>
@@ -66,6 +101,10 @@ public class InventoryUI : MonoBehaviour
 
         // 상세 정보창 닫아 놓기
         detail.Close();
+
+        // 아이템 분리창 닫아 놓기
+        spliter.onCancel += () => detail.IsPause = false;   // 캔슬버턴 누르면 상세정보창 일시정지 해제
+        spliter.Close();
     }
 
     /// <summary>
@@ -105,7 +144,14 @@ public class InventoryUI : MonoBehaviour
     {
         if( tempSlotUI.InvenSlot.IsEmpty )
         {
-            // 아이템 사용, 장비 등등
+            if( isShiftPress )
+            {
+                OnSpliterOpen(index);   // 임시 슬롯에 아이템이 없는데 쉬프트가 눌러진체로 슬롯을 클릭했을 때 아이템 분리창을 열어라
+            }
+            else
+            {
+                // 아이템 사용, 장비 등등
+            }
         }
         else
         {
@@ -148,5 +194,33 @@ public class InventoryUI : MonoBehaviour
     private void OnDetailPause(bool isPause)
     {
         detail.IsPause = isPause;
+    }
+
+    private void OnSpliterOpen(uint index)
+    {
+        InvenSlotUI target = slotsUI[index];
+        spliter.transform.position = target.transform.position + Vector3.up * 100;
+        spliter.Open(target.InvenSlot);
+        detail.IsPause = true;
+    }
+
+    /// <summary>
+    /// 아이템 분리창에서 OK 버튼이 눌러졌을 때 실행될 함수
+    /// </summary>
+    /// <param name="index">아이템이 분리될 슬롯</param>
+    /// <param name="count">분리된 개수</param>
+    private void OnSpliterOk(uint index, uint count)
+    {
+        inven.SplitItem(index, count);
+        tempSlotUI.Open();
+    }
+
+    /// <summary>
+    /// 쉬프트키가 눌려지거나 때졌을 때 실행될 함수
+    /// </summary>
+    /// <param name="context"></param>
+    private void OnShiftPress(InputAction.CallbackContext context)
+    {
+        isShiftPress = !context.canceled;   // 쉬프트키 상황 기록
     }
 }

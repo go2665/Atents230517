@@ -288,6 +288,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "UI",
+            "id": "db96e018-0dcb-42e5-9686-c65e8b7f8e64",
+            "actions": [
+                {
+                    "name": "Shift",
+                    "type": "Button",
+                    "id": "78d4a8f8-f44a-46e7-8c57-cda2830ec7e0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "f62f4d23-928f-4b2f-a215-c1e0457016a0",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

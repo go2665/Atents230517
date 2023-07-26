@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
-public class DetailInfo : MonoBehaviour
+public class DetailInfoUI : MonoBehaviour
 {
     /// <summary>
     /// 아이템의 아이콘을 표시할 이미지
