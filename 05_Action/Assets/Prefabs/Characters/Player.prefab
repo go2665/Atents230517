@@ -1758,6 +1758,7 @@ GameObject:
   - component: {fileID: 6497509635368329695}
   - component: {fileID: 388530882}
   - component: {fileID: 388530885}
+  - component: {fileID: 893387438}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1839,6 +1840,21 @@ MonoBehaviour:
   walkSpeed: 3
   runSpeed: 5
   turnSpeed: 10
+--- !u!114 &893387438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6262997758083386943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fe32b16c6dfbca4d91783a620793d9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponParent: {fileID: 9013441107685416174}
+  shieldParent: {fileID: 7765489945237033797}
+  ItemPickupRange: 2
 --- !u!1 &6420394549802933802
 GameObject:
   m_ObjectHideFlags: 0

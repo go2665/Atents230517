@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class Player : MonoBehaviour
 {
     public Transform weaponParent;
@@ -21,4 +25,13 @@ public class Player : MonoBehaviour
         weaponParent.gameObject.SetActive(isShow);
         shieldParent.gameObject.SetActive(isShow);
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Handles.color = Color.blue;
+
+        Handles.DrawWireDisc(transform.position, Vector3.up, ItemPickupRange);
+    }
+#endif
 }

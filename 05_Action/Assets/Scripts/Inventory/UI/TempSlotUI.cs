@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class TempSlotUI : SlotUI_Base
 {
@@ -63,20 +64,24 @@ public class TempSlotUI : SlotUI_Base
     /// <param name="screenPos">마우스 커서의 스크린 좌표</param>
     public void OnDrop(Vector2 screenPos)
     {
-        if( !InvenSlot.IsEmpty )
+        if( !InvenSlot.IsEmpty )    // 임시 슬롯에 아이템이 있을 떄만 처리
         {
-            Ray ray = Camera.main.ScreenPointToRay(screenPos);
-            if( Physics.Raycast(ray, out RaycastHit hitInfo, 1000.0f, LayerMask.GetMask("Ground")))
+            Ray ray = Camera.main.ScreenPointToRay(screenPos);  // 스크린 좌표를 이용해 ray 계산
+            if( Physics.Raycast(ray, out RaycastHit hitInfo, 1000.0f, LayerMask.GetMask("Ground"))) // 레이와 바닥이 닿는지 검사
             {
-                Vector2 dropPos = hitInfo.point;
+                Vector3 dropPos = hitInfo.point;    // 바닥에 레이가 닿았으면 닿은 위치를 저장
+
+                Vector3 dropDir = dropPos - owner.transform.position;   // 오너 위치에서 레이가 닿은 지점까지의 방향 벡터 계산
+                if(dropDir.sqrMagnitude > owner.ItemPickupRange * owner.ItemPickupRange)    // 방향 벡터의 크기가 ItemPickupRange를 넘는지 체크
+                {
+                    // 넘었으면 ItemPickupRange가 만드는 원의 가장자리 저점으로 dropPos 변경
+                    dropPos = owner.transform.position + dropDir.normalized * owner.ItemPickupRange;
+                }
+
                 ItemFactory.MakeItems(InvenSlot.ItemData.code, InvenSlot.ItemCount, dropPos, true);
                 InvenSlot.ClearSlotItem();
                 Close();
             }
         }
     }
-
-    // 실습
-    // 1. 아이템을 드랍할 때 플레이어 주변위치면 그 위치에 드랍한다.
-    // 2. 아이템을 드랍할 때 드랍되는 위치는 플레이어에서 일정 이상 멀어질 수 없다.
 }

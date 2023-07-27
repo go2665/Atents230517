@@ -6,11 +6,14 @@ using UnityEngine;
 public class Test_InvenItemDrop : TestBase
 {
     public InventoryUI inventoryUI;
+
+    public Player player;
+
     Inventory inven;
 
     void Start()
     {
-        inven = new Inventory(null, 6);
+        inven = new Inventory(player, 6);
         inven.AddItem(ItemCode.Ruby, 0);
         inven.AddItem(ItemCode.Ruby, 0);
         inven.AddItem(ItemCode.Ruby, 0);
