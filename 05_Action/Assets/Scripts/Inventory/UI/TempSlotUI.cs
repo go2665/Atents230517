@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -62,5 +63,20 @@ public class TempSlotUI : SlotUI_Base
     /// <param name="screenPos">마우스 커서의 스크린 좌표</param>
     public void OnDrop(Vector2 screenPos)
     {
+        if( !InvenSlot.IsEmpty )
+        {
+            Ray ray = Camera.main.ScreenPointToRay(screenPos);
+            if( Physics.Raycast(ray, out RaycastHit hitInfo, 1000.0f, LayerMask.GetMask("Ground")))
+            {
+                Vector2 dropPos = hitInfo.point;
+                ItemFactory.MakeItems(InvenSlot.ItemData.code, InvenSlot.ItemCount, dropPos, true);
+                InvenSlot.ClearSlotItem();
+                Close();
+            }
+        }
     }
+
+    // 실습
+    // 1. 아이템을 드랍할 때 플레이어 주변위치면 그 위치에 드랍한다.
+    // 2. 아이템을 드랍할 때 드랍되는 위치는 플레이어에서 일정 이상 멀어질 수 없다.
 }

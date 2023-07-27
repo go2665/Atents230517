@@ -66,10 +66,12 @@ public class InventoryUI : MonoBehaviour
         inputActions.UI.Enable();
         inputActions.UI.Shift.performed += OnShiftPress;
         inputActions.UI.Shift.canceled += OnShiftPress;
+        inputActions.UI.Click.canceled += OnItemDrop;
     }
 
     private void OnDisable()
     {
+        inputActions.UI.Click.canceled -= OnItemDrop;
         inputActions.UI.Shift.performed -= OnShiftPress;
         inputActions.UI.Shift.canceled -= OnShiftPress;
         inputActions.UI.Disable();
@@ -226,5 +228,22 @@ public class InventoryUI : MonoBehaviour
     private void OnShiftPress(InputAction.CallbackContext context)
     {
         isShiftPress = !context.canceled;   // 쉬프트키 상황 기록
+    }
+
+
+    /// <summary>
+    /// 마우스 클릭이 떨어졌을 때 실행되는 함수(아이템 드랍용)
+    /// </summary>
+    private void OnItemDrop(InputAction.CallbackContext _)
+    {
+        Vector2 screenPos = Mouse.current.position.ReadValue();
+        RectTransform rectTransform = (RectTransform)transform;
+        Vector2 diff = screenPos - (Vector2)rectTransform.position;
+
+        if( !rectTransform.rect.Contains(diff) )
+        {
+            // 인벤토리 영역 밖이면
+            tempSlotUI.OnDrop(screenPos);
+        }
     }
 }
