@@ -33,6 +33,13 @@ public class ItemDataManager : MonoBehaviour
     public ItemData this[ItemCode code] => itemDatas[(int)code];
 
     /// <summary>
+    /// 아이템 종류별 접근을 위한 인덱서(테스트용)
+    /// </summary>
+    /// <param name="index">접근할 아이템의 인덱스</param>
+    /// <returns></returns>
+    public ItemData this[int index] => itemDatas[index];
+
+    /// <summary>
     /// 지금 존재하는 아이템 종류의 모든 갯수
     /// </summary>
     public int length => itemDatas.Length;

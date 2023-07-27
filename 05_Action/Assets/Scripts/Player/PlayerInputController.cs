@@ -87,6 +87,11 @@ public class PlayerInputController : MonoBehaviour
     /// </summary>
     PlayerInputActions inputActions;
 
+    /// <summary>
+    /// 아이템 줍기 버튼이 눌려졌다는 신호를 보내는 델리게이트
+    /// </summary>
+    public System.Action onItemPickup;
+
     CharacterController characterController;
     Animator animator;
 
@@ -110,10 +115,12 @@ public class PlayerInputController : MonoBehaviour
         inputActions.Player.MoveModeChange.performed += OnMoveModeChange;
         inputActions.Player.Attack.performed += OnAttack;
         inputActions.Player.Skill.performed += OnSkill;
+        inputActions.Player.PickUp.performed += OnPickUp;
     }
 
     private void OnDisable()
     {
+        inputActions.Player.PickUp.performed -= OnPickUp;
         inputActions.Player.Skill.performed -= OnSkill;
         inputActions.Player.Attack.performed -= OnAttack;
         inputActions.Player.MoveModeChange.performed -= OnMoveModeChange;
@@ -198,4 +205,8 @@ public class PlayerInputController : MonoBehaviour
         animator.SetTrigger(Skill_Hash);
     }
 
+    private void OnPickUp(UnityEngine.InputSystem.InputAction.CallbackContext _)
+    {
+        onItemPickup?.Invoke();
+    }
 }

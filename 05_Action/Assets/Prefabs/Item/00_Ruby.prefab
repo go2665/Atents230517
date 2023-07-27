@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 1902660075617659245, guid: 2877095c2953e87439b6129581441b61,
         type: 3}
       propertyPath: m_Name
-      value: ItemBase
+      value: 00_Ruby
       objectReference: {fileID: 0}
     - target: {fileID: 1902660075617659250, guid: 2877095c2953e87439b6129581441b61,
         type: 3}
