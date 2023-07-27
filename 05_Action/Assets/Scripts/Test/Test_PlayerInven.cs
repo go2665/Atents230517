@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class Test_PlayerInven : TestBase
 {
+    public ItemCode itemCode = ItemCode.Ruby;
+
     protected override void Test1(InputAction.CallbackContext context)
     {
         int index = Random.Range(0, GameManager.Inst.ItemData.length);
@@ -30,5 +32,12 @@ public class Test_PlayerInven : TestBase
         player.Inventory.AddItem(ItemCode.Spaphire);
         player.Inventory.AddItem(ItemCode.Spaphire);
 
+    }
+
+    protected override void Test3(InputAction.CallbackContext context)
+    {
+        Vector3 pos = Random.insideUnitSphere * 5;
+        pos.y = 0.0f;
+        ItemFactory.MakeItem(itemCode, pos, true);
     }
 }

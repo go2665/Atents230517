@@ -20,6 +20,34 @@ public class Player : MonoBehaviour
     public Inventory Inventory => inven;
 
     /// <summary>
+    /// 플레이어가 가지고 있는 금액
+    /// </summary>
+    int money = 0;
+
+    /// <summary>
+    /// 플레이어가 가지고 있는 금액 확인 및 설정용 프로퍼티
+    /// </summary>
+    public int Money
+    {
+        get => money;
+        set
+        {
+            if(money != value)  // 금액이 변경되었을 때만
+            {
+                money = value;  // 수정하고
+                onMoneyChange?.Invoke(money);   // 델리게이트로 알림
+                Debug.Log($"Player Money : {money}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// 보유한 금액이 변경되었음을 알리는 델리게이트(파라메터:현재 보유한 금액)
+    /// </summary>
+    Action<int> onMoneyChange;
+
+
+    /// <summary>
     /// 무기가 장착될 트랜스폼
     /// </summary>
     public Transform weaponParent;
@@ -74,7 +102,15 @@ public class Player : MonoBehaviour
         foreach (Collider itemCollider in itemColliders)    // 찾은 모든 컬라이더에 대해
         {
             ItemObject item = itemCollider.GetComponent<ItemObject>();   // ItemObject 컴포넌트 찾기
-            if(inven.AddItem(item.ItemData.code))           // 아이템 추가 시도
+
+            IConsumable consumable = item.ItemData as IConsumable;  // 즉시 소비가능한 아이템인지 확인용
+            if( consumable != null )
+            {
+                // 즉시소비가능한 아이템이다.
+                consumable.Consume(this.gameObject);
+                Destroy(item.gameObject);
+            }
+            else if(inven.AddItem(item.ItemData.code))      // 즉시 소비가능한 아이템이 아니면 아이템 추가 시도
             {
                 Destroy(item.gameObject);                   // 인벤토리에 아이템이 성공적으로 추가되면 삭제
             }

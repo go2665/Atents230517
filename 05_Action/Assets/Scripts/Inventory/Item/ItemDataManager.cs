@@ -6,7 +6,10 @@ public enum ItemCode
 {
     Ruby = 0,
     Emerald,
-    Spaphire
+    Spaphire,
+    CopperCoin,
+    SilverCoin,
+    GoldCoin,
 }
 
 public enum ItemSortBy
