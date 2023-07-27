@@ -196,6 +196,10 @@ public class InventoryUI : MonoBehaviour
         detail.IsPause = isPause;
     }
 
+    /// <summary>
+    /// 아이템 분리창을 여는 함수
+    /// </summary>
+    /// <param name="index">아이템을 분리할 슬롯의 인덱스</param>
     private void OnSpliterOpen(uint index)
     {
         InvenSlotUI target = slotsUI[index];

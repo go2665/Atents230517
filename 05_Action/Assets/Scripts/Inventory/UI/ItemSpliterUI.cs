@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class ItemSpliterUI : MonoBehaviour
@@ -47,6 +49,11 @@ public class ItemSpliterUI : MonoBehaviour
     /// Cancel버튼이 눌려졌을 때 실행될 델리게이트
     /// </summary>
     public Action onCancel;
+
+    /// <summary>
+    /// 인풋액션들
+    /// </summary>
+    PlayerInputActions inputActions;
 
     // 컴포넌트들
     Image itemIcon;
@@ -108,6 +115,20 @@ public class ItemSpliterUI : MonoBehaviour
             onCancel?.Invoke();     // cancel버튼이 눌려지면 신호보내고 닫기
             Close();                
         });
+
+        inputActions = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
+        inputActions.UI.Enable();
+        inputActions.UI.Click.performed += OnClick;
+    }
+
+    private void OnDisable()
+    {
+        inputActions.UI.Click.performed -= OnClick;
+        inputActions.UI.Disable();
     }
 
     /// <summary>
@@ -133,5 +154,21 @@ public class ItemSpliterUI : MonoBehaviour
     public void Close()
     {
         gameObject.SetActive(false);    // 비활성화해서 안보여주기
+    }
+
+    /// <summary>
+    /// 마우스가 오른쪽 클릭이 되거나 왼쪽 클릭이 될 때 실행되는 함수
+    /// </summary>
+    /// <param name="_"></param>
+    private void OnClick(InputAction.CallbackContext _)
+    {
+        Vector2 screenPos = Mouse.current.position.ReadValue();         // 마우스 포인터 위치 가져오고
+        Vector2 posDiff = screenPos - (Vector2)transform.position;      // 오브젝트 피봇 위치에서 얼마나 떨어져 있는지 계산
+        RectTransform rectTransform = (RectTransform)transform;
+        
+        if ( !rectTransform.rect.Contains(posDiff) )    
+        {
+            Close();    // 이 UI의 rect안에 포함이 안되면 닫는다.
+        }
     }
 }

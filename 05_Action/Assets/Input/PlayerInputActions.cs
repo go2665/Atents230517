@@ -323,6 +323,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Click"",
+                    ""type"": ""Button"",
+                    ""id"": ""e143d528-cb2f-418a-9da6-3ce709e7b6f0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -334,6 +343,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Shift"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""02fecf35-f228-4469-a0d4-219d6885668b"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KM"",
+                    ""action"": ""Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""53fc0dc4-8622-4f00-ae8f-d7d340722bf4"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KM"",
+                    ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -379,6 +410,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Shift = m_UI.FindAction("Shift", throwIfNotFound: true);
+        m_UI_Click = m_UI.FindAction("Click", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -643,11 +675,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_UI;
     private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
     private readonly InputAction m_UI_Shift;
+    private readonly InputAction m_UI_Click;
     public struct UIActions
     {
         private @PlayerInputActions m_Wrapper;
         public UIActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Shift => m_Wrapper.m_UI_Shift;
+        public InputAction @Click => m_Wrapper.m_UI_Click;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -660,6 +694,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Shift.started += instance.OnShift;
             @Shift.performed += instance.OnShift;
             @Shift.canceled += instance.OnShift;
+            @Click.started += instance.OnClick;
+            @Click.performed += instance.OnClick;
+            @Click.canceled += instance.OnClick;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -667,6 +704,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Shift.started -= instance.OnShift;
             @Shift.performed -= instance.OnShift;
             @Shift.canceled -= instance.OnShift;
+            @Click.started -= instance.OnClick;
+            @Click.performed -= instance.OnClick;
+            @Click.canceled -= instance.OnClick;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -716,5 +756,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     public interface IUIActions
     {
         void OnShift(InputAction.CallbackContext context);
+        void OnClick(InputAction.CallbackContext context);
     }
 }
