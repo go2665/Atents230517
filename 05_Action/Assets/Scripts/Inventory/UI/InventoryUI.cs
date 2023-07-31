@@ -42,6 +42,11 @@ public class InventoryUI : MonoBehaviour
     MoneyPanel moneyPanel;
 
     /// <summary>
+    /// 아이템 정렬용 패널
+    /// </summary>
+    SortPanel sortPanel;
+
+    /// <summary>
     /// 이 인벤토리의 소유자를 확인하기 위한 프로퍼티
     /// </summary>
     public Player Owner => inven.Owner;
@@ -64,6 +69,8 @@ public class InventoryUI : MonoBehaviour
         spliter.onOkClick += OnSpliterOk;
 
         moneyPanel = GetComponentInChildren<MoneyPanel>();
+
+        sortPanel = GetComponentInChildren<SortPanel>();
 
         inputActions = new PlayerInputActions();
     }
@@ -118,6 +125,9 @@ public class InventoryUI : MonoBehaviour
         // 오너와 머니 패널 연결하기
         Owner.onMoneyChange += moneyPanel.Refresh;
         moneyPanel.Refresh(Owner.Money);
+
+        // 정렬 패널과 인밴 연결하기
+        sortPanel.onSortRequest += (sortBy) => inven.SlotSorting(sortBy);
     }
 
     /// <summary>

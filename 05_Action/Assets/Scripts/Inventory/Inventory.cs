@@ -305,23 +305,24 @@ public class Inventory
         }
         // beforeSlots은 정해진 기준에 따라 정렬 완료
 
-        //// 아이템 종류와 개수를 따로 저장하기
-        //List<(ItemData, uint)> sortedData = new List<(ItemData, uint)>(SlotCount);
-        //foreach(var slot in beforeSlots)
-        //{
-        //    sortedData.Add((slot.ItemData, slot.ItemCount));
-        //}
+        // 아이템 종류와 개수를 따로 저장하기
+        List<(ItemData, uint)> sortedData = new List<(ItemData, uint)>(SlotCount);
+        foreach (var slot in beforeSlots)
+        {
+            sortedData.Add((slot.ItemData, slot.ItemCount));
+        }
 
-        //// 슬롯에 아이템 종류와 개수를 순서대로 할당하기
-        //int index = 0;
-        //foreach(var data in sortedData)
-        //{
-        //    slots[index].AssignSlotItem(data.Item1, data.Item2);
-        //    index++;
-        //}
+        // 슬롯에 아이템 종류와 개수를 순서대로 할당하기
+        int index = 0;
+        foreach (var data in sortedData)
+        {
+            slots[index].AssignSlotItem(data.Item1, data.Item2);
+            index++;
+        }
 
         // 정렬 완료된 것을 다시 배열로 만들기
-        slots = beforeSlots.ToArray();
+        //slots = beforeSlots.ToArray();    // 인덱스가 수정안되는 문제가 있다.
+
         RefreshInventory();
     }
 
