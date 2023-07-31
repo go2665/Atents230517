@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -56,10 +57,19 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     PlayerInputActions inputActions;
 
+    CanvasGroup canvasGroup;
+
+    public Action onInventoryOpen;
+    public Action onInventoryClose;
+
     private void Awake()
     {
         Transform child = transform.GetChild(0);
         slotsUI = child.GetComponentsInChildren<InvenSlotUI>();
+
+        child = transform.GetChild(1);
+        Button closeButton = child.GetComponent<Button>();
+        closeButton.onClick.AddListener(Close);
 
         tempSlotUI = GetComponentInChildren<TempSlotUI>();
 
@@ -73,6 +83,8 @@ public class InventoryUI : MonoBehaviour
         sortPanel = GetComponentInChildren<SortPanel>();
 
         inputActions = new PlayerInputActions();
+
+        canvasGroup = GetComponent<CanvasGroup>();
     }
 
     private void OnEnable()
@@ -81,10 +93,12 @@ public class InventoryUI : MonoBehaviour
         inputActions.UI.Shift.performed += OnShiftPress;
         inputActions.UI.Shift.canceled += OnShiftPress;
         inputActions.UI.Click.canceled += OnItemDrop;
+        inputActions.UI.InvenOnOff.performed += OnInvenOnOff;
     }
 
     private void OnDisable()
     {
+        inputActions.UI.InvenOnOff.performed -= OnInvenOnOff;
         inputActions.UI.Click.canceled -= OnItemDrop;
         inputActions.UI.Shift.performed -= OnShiftPress;
         inputActions.UI.Shift.canceled -= OnShiftPress;
@@ -128,6 +142,9 @@ public class InventoryUI : MonoBehaviour
 
         // 정렬 패널과 인밴 연결하기
         sortPanel.onSortRequest += (sortBy) => inven.SlotSorting(sortBy);
+
+        // 시작할 때 닫기
+        Close();
     }
 
     /// <summary>
@@ -283,7 +300,10 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     private void Open()
     {
-        
+        canvasGroup.alpha = 1.0f;
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
+        onInventoryOpen?.Invoke();
     }
 
     /// <summary>
@@ -291,7 +311,27 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     private void Close()
     {
+        if(!tempSlotUI.InvenSlot.IsEmpty)
+        {
+            OnItemMoveEnd(0, false);
+        }
 
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.interactable = false;
+        canvasGroup.alpha = 0.0f;
+        onInventoryClose?.Invoke();
+    }
+
+    private void OnInvenOnOff(InputAction.CallbackContext _)
+    {
+        if( canvasGroup.interactable )
+        {
+            Close();    // 열려있으면 닫고
+        }
+        else
+        {
+            Open();     // 닫혀있으면 열고
+        }
     }
 
     // 1. Open 함수가 실행되면 인벤토리가 열린다.

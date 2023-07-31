@@ -132,6 +132,13 @@ public class PlayerInputController : MonoBehaviour
     private void Start()
     {
         MoveSpeedMode = MoveMode.Run;           // 시작 속도 설정
+
+        InventoryUI invenUI = GameManager.Inst.InvenUI;
+        if(invenUI != null)
+        {
+            invenUI.onInventoryOpen += inputActions.Player.Attack.Disable;  // 인벤토리가 열릴때는 공격 못함
+            invenUI.onInventoryClose += inputActions.Player.Attack.Enable;  // 인벤토리가 닫히면 공격 가능
+        }
     }
 
     private void Update()
