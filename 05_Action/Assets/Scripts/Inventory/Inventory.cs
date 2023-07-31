@@ -376,6 +376,30 @@ public class Inventory
     }
 
     /// <summary>
+    /// 빈슬롯을 못찾았을 때의 인덱스
+    /// </summary>
+    const uint NotFindEmptySlot = uint.MaxValue;
+
+    /// <summary>
+    /// 비어있는 슬롯의 인덱스를 돌려주는 함수
+    /// </summary>
+    /// <param name="index">출력용 파라메터, 빈슬롯을 찾았을 경우에 인덱스값</param>
+    /// <returns>true면 빈슬롯을 찾았다, false면 빈슬롯이 없다.</returns>
+    public bool FindEmpySlotIndex(out uint index)
+    {
+        bool result = false;
+        index = NotFindEmptySlot;
+
+        InvenSlot slot = FindEmptySlot();   // 빈슬롯 찾아서
+        if(slot != null)
+        {
+            index = slot.Index;             // 빈슬롯이 있으면 인덱스 설정
+            result = true;
+        }
+        return result;
+    }
+
+    /// <summary>
     /// 적절한 인덱스인지 확인하는 함수
     /// </summary>
     /// <param name="index">확인할 인덱스</param>

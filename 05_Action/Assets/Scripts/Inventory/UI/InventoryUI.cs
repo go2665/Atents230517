@@ -125,17 +125,27 @@ public class InventoryUI : MonoBehaviour
     /// <param name="index">드래그가 끝난 슬롯의 인덱스</param>
     /// <param name="isSuccess">드래그가 성공적인지 여부</param>
     private void OnItemMoveEnd(uint index, bool isSuccess)
-    {    
-        if( isSuccess || inven[index].IsEmpty )
+    {
+        uint finalIndex = index;                        // 실제 사용할 인덱스(기본적으로는 파라메터로 받은 인덱스)
+        if( !isSuccess )
         {
-            inven.MoveItem(tempSlotUI.Index, index);    // 임시 슬롯에서 도착 슬롯으로 아이템 옮기기
-            if (tempSlotUI.InvenSlot.IsEmpty)           // 비었다면(같은 종류의 아이템일 때 일부만 들어가는 경우가 있을 수 있으므로)
+            if(inven.FindEmpySlotIndex(out uint emptyIndex))    // 드래그 실패했을 경우는 빈슬롯의 인덱스를 사용
             {
-                tempSlotUI.Close();                     // 임시 슬롯 닫기
+                finalIndex = emptyIndex;
             }
-
-            detail.Open(inven[index].ItemData);         // 드래그가 성공적으로 끝났으면 상세 정보창도 열기
         }
+
+        inven.MoveItem(tempSlotUI.Index, finalIndex);   // 임시 슬롯에서 도착 슬롯으로 아이템 옮기기
+        if (tempSlotUI.InvenSlot.IsEmpty)               // 비었다면(같은 종류의 아이템일 때 일부만 들어가는 경우가 있을 수 있으므로)
+        {
+            tempSlotUI.Close();                         // 임시 슬롯 닫기
+        }
+
+        if( isSuccess )
+        {
+            detail.Open(inven[finalIndex].ItemData);    // 드래그가 성공적으로 끝났으면 상세 정보창도 열기
+        }
+
     }
 
     /// <summary>
