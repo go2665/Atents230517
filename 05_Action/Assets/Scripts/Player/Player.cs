@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
     /// <summary>
     /// 보유한 금액이 변경되었음을 알리는 델리게이트(파라메터:현재 보유한 금액)
     /// </summary>
-    Action<int> onMoneyChange;
+    public Action<int> onMoneyChange;
 
 
     /// <summary>

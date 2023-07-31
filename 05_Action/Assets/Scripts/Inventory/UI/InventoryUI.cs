@@ -37,6 +37,11 @@ public class InventoryUI : MonoBehaviour
     ItemSpliterUI spliter;
 
     /// <summary>
+    /// 소유자가 가지고 있는 금액을 보여주는 패널
+    /// </summary>
+    MoneyPanel moneyPanel;
+
+    /// <summary>
     /// 이 인벤토리의 소유자를 확인하기 위한 프로퍼티
     /// </summary>
     public Player Owner => inven.Owner;
@@ -57,6 +62,8 @@ public class InventoryUI : MonoBehaviour
 
         spliter = GetComponentInChildren<ItemSpliterUI>();
         spliter.onOkClick += OnSpliterOk;
+
+        moneyPanel = GetComponentInChildren<MoneyPanel>();
 
         inputActions = new PlayerInputActions();
     }
@@ -107,6 +114,10 @@ public class InventoryUI : MonoBehaviour
         // 아이템 분리창 닫아 놓기
         spliter.onCancel += () => detail.IsPause = false;   // 캔슬버턴 누르면 상세정보창 일시정지 해제
         spliter.Close();
+
+        // 오너와 머니 패널 연결하기
+        Owner.onMoneyChange += moneyPanel.Refresh;
+        moneyPanel.Refresh(Owner.Money);
     }
 
     /// <summary>
