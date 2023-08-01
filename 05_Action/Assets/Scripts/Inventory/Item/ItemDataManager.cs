@@ -10,6 +10,9 @@ public enum ItemCode
     CopperCoin,
     SilverCoin,
     GoldCoin,
+    Apple,
+    Bread,
+    Beer
 }
 
 public enum ItemSortBy

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 648bffe8a9e51e14489dfc87f38f8cd4, type: 3}
+  m_Name: 08_Beer
+  m_EditorClassIdentifier: 
+  code: 8
+  itemName: "\uB9E5\uC8FC"
+  modelPrefab: {fileID: 1145100412495849189, guid: fccb4cc5f141a214c804eb1e50490ce1,
+    type: 3}
+  itemIcon: {fileID: 21300000, guid: d0c05b9125ed56349a5385e1a77547b7, type: 3}
+  price: 300
+  maxStackCount: 1
+  itemDescription: "\uB9C8\uB098\uAC00 \uC810\uC810 \uD68C\uBCF5\uB41C\uB2E4."
+  totalRegen: 100
+  duration: 10

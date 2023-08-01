@@ -34,4 +34,11 @@ public class Test_PlayerHP : TestBase
         player.HealthRegenerateByTick(10, 0.5f, 5);
         player.ManaRegenerateByTick(10, 0.5f, 5);
     }
+
+    protected override void Test5(InputAction.CallbackContext context)
+    {
+        ItemFactory.MakeItem(ItemCode.Apple, new Vector3(0, 0, 0));
+        ItemFactory.MakeItem(ItemCode.Bread, new Vector3(2, 0, 0));
+        ItemFactory.MakeItem(ItemCode.Beer, new Vector3(4, 0, 0));
+    }
 }
