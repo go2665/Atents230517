@@ -7,7 +7,7 @@ using System;
 using UnityEditor;
 #endif
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IHealth
 {
     /// <summary>
     /// 플레이어의 인벤토리
@@ -40,6 +40,49 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// 현재 HP
+    /// </summary>
+    float hp = 100.0f;
+    public float HP 
+    { 
+        get => hp;
+        set
+        {
+            if( IsAlive )       // 살아있을 때만 HP 변경
+            {
+                hp = value;
+                if( hp <= 0 )   // hp가 0 이하면 사망
+                {
+                    Die();
+                }
+                hp = Mathf.Clamp(hp, 0, MaxHP);     // HP는 항상 0~최대치
+                onHealthChange?.Invoke(hp/MaxHP);   // HP 변화 알리기
+            }
+        }
+    }
+
+    /// <summary>
+    /// 최대 HP
+    /// </summary>
+    float maxHP = 100.0f;
+    public float MaxHP => maxHP;
+
+    /// <summary>
+    /// HP가 변경되었을 때 실행될 델리게이트
+    /// </summary>
+    public Action<float> onHealthChange { get; set; }
+
+    /// <summary>
+    /// 플레이어가 사망했을 때 실행될 델리게이트
+    /// </summary>
+    public Action onDie { get; set; }
+
+    /// <summary>
+    /// 플레이어 생존 여부
+    /// </summary>
+    public bool IsAlive => hp > 0;
 
     /// <summary>
     /// 보유한 금액이 변경되었음을 알리는 델리게이트(파라메터:현재 보유한 금액)
@@ -116,6 +159,27 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    public void Die()
+    {
+        onDie?.Invoke();
+        Debug.Log("플레이어 사망");
+    }
+
+    /// <summary>
+    /// 플레이어의 체력을 지속적으로 회복시키는 함수
+    /// </summary>
+    /// <param name="totalRegen">전체 회복량</param>
+    /// <param name="duration">전체 회복 시간</param>
+    public void HealthRegenetate(float totalRegen, float duration)
+    {
+
+    }
+
+    // 1. HealthRegenetate 구현하기(테스트 3번 누르면 실행해서 되는 것 보기)
+    // 2. IMana 인터페이스 만들고 플레이어에게 상속해서 구현하기
+    // 3. ManaBar 만들고 플레이어랑 연결하기
+
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
