@@ -7,7 +7,7 @@ using System;
 using UnityEditor;
 #endif
 
-public class Player : MonoBehaviour, IHealth
+public class Player : MonoBehaviour, IHealth, IMana
 {
     /// <summary>
     /// 플레이어의 인벤토리
@@ -83,6 +83,34 @@ public class Player : MonoBehaviour, IHealth
     /// 플레이어 생존 여부
     /// </summary>
     public bool IsAlive => hp > 0;
+
+    /// <summary>
+    /// 플레이어의 현재 MP
+    /// </summary>
+    float mp = 150.0f;
+    public float MP 
+    { 
+        get => mp;
+        set
+        {
+            if (IsAlive)       // 살아있을 때만 MP 변경
+            {
+                mp = Mathf.Clamp(value, 0, MaxMP);  // MP는 항상 0~최대치
+                onManaChange?.Invoke(mp / MaxMP);   // MP 변화 알리기
+            }
+        }
+    }
+
+    /// <summary>
+    /// 플레이어의 최대 MP
+    /// </summary>
+    float maxMP = 150.0f;
+    public float MaxMP => maxMP;
+
+    /// <summary>
+    /// 마나가 변경되었을 때 실행될 델리게이트
+    /// </summary>
+    public Action<float> onManaChange { get; set; }
 
     /// <summary>
     /// 보유한 금액이 변경되었음을 알리는 델리게이트(파라메터:현재 보유한 금액)
@@ -173,13 +201,73 @@ public class Player : MonoBehaviour, IHealth
     /// <param name="duration">전체 회복 시간</param>
     public void HealthRegenetate(float totalRegen, float duration)
     {
-
+        StartCoroutine(HealthRegetateCoroutine(totalRegen, duration));
     }
 
-    // 1. HealthRegenetate 구현하기(테스트 3번 누르면 실행해서 되는 것 보기)
-    // 2. IMana 인터페이스 만들고 플레이어에게 상속해서 구현하기
-    // 3. ManaBar 만들고 플레이어랑 연결하기
+    IEnumerator HealthRegetateCoroutine(float totalRegen, float duration)
+    {
+        float regenPerSec = totalRegen / duration;  // 초당 회복량 계산
+        float timeElapsed = 0.0f;
+        while(timeElapsed < duration)
+        {
+            timeElapsed += Time.deltaTime;          // 시간 카운팅
+            HP += Time.deltaTime * regenPerSec;     // 초당 회복량만큼 증가
+            yield return null;
+        }
+    }
 
+    /// <summary>
+    /// 플레이어의 체력을 틱 단위로 증가 시키는 함수
+    /// </summary>
+    /// <param name="tickRegen">틱당 회복량</param>
+    /// <param name="tickTime">한 틱당 시간 간격</param>
+    /// <param name="totalTickCount">전체 틱 수</param>
+    public void HealthRegenerateByTick(float tickRegen, float tickTime, uint totalTickCount)
+    {
+        StartCoroutine(HealthRegenerateByTickCoroutine(tickRegen, tickTime, totalTickCount));
+    }
+
+    IEnumerator HealthRegenerateByTickCoroutine(float tickRegen, float tickTime, uint totalTickCount)
+    {
+        WaitForSeconds wait = new WaitForSeconds(tickTime);
+        for(uint tickCount = 0; tickCount < totalTickCount; tickCount++)
+        {
+            HP += tickRegen;
+            yield return wait;
+        }
+    }
+
+    public void ManaRegenetate(float totalRegen, float duration)
+    {
+        StartCoroutine(ManaRegetateCoroutine(totalRegen, duration));
+    }
+
+    IEnumerator ManaRegetateCoroutine(float totalRegen, float duration)
+    {
+        float regenPerSec = totalRegen / duration;  // 초당 회복량 계산
+        float timeElapsed = 0.0f;
+        while (timeElapsed < duration)
+        {
+            timeElapsed += Time.deltaTime;          // 시간 카운팅
+            MP += Time.deltaTime * regenPerSec;     // 초당 회복량만큼 증가
+            yield return null;
+        }
+    }
+
+    public void ManaRegenerateByTick(float tickRegen, float tickTime, uint totalTickCount)
+    {
+        StartCoroutine(ManaRegenerateByTickCoroutine(tickRegen, tickTime, totalTickCount));
+    }
+
+    IEnumerator ManaRegenerateByTickCoroutine(float tickRegen, float tickTime, uint totalTickCount)
+    {
+        WaitForSeconds wait = new WaitForSeconds(tickTime);
+        for (uint tickCount = 0; tickCount < totalTickCount; tickCount++)
+        {
+            MP += tickRegen;
+            yield return wait;
+        }
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
