@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 459b0e2bf648bd74c85b7fd7c3c71b9d, type: 3}
+  m_Name: 12_IronSword
+  m_EditorClassIdentifier: 
+  code: 12
+  itemName: "\uCCA0\uAC80"
+  modelPrefab: {fileID: 5937941934813330235, guid: 1ff919f1731b2a54fbeb3ac7d2003acd,
+    type: 3}
+  itemIcon: {fileID: 21300000, guid: 8f28955d92038974a9b04aafaeea79b0, type: 3}
+  price: 1000
+  maxStackCount: 1
+  itemDescription: "\uC1E0\uB85C \uB9CC\uB4E0 \uD55C\uC190\uAC80"
+  equipPrefab: {fileID: 7016935895697633854, guid: 0a6df67a172263c49a1cd15e233e5e65,
+    type: 3}
+  attackPower: 30

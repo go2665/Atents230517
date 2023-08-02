@@ -2,11 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-// 재생포션 추가하기
-// HP와 MP 모두 천천히 증가하는 포션
-// HealthRegenetate, ManaRegenetate 사용
-
 [CreateAssetMenu(fileName = "New Item Data - Regen Potion", menuName = "Scriptable Object/Item Data - Regen Potion", order = 7)]
 public class ItemData_RegenPotion : ItemData, IUsable
 {

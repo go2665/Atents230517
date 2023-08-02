@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d57582355bf4e474b8b6dc22557c2380, type: 3}
+  m_Name: 15_RoundShield
+  m_EditorClassIdentifier: 
+  code: 15
+  itemName: "\uB77C\uC6B4\uB4DC \uC274\uB4DC"
+  modelPrefab: {fileID: 5937941934813330235, guid: 12cdc3837ff0d964aac4d3c9979b5597,
+    type: 3}
+  itemIcon: {fileID: 21300000, guid: 615f3cdaa1374bd4db14286066f31cde, type: 3}
+  price: 1000
+  maxStackCount: 1
+  itemDescription: "\uC6D0\uD615\uBC29\uD328"
+  equipPrefab: {fileID: 6597358353836066591, guid: b052ad1200a06584cb5f190b6080f68d,
+    type: 3}
+  defencePower: 15

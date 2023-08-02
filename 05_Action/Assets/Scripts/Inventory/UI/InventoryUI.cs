@@ -202,6 +202,7 @@ public class InventoryUI : MonoBehaviour
             {
                 // 아이템 사용, 장비 등등
                 inven[index].UseItem(Owner.gameObject); // 소유자에게 아이템 사용하기
+                inven[index].EquipItem(Owner.gameObject);
             }
         }
         else

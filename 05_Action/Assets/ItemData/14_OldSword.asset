@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 459b0e2bf648bd74c85b7fd7c3c71b9d, type: 3}
+  m_Name: 14_OldSword
+  m_EditorClassIdentifier: 
+  code: 14
+  itemName: "\uB0A1\uC740 \uAC80"
+  modelPrefab: {fileID: 5937941934813330235, guid: a7403ad042506394dbeef1a8aaa53fec,
+    type: 3}
+  itemIcon: {fileID: 21300000, guid: 2ddf0348701148a4d8a7c6a0f7f146b3, type: 3}
+  price: 500
+  maxStackCount: 1
+  itemDescription: "\uC624\uB798\uB41C \uAC80"
+  equipPrefab: {fileID: 6738111080854288640, guid: e1d8c0bd7a9ec9447bba74bf2d4050f1,
+    type: 3}
+  attackPower: 15

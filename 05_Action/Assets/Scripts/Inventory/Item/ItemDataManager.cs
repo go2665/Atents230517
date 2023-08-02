@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EquipType
+{
+    Weapon = 0,
+    Shield
+}
+
 public enum ItemCode
 {
     Ruby = 0,
@@ -15,7 +21,12 @@ public enum ItemCode
     Beer,
     HealingPotion,
     ManaPotion,
-    RegenPotion
+    RegenPotion,
+    IronSword,
+    SilverSword,
+    OldSword,
+    RoundShield,
+    KiteShield
 }
 
 public enum ItemSortBy

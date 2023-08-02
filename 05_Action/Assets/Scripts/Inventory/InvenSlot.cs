@@ -196,7 +196,16 @@ public class InvenSlot
         }
     }
 
+    /// <summary>
+    /// 슬롯에 있는 아이템을 장비하는 함수
+    /// </summary>
+    /// <param name="target">아이템을 장비할 대상</param>
     public void EquipItem(GameObject target)
     {
+        IEquipable equip = ItemData as IEquipable;  // 장비 가능한 아이템이면
+        if( equip != null )
+        {
+            equip.ToggleEquip(target, this);        // target에게 장비 시도
+        }
     }
 }

@@ -7,7 +7,7 @@ using System;
 using UnityEditor;
 #endif
 
-public class Player : MonoBehaviour, IHealth, IMana
+public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
 {
     /// <summary>
     /// 플레이어의 인벤토리
@@ -113,6 +113,18 @@ public class Player : MonoBehaviour, IHealth, IMana
     public Action<float> onManaChange { get; set; }
 
     /// <summary>
+    /// 장비 아이템의 부위별 장비 상태(장착한 아이템이 있는 슬롯을 가지고 있음)
+    /// </summary>
+    InvenSlot[] partsSlot;
+
+    /// <summary>
+    /// 장비 아이템의 부위별 슬롯 확인용 인덱서
+    /// </summary>
+    /// <param name="part">확인할 장비의 종류</param>
+    /// <returns>null이면 장비가 안되어있음. null이 아니면 그 슬롯에 들어있는 아이템이 장비되어 있음</returns>
+    public InvenSlot this[EquipType part] => partsSlot[(int)part];
+
+    /// <summary>
     /// 보유한 금액이 변경되었음을 알리는 델리게이트(파라메터:현재 보유한 금액)
     /// </summary>
     public Action<int> onMoneyChange;
@@ -142,6 +154,8 @@ public class Player : MonoBehaviour, IHealth, IMana
     {
         controller = GetComponent<PlayerInputController>();
         controller.onItemPickup = OnItemPickup;
+
+        partsSlot = new InvenSlot[Enum.GetValues(typeof(EquipType)).Length];    // EquipType의 항목 개수만큼 배열 만들기
     }
 
     private void Start()
@@ -269,6 +283,62 @@ public class Player : MonoBehaviour, IHealth, IMana
         }
     }
 
+    /// <summary>
+    /// 플레이어가 아이템을 장비하는 함수
+    /// </summary>
+    /// <param name="part">장비할 부위</param>
+    /// <param name="slot">장비할 아이템이 들어있는 슬롯</param>
+    public void EquipItem(EquipType part, InvenSlot slot)
+    {
+        ItemData_Equip equip = slot.ItemData as ItemData_Equip;     // 장비가능한 아이템인지 확인
+        if (equip != null)  // 장비가 가능하면
+        {
+            Transform partParent = GetEquipParentTransform(part);           // 장비가 붙을 부모 트랜스폼 가져오고
+            GameObject obj = Instantiate(equip.equipPrefab, partParent);    // 부모 트랜스폼의 자식으로 오브젝트 생성
+
+            partsSlot[(int)part] = slot;    // 어느 슬롯의 아이템이 장비되었는지 기록
+            slot.IsEquipped = true;         // 장비되었다고 알림
+        }
+    }
+
+    /// <summary>
+    /// 플레이어가 아이템 장비를 해제하는 함수
+    /// </summary>
+    /// <param name="part">아이템을 장비 해제할 부위</param>
+    public void UnEquipItem(EquipType part)
+    {
+        Transform partParent = GetEquipParentTransform(part);   // 판단기준 : 파츠 부모가 자식을 가지고 있으면 장비중
+        while(partParent.childCount > 0)        // 파츠부모가 자식을 가지고 있으면 모두 제거
+        {
+            Transform child = partParent.GetChild(0);
+            child.SetParent(null);      
+            Destroy(child.gameObject);          // 자식 삭제
+        }
+
+        partsSlot[(int)part].IsEquipped = false;    // 장비 해제되었다고 알림
+        partsSlot[(int)part] = null;                // 파츠 기록 초기화
+    }
+
+    /// <summary>
+    /// 장비가 붙을 부모 트랜스폼 찾아주는 함수
+    /// </summary>
+    /// <param name="part">찾을 파츠</param>
+    /// <returns>장비의 부모 트랜스폼</returns>
+    public Transform GetEquipParentTransform(EquipType part)
+    {
+        Transform result = null;
+        switch(part)
+        {
+            case EquipType.Weapon:
+                result = weaponParent;
+                break;
+            case EquipType.Shield: 
+                result = shieldParent; 
+                break;
+        }
+        return result;
+    }
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
@@ -276,5 +346,6 @@ public class Player : MonoBehaviour, IHealth, IMana
 
         Handles.DrawWireDisc(transform.position, Vector3.up, ItemPickupRange);  // 아이템 획득범위(파란색)
     }
+
 #endif
 }
