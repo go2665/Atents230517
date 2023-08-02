@@ -14,7 +14,8 @@ public enum ItemCode
     Bread,
     Beer,
     HealingPotion,
-    ManaPotion
+    ManaPotion,
+    RegenPotion
 }
 
 public enum ItemSortBy

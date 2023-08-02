@@ -55,5 +55,8 @@ public class Test_PlayerHP : TestBase
         ItemFactory.MakeItem(ItemCode.ManaPotion);
         ItemFactory.MakeItem(ItemCode.ManaPotion);
         ItemFactory.MakeItem(ItemCode.ManaPotion);
+        ItemFactory.MakeItem(ItemCode.RegenPotion);
+        ItemFactory.MakeItem(ItemCode.RegenPotion);
+        ItemFactory.MakeItem(ItemCode.RegenPotion);
     }
 }
