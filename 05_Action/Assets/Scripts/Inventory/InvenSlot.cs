@@ -180,8 +180,20 @@ public class InvenSlot
         }
     }
 
+    /// <summary>
+    /// 슬롯에 있는 아이템을 사용하는 함수
+    /// </summary>
+    /// <param name="target">아이템의 효과를 받을 대상</param>
     public void UseItem(GameObject target)
     {
+        IUsable usable = ItemData as IUsable;   // IUsable을 상속 받았는지 확인
+        if(usable != null)
+        {
+            if( usable.Use(target) )            // IUsable을 상속받았으면 사용 시도
+            {
+                DecreaseSlotItem();             // 성공적으로 사용했으면 개수 1개 감소
+            }
+        }
     }
 
     public void EquipItem(GameObject target)

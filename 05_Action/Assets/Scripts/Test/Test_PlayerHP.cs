@@ -40,5 +40,20 @@ public class Test_PlayerHP : TestBase
         ItemFactory.MakeItem(ItemCode.Apple, new Vector3(0, 0, 0));
         ItemFactory.MakeItem(ItemCode.Bread, new Vector3(2, 0, 0));
         ItemFactory.MakeItem(ItemCode.Beer, new Vector3(4, 0, 0));
+
+        ItemFactory.MakeItem(ItemCode.HealingPotion);
+        ItemFactory.MakeItem(ItemCode.HealingPotion);
+        ItemFactory.MakeItem(ItemCode.HealingPotion);
+        ItemFactory.MakeItem(ItemCode.HealingPotion);
+        ItemFactory.MakeItem(ItemCode.HealingPotion);
+        ItemFactory.MakeItem(ItemCode.HealingPotion);
+        ItemFactory.MakeItem(ItemCode.HealingPotion);
+        ItemFactory.MakeItem(ItemCode.ManaPotion);
+        ItemFactory.MakeItem(ItemCode.ManaPotion);
+        ItemFactory.MakeItem(ItemCode.ManaPotion);
+        ItemFactory.MakeItem(ItemCode.ManaPotion);
+        ItemFactory.MakeItem(ItemCode.ManaPotion);
+        ItemFactory.MakeItem(ItemCode.ManaPotion);
+        ItemFactory.MakeItem(ItemCode.ManaPotion);
     }
 }

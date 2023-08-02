@@ -12,7 +12,9 @@ public enum ItemCode
     GoldCoin,
     Apple,
     Bread,
-    Beer
+    Beer,
+    HealingPotion,
+    ManaPotion
 }
 
 public enum ItemSortBy

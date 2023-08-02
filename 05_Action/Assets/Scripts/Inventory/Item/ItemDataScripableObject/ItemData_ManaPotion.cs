@@ -22,9 +22,16 @@ public class ItemData_ManaPotion : ItemData, IUsable
             IMana manaTarget = target.GetComponent<IMana>();
             if (manaTarget != null)         // MP가 있어야 한다.
             {
-                manaTarget.MP += mana;      // MP 증가
-                Debug.Log($"{target.name}의 MP가 {mana}만큼 증가해서 {manaTarget.MP}가 되었습니다.");
-                result = true;
+                if(manaTarget.MP < manaTarget.MaxMP)
+                {
+                    manaTarget.MP += mana;      // MP 증가
+                    Debug.Log($"{target.name}의 MP가 {mana}만큼 증가해서 {manaTarget.MP}가 되었습니다.");
+                    result = true;
+                }
+                else
+                {
+                    Debug.Log($"{target.name}의 MP가 가득 차 있습니다. 사용 실패");
+                }
             }
         }
 

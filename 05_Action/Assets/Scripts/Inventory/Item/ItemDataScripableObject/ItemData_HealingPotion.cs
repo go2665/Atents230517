@@ -22,9 +22,16 @@ public class ItemData_HealingPotion : ItemData, IUsable
             IHealth health = target.GetComponent<IHealth>();
             if (health != null)     // HP가 있어야 한다.
             {
-                health.HP += heal;  // HP 증가
-                Debug.Log($"{target.name}의 HP가 {heal}만큼 증가해서 {health.HP}가 되었습니다.");
-                result = true;
+                if( health.HP < health.MaxHP )
+                {
+                    health.HP += heal;  // HP 증가
+                    Debug.Log($"{target.name}의 HP가 {heal}만큼 증가해서 {health.HP}가 되었습니다.");
+                    result = true;
+                }
+                else
+                {
+                    Debug.Log($"{target.name}의 HP가 가득 차 있습니다. 사용 실패");
+                }
             }
         }
 

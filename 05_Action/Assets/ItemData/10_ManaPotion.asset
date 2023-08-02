@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7da23a9072416d47ae43ddcc85e8b67, type: 3}
+  m_Name: 10_ManaPotion
+  m_EditorClassIdentifier: 
+  code: 10
+  itemName: "\uB9C8\uB098 \uD3EC\uC158"
+  modelPrefab: {fileID: 5937941934813330235, guid: 0510cc2c4e6fdbe45b917768ed23f9f7,
+    type: 3}
+  itemIcon: {fileID: 21300000, guid: ace8a02646afeda4880fc3cb14cad705, type: 3}
+  price: 1200
+  maxStackCount: 5
+  itemDescription: "MP \uD68C\uBCF5\uC6A9 \uD3EC\uC158"
+  mana: 50
