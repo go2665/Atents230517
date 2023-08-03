@@ -4,16 +4,22 @@ using UnityEngine;
 
 public class Test_ItemEquip : TestBase
 {
+    Player player;
+
     private void Start()
     {
-        ItemFactory.MakeItem(ItemCode.IronSword);
-        ItemFactory.MakeItem(ItemCode.SilverSword);
-        ItemFactory.MakeItem(ItemCode.OldSword);
-        ItemFactory.MakeItem(ItemCode.RoundShield);
-        ItemFactory.MakeItem(ItemCode.KiteShield);
+        Vector3 pos = new Vector3 (0, 0, 10);
+        ItemFactory.MakeItem(ItemCode.IronSword, pos);
+        ItemFactory.MakeItem(ItemCode.SilverSword, pos);
+        ItemFactory.MakeItem(ItemCode.OldSword, pos);
+        ItemFactory.MakeItem(ItemCode.RoundShield, pos);
+        ItemFactory.MakeItem(ItemCode.KiteShield, pos);
+
+        player = GameManager.Inst.Player;
+        player.Inventory.AddItem(ItemCode.IronSword);
+        player.Inventory.Test_ItemEquip(0);
     }
 }
 
 // 코드 확인
-// 장비를 한 아이템을 드래그해서 위치를 변경했을 때 E 마크가 사라지는 문제 수정해보기
 // 무기 이팩트 처리

@@ -335,9 +335,4 @@ public class InventoryUI : MonoBehaviour
             Open();     // 닫혀있으면 열고
         }
     }
-
-    // 1. Open 함수가 실행되면 인벤토리가 열린다.
-    // 2. Close 함수가 실행되면 인벤토리가 닫힌다.
-    // 3. I 키를 눌렀을 때 인벤토리가 열려있으면 닫히고, 닫혀있으면 열린다.
-    // 4. 인벤토리가 열려있을 때는 공격을 할 수 없다.(PlayerInputController 수정)
 }

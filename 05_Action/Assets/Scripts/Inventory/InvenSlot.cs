@@ -100,6 +100,7 @@ public class InvenSlot
     /// </summary>
     /// <param name="data">설정할 아이템 종류</param>
     /// <param name="count">설정할 아이템 개수(set 용도, 추가되는 것이 아님)</param>
+    /// <param name="isEquipped">장비 상태</param>
     public void AssignSlotItem(ItemData data, uint count = 1, bool isEquipped = false)
     {
         if( data != null )

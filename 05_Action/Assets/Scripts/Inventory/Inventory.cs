@@ -443,4 +443,11 @@ public class Inventory
 
         Debug.Log(printText);
     }
+
+
+
+    public void Test_ItemEquip(uint index)
+    {
+        slots[index].EquipItem(Owner.gameObject);
+    }
 }

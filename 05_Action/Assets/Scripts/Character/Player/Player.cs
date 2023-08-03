@@ -129,6 +129,15 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
     /// </summary>
     public Action<int> onMoneyChange;
 
+    /// <summary>
+    /// 칼의 컬라이더 활성화/비활성화를 알리는 델리게이트
+    /// </summary>
+    Action<bool> onWeaponBladeEnable;
+
+    /// <summary>
+    /// 칼의 이팩트 활성화/비활성화를 알리는 델리게이트
+    /// </summary>
+    Action<bool> onWeaponEffectEnable;
 
     /// <summary>
     /// 무기가 장착될 트랜스폼
@@ -298,6 +307,13 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
 
             partsSlot[(int)part] = slot;    // 어느 슬롯의 아이템이 장비되었는지 기록
             slot.IsEquipped = true;         // 장비되었다고 알림
+
+            if(part == EquipType.Weapon)
+            {
+                Weapon weapon = obj.GetComponent<Weapon>();
+                onWeaponBladeEnable = weapon.BladeColliderEnable;
+                onWeaponEffectEnable = weapon.EffectEnable;
+            }
         }
     }
 
@@ -317,6 +333,12 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
 
         partsSlot[(int)part].IsEquipped = false;    // 장비 해제되었다고 알림
         partsSlot[(int)part] = null;                // 파츠 기록 초기화
+
+        if( part == EquipType.Weapon)
+        {
+            onWeaponBladeEnable = null;
+            onWeaponEffectEnable = null;
+        }
     }
 
     /// <summary>
@@ -337,6 +359,21 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
                 break;
         }
         return result;
+    }
+
+    public void WeaponEffectEnable(bool enable)
+    {
+        onWeaponEffectEnable?.Invoke(enable);
+    }
+
+    public void WeaponBladeEnable()
+    {
+        onWeaponBladeEnable?.Invoke(true);
+    }
+
+    public void WeaponBladeDisable()
+    {
+        onWeaponBladeEnable.Invoke(false);
     }
 
 #if UNITY_EDITOR
