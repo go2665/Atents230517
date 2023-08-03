@@ -376,6 +376,16 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
         onWeaponBladeEnable.Invoke(false);
     }
 
+    /// <summary>
+    /// 파츠별로 어떤 슬롯에 아이템이 사용되고 있는지를 설정하는 함수
+    /// </summary>
+    /// <param name="parts">아이템 파츠 종류</param>
+    /// <param name="slot">아이템이 들어있는 슬롯</param>
+    public void SetPartsSlot(EquipType parts, InvenSlot slot)
+    {
+        partsSlot[(int)parts] = slot;
+    }
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
