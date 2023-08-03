@@ -217,8 +217,9 @@ public class Inventory
                     // 다른 종류의 아이템이면 서로 스왑
                     ItemData tempData = fromSlot.ItemData;
                     uint tempCount = fromSlot.ItemCount;
-                    fromSlot.AssignSlotItem(toSlot.ItemData, toSlot.ItemCount);
-                    toSlot.AssignSlotItem(tempData, tempCount);
+                    bool tempEquipped = fromSlot.IsEquipped;
+                    fromSlot.AssignSlotItem(toSlot.ItemData, toSlot.ItemCount, toSlot.IsEquipped);
+                    toSlot.AssignSlotItem(tempData, tempCount, tempEquipped);
                     //Debug.Log($"{from}번 슬롯과 {to}번 슬롯의 아이템 교체");
                 }
             }
@@ -306,17 +307,17 @@ public class Inventory
         // beforeSlots은 정해진 기준에 따라 정렬 완료
 
         // 아이템 종류와 개수를 따로 저장하기
-        List<(ItemData, uint)> sortedData = new List<(ItemData, uint)>(SlotCount);
+        List<(ItemData, uint, bool)> sortedData = new List<(ItemData, uint, bool)>(SlotCount);
         foreach (var slot in beforeSlots)
         {
-            sortedData.Add((slot.ItemData, slot.ItemCount));
+            sortedData.Add((slot.ItemData, slot.ItemCount, slot.IsEquipped));
         }
 
         // 슬롯에 아이템 종류와 개수를 순서대로 할당하기
         int index = 0;
         foreach (var data in sortedData)
         {
-            slots[index].AssignSlotItem(data.Item1, data.Item2);
+            slots[index].AssignSlotItem(data.Item1, data.Item2, data.Item3);
             index++;
         }
 

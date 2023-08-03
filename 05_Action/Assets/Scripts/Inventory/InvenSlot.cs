@@ -100,13 +100,13 @@ public class InvenSlot
     /// </summary>
     /// <param name="data">설정할 아이템 종류</param>
     /// <param name="count">설정할 아이템 개수(set 용도, 추가되는 것이 아님)</param>
-    public void AssignSlotItem(ItemData data, uint count = 1)
+    public void AssignSlotItem(ItemData data, uint count = 1, bool isEquipped = false)
     {
         if( data != null )
         {
             ItemData = data;
             ItemCount = count;
-            IsEquipped = false;
+            IsEquipped = isEquipped;
             //Debug.Log($"인벤토리 {slotIndex}번 슬롯에 \"{ItemData.itemName}\" 아이템이 {ItemCount}개 설정");
         }
         else
