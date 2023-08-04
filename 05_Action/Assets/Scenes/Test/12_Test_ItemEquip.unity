@@ -130,50 +130,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1299194964, guid: 3f4ddf64866006c44bd25aa8cb86f23a, type: 3}
-      propertyPath: itemDatas.Array.size
-      value: 17
-      objectReference: {fileID: 0}
-    - target: {fileID: 1299194964, guid: 3f4ddf64866006c44bd25aa8cb86f23a, type: 3}
-      propertyPath: itemDatas.Array.data[9]
-      value: 
-      objectReference: {fileID: 11400000, guid: 9819518ddbb901e47a63ea2fe47695d9,
-        type: 2}
-    - target: {fileID: 1299194964, guid: 3f4ddf64866006c44bd25aa8cb86f23a, type: 3}
-      propertyPath: itemDatas.Array.data[10]
-      value: 
-      objectReference: {fileID: 11400000, guid: c289854866355fc448a69bcbc3675790,
-        type: 2}
-    - target: {fileID: 1299194964, guid: 3f4ddf64866006c44bd25aa8cb86f23a, type: 3}
-      propertyPath: itemDatas.Array.data[11]
-      value: 
-      objectReference: {fileID: 11400000, guid: 53e43a1e904bf704a8749b66e085d06b,
-        type: 2}
-    - target: {fileID: 1299194964, guid: 3f4ddf64866006c44bd25aa8cb86f23a, type: 3}
-      propertyPath: itemDatas.Array.data[12]
-      value: 
-      objectReference: {fileID: 11400000, guid: 21c59d9515188974ab6614089e66070f,
-        type: 2}
-    - target: {fileID: 1299194964, guid: 3f4ddf64866006c44bd25aa8cb86f23a, type: 3}
-      propertyPath: itemDatas.Array.data[13]
-      value: 
-      objectReference: {fileID: 11400000, guid: 46819eb0786c0c44ba9d2543e6ad8b8f,
-        type: 2}
-    - target: {fileID: 1299194964, guid: 3f4ddf64866006c44bd25aa8cb86f23a, type: 3}
-      propertyPath: itemDatas.Array.data[14]
-      value: 
-      objectReference: {fileID: 11400000, guid: 2764374f70a8eda4bb21fda324f2f7c4,
-        type: 2}
-    - target: {fileID: 1299194964, guid: 3f4ddf64866006c44bd25aa8cb86f23a, type: 3}
-      propertyPath: itemDatas.Array.data[15]
-      value: 
-      objectReference: {fileID: 11400000, guid: 8b46675b99741684c908ee5ba37500ae,
-        type: 2}
-    - target: {fileID: 1299194964, guid: 3f4ddf64866006c44bd25aa8cb86f23a, type: 3}
-      propertyPath: itemDatas.Array.data[16]
-      value: 
-      objectReference: {fileID: 11400000, guid: e8a068f2432458b4cabc02bc787260c6,
-        type: 2}
     - target: {fileID: 165690984178548480, guid: 3f4ddf64866006c44bd25aa8cb86f23a,
         type: 3}
       propertyPath: m_RootOrder
