@@ -7,7 +7,7 @@ using System;
 using UnityEditor;
 #endif
 
-public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
+public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
 {
     /// <summary>
     /// 플레이어의 인벤토리
@@ -112,6 +112,11 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
     /// </summary>
     public Action<float> onManaChange { get; set; }
 
+    public float attackPower = 10.0f;
+    public float AttackPower => attackPower;
+    public float defencePower = 3.0f;
+    public float DefencePower => defencePower;
+
     /// <summary>
     /// 장비 아이템의 부위별 장비 상태(장착한 아이템이 있는 슬롯을 가지고 있음)
     /// </summary>
@@ -159,10 +164,14 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
     /// </summary>
     PlayerInputController controller;
 
+    Animator animator;
+
     private void Awake()
     {
         controller = GetComponent<PlayerInputController>();
         controller.onItemPickup = OnItemPickup;
+
+        animator = GetComponent<Animator>();
 
         partsSlot = new InvenSlot[Enum.GetValues(typeof(EquipType)).Length];    // EquipType의 항목 개수만큼 배열 만들기
     }
@@ -384,6 +393,29 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
     public void SetPartsSlot(EquipType parts, InvenSlot slot)
     {
         partsSlot[(int)parts] = slot;
+    }
+
+    /// <summary>
+    /// 공격함수
+    /// </summary>
+    /// <param name="target">내가 공격할 대상</param>
+    public void Attack(IBattle target)
+    {
+        target.Defence(AttackPower);    // 대상에게 데미지를 주기
+    }
+
+    /// <summary>
+    /// 방어용 함수
+    /// </summary>
+    /// <param name="damage">내가 받은 데미지</param>
+    public void Defence(float damage)
+    {
+        if (IsAlive)
+        {
+            //animator.SetTrigger("Hit");
+            // 데미지 공식 : 실제 입는 데미지 = 적 공격 데미지 - 방어력
+            HP -= (damage - DefencePower);  // 데미지 적용
+        }
     }
 
 #if UNITY_EDITOR

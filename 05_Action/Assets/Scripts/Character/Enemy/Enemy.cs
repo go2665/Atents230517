@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Unity.Mathematics;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IBattle, IHealth
 {
     // 상태 머신
     // 상태 : 대기, 순찰, 추적, 공격, 사망
@@ -41,19 +42,26 @@ public class Enemy : MonoBehaviour
                     case EnemyState.Wait:
                         agent.isStopped = true;         // 에이전트 정지 시키기
                         agent.velocity = Vector3.zero;  // 남아있던 운동량 제거하기
+                        animator.SetTrigger("Stop");
                         WaitTimer = waitTime;           // 대기 시간 초기화
                         onStateUpdate = Update_Wait;    // 대기 상태용 업데이트 함수 설정
                         break;
                     case EnemyState.Patrol:
                         agent.isStopped = false;                        // 에이전트 다시 켜기
                         agent.SetDestination(waypointTarget.position);  // 이동 명령
+                        animator.SetTrigger("Move");
                         onStateUpdate = Update_Patrol;                  // 순찰 상태용 업데이트 함수 설정
                         break;
                     case EnemyState.Chase:
                         agent.isStopped = false;
+                        animator.SetTrigger("Move");
                         onStateUpdate = Update_Chase;
                         break;
                     case EnemyState.Attack:
+                        agent.isStopped = true;         // 에이전트 정지 시키기
+                        agent.velocity = Vector3.zero;  // 남아있던 운동량 제거하기
+                        animator.SetTrigger("Attack");
+                        attackCoolTime = attackSpeed;
                         onStateUpdate = Update_Attack;
                         break;
                     case EnemyState.Dead:
@@ -62,7 +70,7 @@ public class Enemy : MonoBehaviour
                     default:
                         break;
                 }
-                Debug.Log($"State : {state}");
+                //Debug.Log($"State : {state}");
             }
         }
     }
@@ -125,6 +133,44 @@ public class Enemy : MonoBehaviour
     Transform chaseTarget = null;
 
     /// <summary>
+    /// 공격 대상
+    /// </summary>
+    IBattle attackTarget = null;
+
+    public float attackPower = 10.0f;
+    public float AttackPower => attackPower;
+
+    float attackSpeed = 1.0f;
+    float attackCoolTime = 1.0f;
+
+    public float defencePower = 3.0f;
+    public float DefencePower => defencePower;
+
+    float hp = 100.0f;
+    public float HP 
+    { 
+        get => hp;
+        set
+        {
+            hp = value;
+            if( State != EnemyState.Dead && hp <= 0)
+            {
+                Die();
+            }
+            hp = Mathf.Clamp(hp, 0, maxHP);
+            onHealthChange?.Invoke(hp/maxHP);
+        }
+    }
+
+    public float maxHP = 100.0f;
+    public float MaxHP => maxHP;
+
+    public Action<float> onHealthChange { get; set; }
+    public Action onDie { get; set; }
+
+    public bool IsAlive => hp > 0;
+
+    /// <summary>
     /// 상태별 업데이트 함수가 저장될 델리게이트(함수저장용)
     /// </summary>
     Action onStateUpdate;
@@ -140,6 +186,27 @@ public class Enemy : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         bodyCollider = GetComponent<SphereCollider>();
         rigid = GetComponent<Rigidbody>();
+
+        AttackArea attackArea = GetComponentInChildren<AttackArea>();
+        attackArea.onPlayerIn += (target) =>
+        {
+            if( State == EnemyState.Chase )     // 추적 상태이면
+            {
+                attackTarget = target;          // 공격 대상 지정하고
+                State = EnemyState.Attack;      // 상태 변경하기
+            }
+        };
+        attackArea.onPlayerOut += (target) =>
+        {
+            if( attackTarget == target )        // 공격 대상이 나가면
+            {
+                attackTarget = null;            // 공격 대상을 비우고
+                if( State != EnemyState.Dead )  // 죽은 상태가 아니면
+                {
+                    State = EnemyState.Chase;   // 추적 상태로 변경
+                }
+            }
+        };
     }
 
     private void Start()
@@ -156,6 +223,7 @@ public class Enemy : MonoBehaviour
         }
 
         State = EnemyState.Wait;
+        animator.ResetTrigger("Stop");  // Wait 때문에 stop 트리거가 쌓이는 것 제거
     }
 
     private void Update()
@@ -218,6 +286,14 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void Update_Attack()
     {
+        attackCoolTime -= Time.deltaTime;
+        transform.rotation = Quaternion.Slerp(transform.rotation,
+            Quaternion.LookRotation(attackTarget.transform.position - transform.position), 0.1f);
+        if(attackCoolTime<0)
+        {
+            animator.SetTrigger("Attack");
+            Attack(attackTarget);
+        }
     }
 
     /// <summary>
@@ -297,11 +373,87 @@ public class Enemy : MonoBehaviour
         return result;
     }
 
+    /// <summary>
+    /// 공격함수
+    /// </summary>
+    /// <param name="target">내가 공격할 대상</param>
+    public void Attack(IBattle target)
+    {
+        target.Defence(AttackPower);    // 대상에게 데미지를 주고
+        attackCoolTime = attackSpeed;   // 쿨타임 초기화
+    }
+
+    /// <summary>
+    /// 방어용 함수
+    /// </summary>
+    /// <param name="damage">내가 받은 데미지</param>
+    public void Defence(float damage)
+    {
+        if( State != EnemyState.Dead )
+        {
+            animator.SetTrigger("Hit");
+            // 데미지 공식 : 실제 입는 데미지 = 적 공격 데미지 - 방어력
+            HP -= (damage - DefencePower);  // 데미지 적용
+        }
+    }
+
+    /// <summary>
+    /// 죽었을 때 실행될 함수
+    /// </summary>
+    public void Die()
+    {
+        State = EnemyState.Dead;
+        onDie?.Invoke();
+    }
+
+    /// <summary>
+    /// 적의 체력을 지속적으로 회복시키는 함수
+    /// </summary>
+    /// <param name="totalRegen">전체 회복량</param>
+    /// <param name="duration">전체 회복 시간</param>
+    public void HealthRegenetate(float totalRegen, float duration)
+    {
+        StartCoroutine(HealthRegetateCoroutine(totalRegen, duration));
+    }
+
+    IEnumerator HealthRegetateCoroutine(float totalRegen, float duration)
+    {
+        float regenPerSec = totalRegen / duration;  // 초당 회복량 계산
+        float timeElapsed = 0.0f;
+        while (timeElapsed < duration)
+        {
+            timeElapsed += Time.deltaTime;          // 시간 카운팅
+            HP += Time.deltaTime * regenPerSec;     // 초당 회복량만큼 증가
+            yield return null;
+        }
+    }
+
+    /// <summary>
+    /// 적의 체력을 틱 단위로 증가 시키는 함수
+    /// </summary>
+    /// <param name="tickRegen">틱당 회복량</param>
+    /// <param name="tickTime">한 틱당 시간 간격</param>
+    /// <param name="totalTickCount">전체 틱 수</param>
+    public void HealthRegenerateByTick(float tickRegen, float tickTime, uint totalTickCount)
+    {
+        StartCoroutine(HealthRegenerateByTickCoroutine(tickRegen, tickTime, totalTickCount));
+    }
+
+    IEnumerator HealthRegenerateByTickCoroutine(float tickRegen, float tickTime, uint totalTickCount)
+    {
+        WaitForSeconds wait = new WaitForSeconds(tickTime);
+        for (uint tickCount = 0; tickCount < totalTickCount; tickCount++)
+        {
+            HP += tickRegen;
+            yield return wait;
+        }
+    }
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         bool playerShow = false;
-        //playerShow = SearchPlayer();   // 시야 범위안에 플레이어가 들어왔는지 확인
+        playerShow = SearchPlayer();   // 시야 범위안에 플레이어가 들어왔는지 확인
 
         // 원거리 시야 범위는 녹색으로 표시(부채꼴로 그리기)
         Handles.color = playerShow ? Color.red : Color.green;
