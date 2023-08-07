@@ -173,6 +173,16 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
 
     public bool IsAlive => hp > 0;
 
+    [System.Serializable]
+    public struct ItemDropInfo
+    {
+        public ItemCode code;
+        [Range(0.0f, 1.0f)]
+        public float dropPercentage;
+    }
+
+    public ItemDropInfo[] dropItems;
+    
     /// <summary>
     /// 상태별 업데이트 함수가 저장될 델리게이트(함수저장용)
     /// </summary>
@@ -182,6 +192,8 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
     NavMeshAgent agent;
     SphereCollider bodyCollider;
     Rigidbody rigid;
+    EnemyHealthBar hpBar;
+    ParticleSystem dieEffect;
 
     private void Awake()
     {
@@ -210,6 +222,11 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
                 }
             }
         };
+
+        Transform child = transform.GetChild(3);
+        hpBar = child.GetComponent<EnemyHealthBar>();
+        child = transform.GetChild(4);
+        dieEffect = child.GetComponent<ParticleSystem>();
     }
 
     private void Start()
@@ -406,25 +423,48 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
     public void Die()
     {
         State = EnemyState.Dead;
-        StartCoroutine(Dead());
+        StartCoroutine(DeadSequence());
         onDie?.Invoke();
     }
 
-    IEnumerator Dead()
+    /// <summary>
+    /// 사망 연출용 코루틴
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator DeadSequence()
     {
-        // 바닥에 보일 소용돌이 이팩트 켜기
-        // HP바 제거하기(안보이게 하는 것도 ok)
+        // 이팩트 처리        
+        dieEffect.Play();                       // 바닥에 보일 소용돌이 이팩트 켜기
+        dieEffect.transform.SetParent(null);    // 이팩트의 부모 제거(같이 안떨어지게 만들기)
+        hpBar.gameObject.SetActive(false);      // HP바 제거하기(안보이게 하는 것도 ok)
+        yield return new WaitForSeconds(0.35f);
 
-        // 죽는 애니메이션이 끝난 이후 (1.5초 이후)
+        MakeDropItems();
+
+        yield return new WaitForSeconds(1.15f);  // 죽는 애니메이션이 끝날때까지 대기(0.35+1.15 = 1.5초)
 
         // 바닥 아래로 떨어트리기
+        agent.enabled = false;              // NavMesh agent 끄기(켜져 있으면 항상 NavMesh 위에 있다.)
+        bodyCollider.enabled = false;       // 충돌 안되게 만들기
+        rigid.isKinematic = false;          // 키네마틱 꺼서 물리로 움직이게 만들기
+        rigid.drag = 10.0f;                 // 무한대인 마찰력을 10으로 설정해서 천천히 떨어지게 만들기
 
         // 충분히 바닥아래로 떨어진 이후 (적당한 시간)
+        yield return new WaitForSeconds(1.5f);  // 완전히 떨어질 때까지 대기
 
         // 슬라임 삭제하기
+        Destroy(this.gameObject);
         // 이팩트도 삭제하기
+        Destroy(dieEffect.gameObject);
+    }
 
-        yield return null;
+    /// <summary>
+    /// 아이템을 드랍하는 함수
+    /// </summary>
+    private void MakeDropItems()
+    {
+        // 1. dropItems에 기록 되어있는 모든 아이템을 확률을 체크해서 통과하면 아이템을 생성한다.
+        // 2. 생성 확률을 통과하면 한번 더 확률을 체크한다.(최대 3번까지만 처리한다.)
     }
 
     /// <summary>
