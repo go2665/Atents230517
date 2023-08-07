@@ -65,6 +65,9 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
                         onStateUpdate = Update_Attack;
                         break;
                     case EnemyState.Dead:
+                        agent.isStopped = true;         // 에이전트 정지 시키기
+                        agent.velocity = Vector3.zero;  // 남아있던 운동량 제거하기
+                        animator.SetTrigger("Die");     // 죽는 애니메이션 실행
                         onStateUpdate = Update_Dead;
                         break;
                     default:
@@ -403,7 +406,25 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
     public void Die()
     {
         State = EnemyState.Dead;
+        StartCoroutine(Dead());
         onDie?.Invoke();
+    }
+
+    IEnumerator Dead()
+    {
+        // 바닥에 보일 소용돌이 이팩트 켜기
+        // HP바 제거하기(안보이게 하는 것도 ok)
+
+        // 죽는 애니메이션이 끝난 이후 (1.5초 이후)
+
+        // 바닥 아래로 떨어트리기
+
+        // 충분히 바닥아래로 떨어진 이후 (적당한 시간)
+
+        // 슬라임 삭제하기
+        // 이팩트도 삭제하기
+
+        yield return null;
     }
 
     /// <summary>
