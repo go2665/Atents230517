@@ -20,4 +20,14 @@ public class Test_Enemy : TestBase
     {
         agent.SetDestination(moveTarget.position);
     }
+
+    protected override void Test2(InputAction.CallbackContext context)
+    {
+        enemy.HP += 30;
+    }
+
+    protected override void Test3(InputAction.CallbackContext context)
+    {
+        enemy.HP -= 30;
+    }
 }
