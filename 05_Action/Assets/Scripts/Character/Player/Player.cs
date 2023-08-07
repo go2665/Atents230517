@@ -222,6 +222,8 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
 
     public void Die()
     {
+        //animator.SetBool("IsAlive", false);
+        animator.SetTrigger("Die");
         onDie?.Invoke();
         Debug.Log("플레이어 사망");
     }
@@ -382,7 +384,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
 
     public void WeaponBladeDisable()
     {
-        onWeaponBladeEnable.Invoke(false);
+        onWeaponBladeEnable?.Invoke(false);
     }
 
     /// <summary>
@@ -412,9 +414,9 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
     {
         if (IsAlive)
         {
-            //animator.SetTrigger("Hit");
+            animator.SetTrigger("Hit");
             // 데미지 공식 : 실제 입는 데미지 = 적 공격 데미지 - 방어력
-            HP -= Mathf.Min(damage - DefencePower);  // 데미지 적용
+            HP -= Mathf.Max(0, damage - DefencePower);  // 데미지 적용
         }
     }
 

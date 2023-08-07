@@ -4828,6 +4828,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d2b87d30512a5e44be9377765a52863, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitEffect: {fileID: 4021103657954561961, guid: 5080b861a22bf4d48bd8de527ee093b7,
+    type: 3}
 --- !u!136 &5114609855886719275
 CapsuleCollider:
   m_ObjectHideFlags: 0

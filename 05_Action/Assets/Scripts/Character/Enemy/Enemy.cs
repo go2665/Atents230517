@@ -413,7 +413,7 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
         {
             animator.SetTrigger("Hit");
             // 데미지 공식 : 실제 입는 데미지 = 적 공격 데미지 - 방어력
-            HP -= Mathf.Min(0, damage - DefencePower);  // 데미지 적용
+            HP -= Mathf.Max(0, damage - DefencePower);  // 데미지 적용
         }
     }
 
