@@ -413,7 +413,7 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
         {
             animator.SetTrigger("Hit");
             // 데미지 공식 : 실제 입는 데미지 = 적 공격 데미지 - 방어력
-            HP -= (damage - DefencePower);  // 데미지 적용
+            HP -= Mathf.Min(0, damage - DefencePower);  // 데미지 적용
         }
     }
 
@@ -463,8 +463,44 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
     /// </summary>
     private void MakeDropItems()
     {
-        // 1. dropItems에 기록 되어있는 모든 아이템을 확률을 체크해서 통과하면 아이템을 생성한다.
-        // 2. 생성 확률을 통과하면 한번 더 확률을 체크한다.(최대 3번까지만 처리한다.)
+        //Dictionary<ItemCode, uint> test = new Dictionary<ItemCode, uint>();
+        //test.Add(ItemCode.CopperCoin, 0);
+        //test.Add(ItemCode.SilverCoin, 0);
+        //test.Add(ItemCode.GoldCoin, 0);
+        //test.Add(ItemCode.Bread, 0);
+        //test.Add(ItemCode.HealingPotion, 0);
+
+        //for (int i = 0; i < 1000000; i++)
+        //{
+        // 모든 아이템 드랍 정보를 하나씩 처리
+        foreach (var dropData in dropItems)
+        {
+            uint count = 0;
+            while(count < 3)    // 최대 3번까지 확률 체크
+            {
+                float percent = UnityEngine.Random.value;   // 0~1 사이의 값을 랜덤으로 가져오기
+                if( percent < dropData.dropPercentage )     // 랜덤 값이 드랍확률보다 작으면 드랍 확정
+                {
+                    count++;
+                }
+                else
+                {
+                    break;      // 확률 체크에 실패하면 다음 아이템으로 넘어가기
+                }
+            }
+            if (count > 0)      // 확률 체크를 통과한 것이 1개 이상 있으면 아이템 생성
+            {
+                ItemFactory.MakeItems(dropData.code, count, transform.position, true);
+            }
+
+            //test[dropData.code] += count;
+        }
+        //}
+
+        //foreach(var data in test)
+        //{
+        //    Debug.Log($"{data.Key} : {data.Value}");
+        //}
     }
 
     /// <summary>

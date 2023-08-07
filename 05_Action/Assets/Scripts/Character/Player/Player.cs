@@ -414,7 +414,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
         {
             //animator.SetTrigger("Hit");
             // 데미지 공식 : 실제 입는 데미지 = 적 공격 데미지 - 방어력
-            HP -= (damage - DefencePower);  // 데미지 적용
+            HP -= Mathf.Min(damage - DefencePower);  // 데미지 적용
         }
     }
 

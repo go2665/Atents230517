@@ -16,9 +16,9 @@ public class PlayerInputController : MonoBehaviour
     public float runSpeed = 5.0f;
 
     /// <summary>
-    /// 현재 이동 속도(걷기 or 달리기)
+    /// 현재 이동 속도(걷기 or 달리기). 움직이는 입력이 들어오면 walk나 run 속도, 정지하면 0
     /// </summary>
-    float currentSpeed = 5.0f;
+    float currentSpeed = 0.0f;
 
     /// <summary>
     /// 이동 상태용 enum
@@ -46,14 +46,20 @@ public class PlayerInputController : MonoBehaviour
             switch (moveSpeedMode)
             {
                 case MoveMode.Walk:
-                    currentSpeed = walkSpeed;       // 현재 속도 변경
+                    if (currentSpeed > 0)   // 이동 중에 이동 상태가 변경되면 속도 바로 적용하고, 정지상태일 때는 계속 0으로 있게 조건 추가
+                    {
+                        currentSpeed = walkSpeed;       // 현재 속도 변경
+                    }
                     if (inputDir != Vector3.zero)   
                     {
                         animator.SetFloat(Speed_Hash, AnimatorWalkSpeed);   // 이동 중일 때만 animator의 speed도 변경
                     }
                     break;
                 case MoveMode.Run:
-                    currentSpeed = runSpeed;
+                    if(currentSpeed > 0)   // 이동 중에 이동 상태가 변경되면 속도 바로 적용하고, 정지상태일 때는 계속 0으로 있게 조건 추가
+                    {
+                        currentSpeed = runSpeed;
+                    }
                     if (inputDir != Vector3.zero)
                     {
                         animator.SetFloat(Speed_Hash, AnimatorRunSpeed);
