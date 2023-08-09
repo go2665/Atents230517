@@ -116,7 +116,8 @@ public class PlayerInputController : MonoBehaviour
    /// 애니메이터 파라메터의 해시
     readonly int Speed_Hash = Animator.StringToHash("Speed");
     readonly int Attack_Hash = Animator.StringToHash("Attack");
-    readonly int Skill_Hash = Animator.StringToHash("Skill");
+    readonly int SkillStart_Hash = Animator.StringToHash("SkillStart");
+    readonly int SkillEnd_Hash = Animator.StringToHash("SkillEnd");
 
     private void Awake()
     {
@@ -125,6 +126,7 @@ public class PlayerInputController : MonoBehaviour
         inputActions = new PlayerInputActions();
 
         player = GetComponent<Player>();
+        player.onDie += inputActions.Player.Disable;    // 플레이어가 죽으면 입력안되게 만들기
     }
 
     private void OnEnable()
@@ -134,7 +136,8 @@ public class PlayerInputController : MonoBehaviour
         inputActions.Player.Move.canceled += OnMove;
         inputActions.Player.MoveModeChange.performed += OnMoveModeChange;
         inputActions.Player.Attack.performed += OnAttack;
-        inputActions.Player.Skill.performed += OnSkill;
+        inputActions.Player.Skill.performed += OnSkillStart;
+        inputActions.Player.Skill.canceled += OnSkillEnd;
         inputActions.Player.PickUp.performed += OnPickUp;
         inputActions.Player.LockOn.performed += OnLockOn;
     }
@@ -143,7 +146,8 @@ public class PlayerInputController : MonoBehaviour
     {
         inputActions.Player.LockOn.performed -= OnLockOn;
         inputActions.Player.PickUp.performed -= OnPickUp;
-        inputActions.Player.Skill.performed -= OnSkill;
+        inputActions.Player.Skill.canceled -= OnSkillEnd;
+        inputActions.Player.Skill.performed -= OnSkillStart;
         inputActions.Player.Attack.performed -= OnAttack;
         inputActions.Player.MoveModeChange.performed -= OnMoveModeChange;
         inputActions.Player.Move.canceled -= OnMove;
@@ -165,11 +169,20 @@ public class PlayerInputController : MonoBehaviour
 
     private void Update()
     {
-        characterController.Move(Time.deltaTime * currentSpeed * inputDir); // 좀 더 수동에 가까운 느낌
-        //characterController.SimpleMove(currentSpeed * inputDir);    // 좀 더 자동에 가까운 느낌
+        if( player.IsAlive )
+        {
+            characterController.Move(Time.deltaTime * currentSpeed * inputDir); // 좀 더 수동에 가까운 느낌
+            //characterController.SimpleMove(currentSpeed * inputDir);    // 좀 더 자동에 가까운 느낌
+                        
+            if( player.LockOnTrarget != null)   // 락온한 대상이 있으면
+            {
+                // targetRotation을 락온한 대상을 바라보는 회전으로 변경
+                targetRotation = Quaternion.LookRotation(player.LockOnTrarget.position - player.transform.position);
+            }
 
-        // targetRotation까지 초당 1/turnSpeed 속도로 회전
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
+            // targetRotation까지 초당 1/turnSpeed 속도로 회전
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
+        }
     }
 
     private void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
@@ -229,9 +242,15 @@ public class PlayerInputController : MonoBehaviour
         }
     }
 
-    private void OnSkill(UnityEngine.InputSystem.InputAction.CallbackContext _)
+    private void OnSkillStart(UnityEngine.InputSystem.InputAction.CallbackContext _)
     {
-        animator.SetTrigger(Skill_Hash);
+        animator.SetTrigger(SkillStart_Hash);
+        animator.SetBool(SkillEnd_Hash, false);
+    }
+
+    private void OnSkillEnd(UnityEngine.InputSystem.InputAction.CallbackContext _)
+    {
+        animator.SetBool(SkillEnd_Hash, true);
     }
 
     private void OnPickUp(UnityEngine.InputSystem.InputAction.CallbackContext _)
@@ -243,7 +262,4 @@ public class PlayerInputController : MonoBehaviour
     {
         onLockOn?.Invoke();
     }
-
-    // 1. 플레이어가 죽으면 입력이 안된다.
-    // 2. 락온을 하면 락온한 대상을 계속 바라보게 만든다.
 }

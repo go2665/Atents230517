@@ -332,6 +332,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
 
                     enemy.onDie += () =>
                     {
+                        lockOnTarget = null;
                         lockOnEffect.gameObject.SetActive(false);
                         lockOnEffect.SetParent(this.transform);
                         lockOnEffect.transform.localPosition = Vector3.zero;
@@ -491,6 +492,8 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
     {
         if (IsAlive)
         {
+            animator.SetBool("SkillEnd", true);
+            WeaponBladeDisable();
             animator.SetTrigger("Hit");
             // 데미지 공식 : 실제 입는 데미지 = 적 공격 데미지 - 방어력
             HP -= Mathf.Max(0, damage - DefencePower);  // 데미지 적용

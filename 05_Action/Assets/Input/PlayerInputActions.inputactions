@@ -272,7 +272,7 @@
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "KM",
                     "action": "Skill",
                     "isComposite": false,
                     "isPartOfComposite": false

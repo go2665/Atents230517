@@ -27,4 +27,11 @@ public class Test_PlayerLockOn : TestBase
         Player player = GameManager.Inst.Player;
         player.HP -= 10000;
     }
+
+    protected override void Test5(InputAction.CallbackContext context)
+    {
+        Player player = GameManager.Inst.Player;
+        player.Inventory.AddItem(ItemCode.IronSword);
+        player.Inventory.AddItem(ItemCode.RoundShield);
+    }
 }
