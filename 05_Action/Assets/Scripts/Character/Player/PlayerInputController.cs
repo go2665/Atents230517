@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -98,6 +100,11 @@ public class PlayerInputController : MonoBehaviour
     /// </summary>
     public System.Action onItemPickup;
 
+    /// <summary>
+    /// 락온 버튼이 눌려졌다는 신호를 보내는 델리게이트
+    /// </summary>
+    public System.Action onLockOn;
+
     CharacterController characterController;
     Animator animator;
 
@@ -122,10 +129,12 @@ public class PlayerInputController : MonoBehaviour
         inputActions.Player.Attack.performed += OnAttack;
         inputActions.Player.Skill.performed += OnSkill;
         inputActions.Player.PickUp.performed += OnPickUp;
+        inputActions.Player.LockOn.performed += OnLockOn;
     }
 
     private void OnDisable()
     {
+        inputActions.Player.LockOn.performed -= OnLockOn;
         inputActions.Player.PickUp.performed -= OnPickUp;
         inputActions.Player.Skill.performed -= OnSkill;
         inputActions.Player.Attack.performed -= OnAttack;
@@ -221,5 +230,10 @@ public class PlayerInputController : MonoBehaviour
     private void OnPickUp(UnityEngine.InputSystem.InputAction.CallbackContext _)
     {
         onItemPickup?.Invoke();
+    }
+
+    private void OnLockOn(InputAction.CallbackContext _)
+    {
+        onLockOn?.Invoke();
     }
 }

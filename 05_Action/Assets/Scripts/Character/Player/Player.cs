@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Cinemachine;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -165,13 +166,16 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
     PlayerInputController controller;
 
     Animator animator;
+    CinemachineVirtualCamera dieVCam;
 
     private void Awake()
     {
         controller = GetComponent<PlayerInputController>();
         controller.onItemPickup = OnItemPickup;
+        controller.onLockOn = LockOnToggle;
 
         animator = GetComponent<Animator>();
+        dieVCam = GetComponentInChildren<CinemachineVirtualCamera>();
 
         partsSlot = new InvenSlot[Enum.GetValues(typeof(EquipType)).Length];    // EquipType의 항목 개수만큼 배열 만들기
     }
@@ -222,8 +226,9 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
 
     public void Die()
     {
-        //animator.SetBool("IsAlive", false);
         animator.SetTrigger("Die");
+        dieVCam.Follow = null;
+        dieVCam.Priority = 20;
         onDie?.Invoke();
         Debug.Log("플레이어 사망");
     }
@@ -300,6 +305,54 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
         {
             MP += tickRegen;
             yield return wait;
+        }
+    }
+
+    public float lockOnRange = 5.0f;
+    Transform lockOnTarget;
+    public Transform LockOnTrarget
+    {
+        get => lockOnTarget;
+        private set
+        {
+            if (lockOnTarget != value)
+            {
+                lockOnTarget = value;
+
+                Debug.Log($"락온 대상 : {lockOnTarget.gameObject.name}");
+            }
+        }
+    }
+
+    void LockOnToggle()
+    {
+        // 1. 특정 버튼을 눌렀을 때 실행된다.
+        // 2. 락온 범위 안에 적이 있으면 가장 가까운 적을 선택한다.
+        // 3. 락온 범위 안에 적이 없으면 락온은 해제된다.
+        // 4. 락온한 적이 죽으면 락온은 해제된다.
+
+        Collider[] enemies = Physics.OverlapSphere(transform.position, lockOnRange, LayerMask.GetMask("AttackTarget"));
+        if(enemies.Length > 0 )
+        {
+            // 가장 가까운 적 찾기
+            Transform nearest = null;
+            float nearestDistance = float.MaxValue;
+            foreach(var enemy in enemies) 
+            {
+                Vector3 dir = enemy.transform.position - transform.position;
+                float distanceSqr = dir.sqrMagnitude;
+                if( distanceSqr < nearestDistance )
+                {
+                    nearestDistance = distanceSqr;
+                    nearest = enemy.transform;
+                }
+            }
+
+            LockOnTrarget = nearest;
+        }
+        else
+        {
+            LockOnTrarget = null;
         }
     }
 
@@ -423,9 +476,13 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
+        // 아이템 획득 범위
         Handles.color = Color.blue;
-
         Handles.DrawWireDisc(transform.position, Vector3.up, ItemPickupRange);  // 아이템 획득범위(파란색)
+
+        // 락온 범위
+        Handles.color = Color.red;
+        Handles.DrawWireDisc(transform.position, Vector3.up, lockOnRange, 2.0f);
     }
 
 #endif
