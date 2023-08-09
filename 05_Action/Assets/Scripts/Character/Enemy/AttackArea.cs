@@ -38,7 +38,7 @@ public class AttackArea : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Handles.color = Color.red;
         if(col != null)

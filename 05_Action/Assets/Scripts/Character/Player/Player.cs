@@ -178,6 +178,8 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
         dieVCam = GetComponentInChildren<CinemachineVirtualCamera>();
 
         partsSlot = new InvenSlot[Enum.GetValues(typeof(EquipType)).Length];    // EquipType의 항목 개수만큼 배열 만들기
+
+        lockOnEffect = transform.GetChild(6);
     }
 
     private void Start()
@@ -309,7 +311,8 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
     }
 
     public float lockOnRange = 5.0f;
-    Transform lockOnTarget;
+    Transform lockOnTarget;     // 락온할 대상의 트랜스폼
+    Transform lockOnEffect;     // 락온 표시용 이펙트의 트랜스폼
     public Transform LockOnTrarget
     {
         get => lockOnTarget;
@@ -319,7 +322,28 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
             {
                 lockOnTarget = value;
 
-                Debug.Log($"락온 대상 : {lockOnTarget.gameObject.name}");
+                if (lockOnTarget != null)
+                {
+                    Debug.Log($"락온 대상 : {lockOnTarget.gameObject.name}");
+                    Enemy enemy = lockOnTarget.GetComponent<Enemy>();
+                    lockOnEffect.SetParent(enemy.transform);
+                    lockOnEffect.transform.localPosition = Vector3.zero;
+                    lockOnEffect.gameObject.SetActive(true);
+
+                    enemy.onDie += () =>
+                    {
+                        lockOnEffect.gameObject.SetActive(false);
+                        lockOnEffect.SetParent(this.transform);
+                        lockOnEffect.transform.localPosition = Vector3.zero;
+                    };
+                }
+                else
+                {
+                    Debug.Log($"락온 대상 없음");
+                    lockOnEffect.gameObject.SetActive(false);
+                    lockOnEffect.SetParent(this.transform);
+                    lockOnEffect.transform.localPosition = Vector3.zero;
+                }
             }
         }
     }

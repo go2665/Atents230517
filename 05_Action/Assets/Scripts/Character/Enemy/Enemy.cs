@@ -433,6 +433,8 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
     /// <returns></returns>
     IEnumerator DeadSequence()
     {
+        bodyCollider.enabled = false;           // 충돌 안되게 만들기(죽고나면 락온 대상이 되지 않도록)
+
         // 이팩트 처리        
         dieEffect.Play();                       // 바닥에 보일 소용돌이 이팩트 켜기
         dieEffect.transform.SetParent(null);    // 이팩트의 부모 제거(같이 안떨어지게 만들기)
@@ -444,8 +446,7 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
         yield return new WaitForSeconds(1.15f);  // 죽는 애니메이션이 끝날때까지 대기(0.35+1.15 = 1.5초)
 
         // 바닥 아래로 떨어트리기
-        agent.enabled = false;              // NavMesh agent 끄기(켜져 있으면 항상 NavMesh 위에 있다.)
-        bodyCollider.enabled = false;       // 충돌 안되게 만들기
+        agent.enabled = false;              // NavMesh agent 끄기(켜져 있으면 항상 NavMesh 위에 있다.)        
         rigid.isKinematic = false;          // 키네마틱 꺼서 물리로 움직이게 만들기
         rigid.drag = 10.0f;                 // 무한대인 마찰력을 10으로 설정해서 천천히 떨어지게 만들기
 
@@ -547,7 +548,7 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
     }
 
 #if UNITY_EDITOR
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         bool playerShow = false;
         playerShow = SearchPlayer();   // 시야 범위안에 플레이어가 들어왔는지 확인

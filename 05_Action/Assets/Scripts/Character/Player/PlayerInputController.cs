@@ -105,6 +105,11 @@ public class PlayerInputController : MonoBehaviour
     /// </summary>
     public System.Action onLockOn;
 
+    /// <summary>
+    /// 이 컨트롤러로 조정하는 플레이어
+    /// </summary>
+    Player player;
+
     CharacterController characterController;
     Animator animator;
 
@@ -118,6 +123,8 @@ public class PlayerInputController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         inputActions = new PlayerInputActions();
+
+        player = GetComponent<Player>();
     }
 
     private void OnEnable()
@@ -236,4 +243,7 @@ public class PlayerInputController : MonoBehaviour
     {
         onLockOn?.Invoke();
     }
+
+    // 1. 플레이어가 죽으면 입력이 안된다.
+    // 2. 락온을 하면 락온한 대상을 계속 바라보게 만든다.
 }
