@@ -237,6 +237,7 @@ GameObject:
   - component: {fileID: 71161198}
   - component: {fileID: 71161197}
   - component: {fileID: 71161195}
+  - component: {fileID: 71161199}
   m_Layer: 0
   m_Name: MinimapCamera
   m_TagString: Untagged
@@ -335,6 +336,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &71161199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71161194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50e083617a01a3f42a1d9dee0c9d9405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &104920070
 GameObject:
   m_ObjectHideFlags: 0
