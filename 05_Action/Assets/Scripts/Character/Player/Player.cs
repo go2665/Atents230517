@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Cinemachine;
+using UnityEngine.InputSystem.XR;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -161,6 +162,11 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
     public float ItemPickupRange = 2.0f;
 
     /// <summary>
+    /// 스킬 영역 관리용 컴포넌트
+    /// </summary>
+    PlayerSkillArea skillArea;
+
+    /// <summary>
     /// 플레이어가 어떤 입력을 받았는지 처리하는 클래스
     /// </summary>
     PlayerInputController controller;
@@ -173,6 +179,8 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
         controller = GetComponent<PlayerInputController>();
         controller.onItemPickup = OnItemPickup;
         controller.onLockOn = LockOnToggle;
+        controller.onSkillStart = () => OnSkillUse(true);
+        controller.onSkillEnd = () => OnSkillUse(false);
 
         animator = GetComponent<Animator>();
         dieVCam = GetComponentInChildren<CinemachineVirtualCamera>();
@@ -180,6 +188,8 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
         partsSlot = new InvenSlot[Enum.GetValues(typeof(EquipType)).Length];    // EquipType의 항목 개수만큼 배열 만들기
 
         lockOnEffect = transform.GetChild(6);
+
+        skillArea = GetComponentInChildren<PlayerSkillArea>(true);
     }
 
     private void Start()
@@ -498,6 +508,16 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
             // 데미지 공식 : 실제 입는 데미지 = 적 공격 데미지 - 방어력
             HP -= Mathf.Max(0, damage - DefencePower);  // 데미지 적용
         }
+    }
+
+
+    /// <summary>
+    /// 스킬 사용/종료 처리하는 함수
+    /// </summary>
+    /// <param name="isSkillStart">true면 사용시작, false면 사용 종료</param>
+    private void OnSkillUse(bool isSkillStart)
+    {
+        skillArea.gameObject.SetActive(isSkillStart);
     }
 
 #if UNITY_EDITOR

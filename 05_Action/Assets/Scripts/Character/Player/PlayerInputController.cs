@@ -106,6 +106,16 @@ public class PlayerInputController : MonoBehaviour
     public System.Action onLockOn;
 
     /// <summary>
+    /// 스킬을 시작했다는 신호를 보내는 델리게이트
+    /// </summary>
+    public Action onSkillStart;
+
+    /// <summary>
+    /// 스킬을 끝냈다는 신호를 보내는 델리게이트
+    /// </summary>
+    public Action onSkillEnd;
+
+    /// <summary>
     /// 이 컨트롤러로 조정하는 플레이어
     /// </summary>
     Player player;
@@ -246,11 +256,13 @@ public class PlayerInputController : MonoBehaviour
     {
         animator.SetTrigger(SkillStart_Hash);
         animator.SetBool(SkillEnd_Hash, false);
+        onSkillStart?.Invoke();
     }
 
     private void OnSkillEnd(UnityEngine.InputSystem.InputAction.CallbackContext _)
     {
         animator.SetBool(SkillEnd_Hash, true);
+        onSkillEnd?.Invoke();
     }
 
     private void OnPickUp(UnityEngine.InputSystem.InputAction.CallbackContext _)
