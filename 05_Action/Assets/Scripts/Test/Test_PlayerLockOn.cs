@@ -32,6 +32,9 @@ public class Test_PlayerLockOn : TestBase
     {
         Player player = GameManager.Inst.Player;
         player.Inventory.AddItem(ItemCode.IronSword);
+        player.Inventory.AddItem(ItemCode.SilverSword);
+        player.Inventory.AddItem(ItemCode.OldSword);
         player.Inventory.AddItem(ItemCode.RoundShield);
+        player.Inventory.AddItem(ItemCode.KiteShield);
     }
 }

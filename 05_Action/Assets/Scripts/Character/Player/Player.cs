@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using Cinemachine;
 using UnityEngine.InputSystem.XR;
+using Unity.VisualScripting;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -114,9 +115,10 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
     /// </summary>
     public Action<float> onManaChange { get; set; }
 
-    public float attackPower = 10.0f;
+    float basePower = 5.0f;
+    float attackPower = 0.0f;
     public float AttackPower => attackPower;
-    public float defencePower = 3.0f;
+    float defencePower = 0.0f;
     public float DefencePower => defencePower;
 
     /// <summary>
@@ -199,6 +201,9 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
         {
             GameManager.Inst.InvenUI.InitializeInventory( inven );  // 인벤토리와 인벤토리 UI연결
         }
+
+        attackPower = basePower;
+        defencePower = basePower;
     }
 
     /// <summary>
@@ -407,11 +412,20 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
             partsSlot[(int)part] = slot;    // 어느 슬롯의 아이템이 장비되었는지 기록
             slot.IsEquipped = true;         // 장비되었다고 알림
 
-            if(part == EquipType.Weapon)
+            switch(part)
             {
-                Weapon weapon = obj.GetComponent<Weapon>();
-                onWeaponBladeEnable = weapon.BladeColliderEnable;
-                onWeaponEffectEnable = weapon.EffectEnable;
+                case EquipType.Weapon:
+                    Weapon weapon = obj.GetComponent<Weapon>();
+                    onWeaponBladeEnable = weapon.BladeColliderEnable;
+                    onWeaponEffectEnable = weapon.EffectEnable;
+
+                    ItemData_Weapon waeponData = equip as ItemData_Weapon;
+                    attackPower = basePower + waeponData.attackPower;
+                    break;
+                case EquipType.Shield:
+                    ItemData_Shield shieldData = equip as ItemData_Shield;
+                    defencePower = basePower + shieldData.defencePower;
+                    break;
             }
         }
     }
@@ -433,10 +447,16 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
         partsSlot[(int)part].IsEquipped = false;    // 장비 해제되었다고 알림
         partsSlot[(int)part] = null;                // 파츠 기록 초기화
 
-        if( part == EquipType.Weapon)
+        switch (part)
         {
-            onWeaponBladeEnable = null;
-            onWeaponEffectEnable = null;
+            case EquipType.Weapon:
+                onWeaponBladeEnable = null;
+                onWeaponEffectEnable = null;
+                attackPower = basePower;
+                break;
+            case EquipType.Shield:
+                defencePower = basePower;
+                break;
         }
     }
 
@@ -517,6 +537,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
     /// <param name="isSkillStart">true면 사용시작, false면 사용 종료</param>
     private void OnSkillUse(bool isSkillStart)
     {
+        skillArea.skillPower = attackPower;
         skillArea.gameObject.SetActive(isSkillStart);
     }
 
