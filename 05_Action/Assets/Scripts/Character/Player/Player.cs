@@ -169,6 +169,70 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
     PlayerSkillArea skillArea;
 
     /// <summary>
+    /// 스킬 사용할 때 실행할 코루틴(마나 감소용)
+    /// </summary>
+    IEnumerator skillCoroutine;
+
+    /// <summary>
+    /// 스킬 사용에 필요한 마나량
+    /// </summary>
+    public float skillCost = 20.0f;
+
+    /// <summary>
+    /// 락온할 수 있는 범위
+    /// </summary>
+    public float lockOnRange = 5.0f;
+
+    /// <summary>
+    /// 락온할 대상의 트랜스폼
+    /// </summary>
+    Transform lockOnTarget;
+
+    /// <summary>
+    /// 락온 이펙트의 트랜스폼
+    /// </summary>
+    Transform lockOnEffect;
+
+    /// <summary>
+    /// 락온 대상을 확인하고 설정할 수 있는 프로퍼티
+    /// </summary>
+    public Transform LockOnTarget
+    {
+        get => lockOnTarget;
+        private set
+        {
+            if (lockOnTarget != value)  // 대상이 변경되었을 때만 실행
+            {
+                lockOnTarget = value;
+
+                if (lockOnTarget != null)   // 락온 대상이 있으면
+                {
+                    Debug.Log($"락온 대상 : {lockOnTarget.gameObject.name}");
+                    Enemy enemy = lockOnTarget.GetComponent<Enemy>();   
+                    lockOnEffect.SetParent(enemy.transform);                // 이팩트의 부모를 lookOnTarget으로 지정
+                    lockOnEffect.transform.localPosition = Vector3.zero;    // 이팩트의 위치를 lookOnTarget의 위치로 변경
+                    lockOnEffect.gameObject.SetActive(true);                // 이팩트를 활성화시켜서 보여주기
+
+                    enemy.onDie += () =>        // 적이 죽었을 때 이팩트를 다시 플레이어쪽으로 옮기는 람다식
+                    {
+                        lockOnTarget = null;                                // lookOnTarget을 null로 설정
+                        lockOnEffect.gameObject.SetActive(false);           // 이팩트 안보이게 만들기
+                        lockOnEffect.SetParent(this.transform);             // 이팩트의 부모를 플레이어로 설정
+                        lockOnEffect.transform.localPosition = Vector3.zero;    // 이팩트의 위치를 플레이어의 위치로 설정
+                    };
+                }
+                else
+                {
+                    Debug.Log($"락온 대상 없음");
+                    lockOnEffect.gameObject.SetActive(false);               // 이팩트 안보이게 만들기
+                    lockOnEffect.SetParent(this.transform);                 // 이팩트의 부모를 플레이어로 설정
+                    lockOnEffect.transform.localPosition = Vector3.zero;    // 이팩트의 위치를 플레이어의 위치로 설정
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// 플레이어가 어떤 입력을 받았는지 처리하는 클래스
     /// </summary>
     PlayerInputController controller;
@@ -202,8 +266,12 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
             GameManager.Inst.InvenUI.InitializeInventory( inven );  // 인벤토리와 인벤토리 UI연결
         }
 
+        // 기본 공격력/방어력 적용
         attackPower = basePower;
         defencePower = basePower;
+
+        // 코루틴 미리 저장해 놓기
+        skillCoroutine = SkillManaDecrease();
     }
 
     /// <summary>
@@ -325,74 +393,35 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
         }
     }
 
-    public float lockOnRange = 5.0f;
-    Transform lockOnTarget;     // 락온할 대상의 트랜스폼
-    Transform lockOnEffect;     // 락온 표시용 이펙트의 트랜스폼
-    public Transform LockOnTrarget
-    {
-        get => lockOnTarget;
-        private set
-        {
-            if (lockOnTarget != value)
-            {
-                lockOnTarget = value;
-
-                if (lockOnTarget != null)
-                {
-                    Debug.Log($"락온 대상 : {lockOnTarget.gameObject.name}");
-                    Enemy enemy = lockOnTarget.GetComponent<Enemy>();
-                    lockOnEffect.SetParent(enemy.transform);
-                    lockOnEffect.transform.localPosition = Vector3.zero;
-                    lockOnEffect.gameObject.SetActive(true);
-
-                    enemy.onDie += () =>
-                    {
-                        lockOnTarget = null;
-                        lockOnEffect.gameObject.SetActive(false);
-                        lockOnEffect.SetParent(this.transform);
-                        lockOnEffect.transform.localPosition = Vector3.zero;
-                    };
-                }
-                else
-                {
-                    Debug.Log($"락온 대상 없음");
-                    lockOnEffect.gameObject.SetActive(false);
-                    lockOnEffect.SetParent(this.transform);
-                    lockOnEffect.transform.localPosition = Vector3.zero;
-                }
-            }
-        }
-    }
-
+    /// <summary>
+    /// 상황에 맞게 락온 이팩트를 켜고 끄는 함수
+    /// </summary>
     void LockOnToggle()
     {
-        // 1. 특정 버튼을 눌렀을 때 실행된다.
-        // 2. 락온 범위 안에 적이 있으면 가장 가까운 적을 선택한다.
-        // 3. 락온 범위 안에 적이 없으면 락온은 해제된다.
-        // 4. 락온한 적이 죽으면 락온은 해제된다.
-
+        // 주변에 적이 있는지 확인
         Collider[] enemies = Physics.OverlapSphere(transform.position, lockOnRange, LayerMask.GetMask("AttackTarget"));
-        if(enemies.Length > 0 )
+        if(enemies.Length > 0 ) 
         {
+            // 적이 있으면
             // 가장 가까운 적 찾기
             Transform nearest = null;
             float nearestDistance = float.MaxValue;
             foreach(var enemy in enemies) 
             {
-                Vector3 dir = enemy.transform.position - transform.position;
-                float distanceSqr = dir.sqrMagnitude;
+                Vector3 dir = enemy.transform.position - transform.position;    // 방향 벡터 구하고
+                float distanceSqr = dir.sqrMagnitude;                           // 방향 벡터의 길이 확인(= 거리 비교)
                 if( distanceSqr < nearestDistance )
                 {
-                    nearestDistance = distanceSqr;
+                    nearestDistance = distanceSqr;      // 가장 가까운 것 구하기
                     nearest = enemy.transform;
                 }
             }
 
-            LockOnTrarget = nearest;
+            LockOnTarget = nearest;         // 가장 가까운 적을 LockOnTarget으로 설정
         }
         else
         {
-            LockOnTrarget = null;
+            LockOnTarget = null;            // 주변에 적이 없으면 LockOnTarget 비우기
         }
     }
 
@@ -537,8 +566,33 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattle
     /// <param name="isSkillStart">true면 사용시작, false면 사용 종료</param>
     private void OnSkillUse(bool isSkillStart)
     {
-        skillArea.skillPower = attackPower;
-        skillArea.gameObject.SetActive(isSkillStart);
+        skillArea.skillPower = AttackPower;     // 공격력을 스킬에 적용
+        if (isSkillStart)
+        {
+            StartCoroutine(skillCoroutine);     // 스킬 사용하면 마나 감소 시작
+        }
+        else
+        {
+            StopCoroutine(skillCoroutine);      // 스킬 끝나면 마나 감소 정지
+        }
+        skillArea.gameObject.SetActive(isSkillStart);   // 스킬 충돌처리용 오브젝트 활성화/비활성화
+    }
+
+    /// <summary>
+    /// 스킬 사용시에 마나가 감소시키는 코루틴
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator SkillManaDecrease()
+    {
+        while (true)
+        {
+            MP -= skillCost * Time.deltaTime;   // 초당 스킬 코스트만큼 마나 감소
+            if(MP <= 0)
+            {
+                controller.SkillEndSequence();  // 마나가 다 떨어지면 종료 처리
+            }
+            yield return null;
+        }
     }
 
 #if UNITY_EDITOR

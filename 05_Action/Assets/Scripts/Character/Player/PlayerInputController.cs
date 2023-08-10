@@ -184,10 +184,10 @@ public class PlayerInputController : MonoBehaviour
             characterController.Move(Time.deltaTime * currentSpeed * inputDir); // 좀 더 수동에 가까운 느낌
             //characterController.SimpleMove(currentSpeed * inputDir);    // 좀 더 자동에 가까운 느낌
                         
-            if( player.LockOnTrarget != null)   // 락온한 대상이 있으면
+            if( player.LockOnTarget != null)   // 락온한 대상이 있으면
             {
                 // targetRotation을 락온한 대상을 바라보는 회전으로 변경
-                targetRotation = Quaternion.LookRotation(player.LockOnTrarget.position - player.transform.position);
+                targetRotation = Quaternion.LookRotation(player.LockOnTarget.position - player.transform.position);
             }
 
             // targetRotation까지 초당 1/turnSpeed 속도로 회전
@@ -261,8 +261,7 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnSkillEnd(UnityEngine.InputSystem.InputAction.CallbackContext _)
     {
-        animator.SetBool(SkillEnd_Hash, true);
-        onSkillEnd?.Invoke();
+        SkillEndSequence();
     }
 
     private void OnPickUp(UnityEngine.InputSystem.InputAction.CallbackContext _)
@@ -273,5 +272,14 @@ public class PlayerInputController : MonoBehaviour
     private void OnLockOn(InputAction.CallbackContext _)
     {
         onLockOn?.Invoke();
+    }
+
+    /// <summary>
+    /// 스킬이 끝났을 때 처리를 모아놓은 함수
+    /// </summary>
+    public void SkillEndSequence()
+    {
+        animator.SetBool(SkillEnd_Hash, true);  // 애니메이션 정지 시키기
+        onSkillEnd?.Invoke();                   // 알람 보내기
     }
 }

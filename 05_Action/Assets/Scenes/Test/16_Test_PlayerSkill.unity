@@ -1052,6 +1052,11 @@ PrefabInstance:
       propertyPath: waypoints
       value: 
       objectReference: {fileID: 668048837}
+    - target: {fileID: 95161444467582934, guid: 2d79e997b5f09454e9081694ee417086,
+        type: 3}
+      propertyPath: attackPower
+      value: 25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d79e997b5f09454e9081694ee417086, type: 3}
 --- !u!1 &668048836
@@ -1312,6 +1317,11 @@ PrefabInstance:
       propertyPath: waypoints
       value: 
       objectReference: {fileID: 668048837}
+    - target: {fileID: 95161444467582934, guid: 2d79e997b5f09454e9081694ee417086,
+        type: 3}
+      propertyPath: attackPower
+      value: 25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d79e997b5f09454e9081694ee417086, type: 3}
 --- !u!1 &757981020
@@ -2216,6 +2226,11 @@ PrefabInstance:
       propertyPath: waypoints
       value: 
       objectReference: {fileID: 668048837}
+    - target: {fileID: 95161444467582934, guid: 2d79e997b5f09454e9081694ee417086,
+        type: 3}
+      propertyPath: attackPower
+      value: 25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d79e997b5f09454e9081694ee417086, type: 3}
 --- !u!1001 &1491443280
