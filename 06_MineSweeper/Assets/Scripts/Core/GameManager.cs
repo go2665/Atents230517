@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameManager : Singleton<GameManager>
 {
     // 게임 상태 관련 ------------------------------------------------------------------------------
-    enum GameState
+    public enum GameState
     {
         Ready = 0,  // 게임 시작 전(첫번째 셀이 아직 열리지 않은 상태)
         Play,       // 게임 진행 중(첫번째 셀이 열린 이후)
@@ -67,4 +67,31 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     public Action<int> onFlagCountChange;
     // --------------------------------------------------------------------------------------------
+
+
+
+    // 테스트 코드
+    public void Test_Flag(int flag)
+    {
+        FlagCount = flag;
+    }
+
+    public void Test_State(GameState state)
+    {
+        switch(state)
+        {
+            case GameState.Ready:
+                onGameReady?.Invoke();
+                break;
+            case GameState.Play:
+                onGamePlay?.Invoke();
+                break;
+            case GameState.GameClear:
+                onGameClear?.Invoke();
+                break;
+            case GameState.GameOver: 
+                onGameOver?.Invoke();
+                break;
+        }
+    }
 }
