@@ -463,6 +463,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afcdb809a68799c44acee60d637943bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numberSprites:
+  - {fileID: -1743997133, guid: f026621b5513592459e8cb0b883fd923, type: 3}
+  - {fileID: -1593362297, guid: f026621b5513592459e8cb0b883fd923, type: 3}
+  - {fileID: 931593711, guid: f026621b5513592459e8cb0b883fd923, type: 3}
+  - {fileID: -300327727, guid: f026621b5513592459e8cb0b883fd923, type: 3}
+  - {fileID: -655600941, guid: f026621b5513592459e8cb0b883fd923, type: 3}
+  - {fileID: -1479651293, guid: f026621b5513592459e8cb0b883fd923, type: 3}
+  - {fileID: 1713252622, guid: f026621b5513592459e8cb0b883fd923, type: 3}
+  - {fileID: 670095697, guid: f026621b5513592459e8cb0b883fd923, type: 3}
+  - {fileID: 1741414659, guid: f026621b5513592459e8cb0b883fd923, type: 3}
+  - {fileID: 1347962074, guid: f026621b5513592459e8cb0b883fd923, type: 3}
+  - {fileID: 1027729282, guid: f026621b5513592459e8cb0b883fd923, type: 3}
+  - {fileID: 1114184640, guid: f026621b5513592459e8cb0b883fd923, type: 3}
 --- !u!1 &1397332465
 GameObject:
   m_ObjectHideFlags: 0
