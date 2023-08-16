@@ -139,4 +139,19 @@ public class Cell : MonoBehaviour
             inside.sprite = Board[(OpenCellType)aroundMineCount];
         }
     }
+
+    public void CellLeftPress()
+    {
+
+    }
+
+    public void CellRightPress()
+    {
+        // markState에 따라 우클릭 되었을 때 cover의 이미지 변경하기
+        // None -> Flag
+        // Flag -> Question
+        // Question -> None
+    }
 }
+
+

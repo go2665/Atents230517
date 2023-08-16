@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Board : MonoBehaviour
 {
@@ -52,6 +53,25 @@ public class Board : MonoBehaviour
     /// 인풋액션
     /// </summary>
     PlayerInputActions inputActions;
+
+    private void Awake()
+    {
+        inputActions = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
+        inputActions.Player.Enable();
+        inputActions.Player.LeftClick.performed += OnLeftPress;
+        inputActions.Player.RightClick.performed += OnRightPress;
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Player.RightClick.performed -= OnRightPress;
+        inputActions.Player.LeftClick.performed -= OnLeftPress;
+        inputActions.Player.Disable();
+    }
 
     /// <summary>
     /// 이 보드가 가질 모든 셀을 생성하고 배치하는 함수.(초기화)
@@ -207,6 +227,53 @@ public class Board : MonoBehaviour
         return IsValidGrid(grid.x, grid.y);
     }
 
+    /// <summary>
+    /// 스크린좌표를 그리드 좌표로 변경해주는 함수
+    /// </summary>
+    /// <param name="screenPos">입력으로 들어오는 스크린 좌표</param>
+    /// <returns>변환된 그리드 좌표</returns>
+    private Vector2Int ScreenToGrid(Vector2 screenPos)
+    {
+        Vector2 worldPos = Camera.main.ScreenToWorldPoint(screenPos);   // 스크린좌표를 월드 좌표로 변환
+        Vector2 diff = worldPos - (Vector2)transform.position;          // 보드에 피봇에서 얼마나 떨어져 있는지를 확인
+
+        return new(Mathf.FloorToInt(diff.x/Distance), Mathf.FloorToInt(-diff.y/Distance));  // 차이를 한칸당 간격으로 나누어서 몇번째 그리드인지 리턴
+    }
+
+    /// <summary>
+    /// 마우스 왼쪽 버튼을 눌렀을 때 실행되는 함수
+    /// </summary>
+    /// <param name="_"></param>
+    private void OnLeftPress(InputAction.CallbackContext _)
+    {
+        Vector2 screenPos = Mouse.current.position.ReadValue(); // 마우스 커서의 스크린 좌료를 받아와서
+        Vector2Int grid = ScreenToGrid(screenPos);              // 그리드 좌표로 변경 시기고
+
+        int index = GridToIndex(grid.x, grid.y);                // 그리드 좌료를 인덱스로 변환
+
+        if( index != Cell.ID_NOT_VALID)
+        {
+            Debug.Log(index);
+            Cell target = cells[index];
+            target.CellLeftPress();
+        }
+    }
+
+    private void OnRightPress(InputAction.CallbackContext _)
+    {
+        Vector2 screenPos = Mouse.current.position.ReadValue(); // 마우스 커서의 스크린 좌료를 받아와서
+        Vector2Int grid = ScreenToGrid(screenPos);              // 그리드 좌표로 변경 시기고
+
+        int index = GridToIndex(grid.x, grid.y);                // 그리드 좌료를 인덱스로 변환
+
+        if (index != Cell.ID_NOT_VALID)
+        {
+            Debug.Log(index);
+            Cell target = cells[index];
+            target.CellRightPress();
+        }
+    }
+
 
     // 테스트 함수 ---------------------------------------------------------------------------------
     public void Test_ResetBoard()
@@ -242,5 +309,3 @@ public class Board : MonoBehaviour
         Debug.Log(output);
     }
 }
-
-// 2. Cell.SetMine 함수 완성하기
