@@ -54,6 +54,34 @@ public class Cell : MonoBehaviour
     /// 지금 현재 표시된 마크
     /// </summary>
     CellMarkState markState = CellMarkState.None;
+    CellMarkState MarkState
+    {
+        get => markState;
+        set
+        {
+            markState = value;
+            switch (markState)
+            {
+                case CellMarkState.None:
+                    cover.sprite = Board[CloseCellType.Close];
+                    break;
+                case CellMarkState.Flag:
+                    cover.sprite = Board[CloseCellType.Flag];
+                    break;
+                case CellMarkState.Question:
+                    cover.sprite = Board[CloseCellType.Question];
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    }
+
+    /// <summary>
+    /// 깃발 설치 여부를 확인하는 프로퍼티
+    /// </summary>
+    public bool IsFlaged => markState == CellMarkState.Flag;
 
     /// <summary>
     /// 셀이 열려있는지 여부(true면 열려있고, false면 닫혀있다.)
@@ -94,6 +122,16 @@ public class Cell : MonoBehaviour
     /// 셀에 지뢰가 설치되었다고 알리는 델리게이트
     /// </summary>
     public Action<int> onMineSet;
+
+    /// <summary>
+    /// 셀에 깃발이 설치되었다고 알리는 델리게이트
+    /// </summary>
+    public Action onFlagUse;
+
+    /// <summary>
+    /// 셀에 설치된 깃발을 제거했다고 알리는 델리게이트
+    /// </summary>
+    public Action onFlagReturn;
 
     private void Awake()
     {
@@ -140,17 +178,98 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void CellLeftPress()
+    /// <summary>
+    /// 이 셀을 여는 함수
+    /// </summary>
+    private void Open()
     {
-
+        if( !isOpen && !IsFlaged )
+        {
+            isOpen = true;
+            cover.gameObject.SetActive(false);
+            if( hasMine )
+            {
+                inside.sprite = Board[OpenCellType.Mine_Explotion];
+                // 게임 오버 처리
+            }
+            else if(aroundMineCount == 0)
+            {
+                // 주변 셀을 모두 열기
+            }
+        }
     }
 
+    /// <summary>
+    /// 셀을 마우스 왼쪽 버튼으로 눌렀을 때 실행되는 함수
+    /// </summary>
+    public void CellLeftPress()
+    {
+        // 눌린 표시를 한다.
+        if(isOpen)
+        {
+            // 주변 8개 셀 중에 닫혀있는 셀만 누르는 표시를 한다.
+        }
+        else
+        {
+            // 이 셀만 누르고 있는 표시를 한다.
+            switch (MarkState)
+            {
+                case CellMarkState.None:
+                    cover.sprite = Board[CloseCellType.Close_Press];
+                    break;
+                case CellMarkState.Question:
+                    cover.sprite = Board[CloseCellType.Question_Press];
+                    break;
+                case CellMarkState.Flag:
+                default:
+                    break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 셀을 마우스 왼쪽 버튼으로 눌렀다 땠을 때 실행되는 함수
+    /// </summary>
+    public void CellLeftRelease()
+    {
+        if(isOpen)
+        {
+            // 셀에 기록된 깃발 개수와 주변에 설치된 깃발의 개수가 같으면 
+            //      주변 셀 중에서 닫혀있는 셀은 모두 연다.
+            //      아니면 다시 모두 원상복구
+
+        }
+        else
+        {
+            // 이 셀을 연다.
+            Open();
+        }
+    }
+
+    // 마우스 왼쪽 버튼을 누른 상태에서 마우스의 위치가 변경되면 눌려진 표시가 되는 셀도 변경되어야 한다.
+
+    /// <summary>
+    /// 셀을 마우스 오른쪽 버튼으로 눌렀을 때 실행되는 함수
+    /// </summary>
     public void CellRightPress()
     {
-        // markState에 따라 우클릭 되었을 때 cover의 이미지 변경하기
-        // None -> Flag
-        // Flag -> Question
-        // Question -> None
+        // markState에 따라 우클릭 되었을 때 cover의 이미지 변경하기(프로퍼티 설정하면서 이미지 자동 변경)
+        switch (MarkState)
+        {
+            case CellMarkState.None:
+                MarkState = CellMarkState.Flag;     
+                onFlagUse?.Invoke();
+                break;
+            case CellMarkState.Flag:
+                MarkState = CellMarkState.Question;
+                onFlagReturn?.Invoke();
+                break;
+            case CellMarkState.Question:
+                MarkState = CellMarkState.None;
+                break;
+            default:
+                break;
+        }
     }
 }
 

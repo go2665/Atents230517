@@ -63,12 +63,14 @@ public class Board : MonoBehaviour
     {
         inputActions.Player.Enable();
         inputActions.Player.LeftClick.performed += OnLeftPress;
+        inputActions.Player.LeftClick.canceled += OnLeftRelease;
         inputActions.Player.RightClick.performed += OnRightPress;
     }
 
     private void OnDisable()
     {
         inputActions.Player.RightClick.performed -= OnRightPress;
+        inputActions.Player.LeftClick.canceled -= OnLeftRelease;
         inputActions.Player.LeftClick.performed -= OnLeftPress;
         inputActions.Player.Disable();
     }
@@ -96,6 +98,7 @@ public class Board : MonoBehaviour
 
         cells = new Cell[width * height];   // 셀이 들어갈 배열 만들기
 
+        GameManager gameManager = GameManager.Inst; // 사용할 일이 많을 것 같아 미리 가져오기
         // 셀을 하나씩 생성하기
         for(int y = 0; y < height; y++)
         {
@@ -107,7 +110,9 @@ public class Board : MonoBehaviour
                 cell.ID = x + y * width;                                                    // 셀의 아이디 설정
                 cell.transform.localPosition = new Vector3(x * Distance, -y * Distance);    // 셀의 위치 설정
 
-                cell.onMineSet += MineSet;
+                cell.onMineSet += MineSet;                              // 지뢰 설치할 때
+                cell.onFlagUse += gameManager.DecreaseFlagCount;        // 깃발을 설치했을 때
+                cell.onFlagReturn += gameManager.IncreaseFlagCount;     // 설치된 깃발을 해제했을 때
 
                 cells[cell.ID] = cell;                          // 배열에 셀 저장
                 cellObj.name = $"Cell_{cell.ID}_({x},{y})";     // 셀 게임 오브젝트의 이름 변경
@@ -253,13 +258,18 @@ public class Board : MonoBehaviour
 
         if( index != Cell.ID_NOT_VALID)
         {
-            Debug.Log(index);
+            //Debug.Log(index);
             Cell target = cells[index];
             target.CellLeftPress();
         }
     }
 
-    private void OnRightPress(InputAction.CallbackContext _)
+
+    /// <summary>
+    /// 마우스 왼쪽 버튼을 땠을 때 실행되는 함수
+    /// </summary>
+    /// <param name="_"></param>
+    private void OnLeftRelease(InputAction.CallbackContext _)
     {
         Vector2 screenPos = Mouse.current.position.ReadValue(); // 마우스 커서의 스크린 좌료를 받아와서
         Vector2Int grid = ScreenToGrid(screenPos);              // 그리드 좌표로 변경 시기고
@@ -268,7 +278,25 @@ public class Board : MonoBehaviour
 
         if (index != Cell.ID_NOT_VALID)
         {
-            Debug.Log(index);
+            //Debug.Log(index);
+            Cell target = cells[index];
+            target.CellLeftRelease();
+        }
+    }
+
+    /// <summary>
+    /// 마우스 오른쪽 버튼을 눌렀을 때 실행되는 함수
+    /// </summary>
+    /// <param name="_"></param>
+    private void OnRightPress(InputAction.CallbackContext _)
+    {
+        Vector2 screenPos = Mouse.current.position.ReadValue(); // 마우스 커서의 스크린 좌료를 받아와서
+        Vector2Int grid = ScreenToGrid(screenPos);              // 그리드 좌표로 변경 시기고
+
+        int index = GridToIndex(grid.x, grid.y);                // 그리드 좌료를 인덱스로 변환
+
+        if (index != Cell.ID_NOT_VALID)
+        {            
             Cell target = cells[index];
             target.CellRightPress();
         }

@@ -69,6 +69,40 @@ public class GameManager : Singleton<GameManager>
     // --------------------------------------------------------------------------------------------
 
 
+    // 보드 관련 -----------------------------------------------------------------------------------
+    private Board board;
+    public Board Board => board;
+    public int mineCount = 10;
+    public int boardWitdth = 8;
+    public int boardHeight = 8;
+    // --------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// 초기화용 함수
+    /// </summary>
+    protected override void OnInitialize()
+    {
+        FlagCount = mineCount;                                  // 깃발 개수 설정
+        board = FindObjectOfType<Board>();                      // 보드 가져와서
+        board.Initialize(boardWitdth, boardHeight, mineCount);  // 보드 생성하기
+    }
+
+    /// <summary>
+    /// 깃발 개수를 하나 증가시키는 함수
+    /// </summary>
+    public void IncreaseFlagCount()
+    {
+        FlagCount++;
+    }
+
+    /// <summary>
+    /// 깃발 개수를 하나 감소시키는 함수
+    /// </summary>
+    public void DecreaseFlagCount()
+    {
+        FlagCount--;
+    }
+
 
     // 테스트 코드
     public void Test_Flag(int flag)
