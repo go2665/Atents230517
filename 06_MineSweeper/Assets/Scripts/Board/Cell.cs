@@ -245,8 +245,10 @@ public class Cell : MonoBehaviour
             Open();
         }
     }
+    //1. 셀을 열때 주변 지뢰 개수가 0이면 주변셀을 모두 열기
+    //2. 열려있는 셀을 눌렀을 경우 주변 8개 셀 중 닫혀있는 셀은 모두 눌린 표시를 한다.
+    //3. 2번 상태일 때 마우스를 때면 주변 깃발 개수로 주변 지뢰 개수가 같으면 깃발 표시된 셀을 제외하고 모두 연다
 
-    // 마우스 왼쪽 버튼을 누른 상태에서 마우스의 위치가 변경되면 눌려진 표시가 되는 셀도 변경되어야 한다.
 
     /// <summary>
     /// 셀을 마우스 오른쪽 버튼으로 눌렀을 때 실행되는 함수
@@ -267,6 +269,22 @@ public class Cell : MonoBehaviour
             case CellMarkState.Question:
                 MarkState = CellMarkState.None;
                 break;
+            default:
+                break;
+        }
+    }
+
+    public void RestoreCover()
+    {
+        switch (MarkState)
+        {
+            case CellMarkState.None:
+                cover.sprite = Board[CloseCellType.Close];
+                break;
+            case CellMarkState.Question:
+                cover.sprite = Board[CloseCellType.Question];
+                break;
+            case CellMarkState.Flag:
             default:
                 break;
         }

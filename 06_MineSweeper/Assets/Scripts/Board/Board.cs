@@ -37,6 +37,21 @@ public class Board : MonoBehaviour
     /// </summary>
     Cell[] cells;
 
+    Cell currentCell = null;
+    Cell CurrentCell
+    {
+        get => currentCell;
+        set
+        {
+            if(currentCell != value)
+            {
+                currentCell?.RestoreCover();    // 이전 셀은 원래 상태로 되돌리기
+                currentCell = value;
+                currentCell?.CellLeftPress();   // 새 셀은 눌려진 상태로 만들기
+            }
+        }
+    }
+
     /// <summary>
     /// 열려있는 셀에 표시될 이미지
     /// </summary>
@@ -65,10 +80,12 @@ public class Board : MonoBehaviour
         inputActions.Player.LeftClick.performed += OnLeftPress;
         inputActions.Player.LeftClick.canceled += OnLeftRelease;
         inputActions.Player.RightClick.performed += OnRightPress;
+        inputActions.Player.MouseMove.performed += OnMouseMove;
     }
 
     private void OnDisable()
     {
+        inputActions.Player.MouseMove.performed -= OnMouseMove;
         inputActions.Player.RightClick.performed -= OnRightPress;
         inputActions.Player.LeftClick.canceled -= OnLeftRelease;
         inputActions.Player.LeftClick.performed -= OnLeftPress;
@@ -301,6 +318,29 @@ public class Board : MonoBehaviour
             target.CellRightPress();
         }
     }
+
+    private void OnMouseMove(InputAction.CallbackContext context)
+    {
+        if (Mouse.current.leftButton.isPressed) // 눌려진 상태일 때
+        {
+            Vector2 screenPos = Mouse.current.position.ReadValue(); // 마우스 커서의 스크린 좌료를 받아와서
+            Vector2Int grid = ScreenToGrid(screenPos);              // 그리드 좌표로 변경 시기고
+
+            int index = GridToIndex(grid.x, grid.y);                // 그리드 좌료를 인덱스로 변환
+
+            if (index != Cell.ID_NOT_VALID)
+            {
+                CurrentCell = cells[index]; // 커서가 있는 셀을 Current로 만들기
+            }
+            else
+            {
+                CurrentCell = null;
+            }
+        }
+    }
+
+
+    // 마우스 왼쪽 버튼을 누른 상태에서 마우스의 위치가 변경되면 눌려진 표시가 되는 셀도 변경되어야 한다.
 
 
     // 테스트 함수 ---------------------------------------------------------------------------------
