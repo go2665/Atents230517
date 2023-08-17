@@ -119,6 +119,16 @@ public class Cell : MonoBehaviour
     }
 
     /// <summary>
+    /// 이 셀의 이웃 셀들
+    /// </summary>
+    List<Cell> neighbors = null;
+
+    /// <summary>
+    /// 이 셀에 의해 눌려진 셀의 목록(자기자신 + 자기자신의 주변에 닫혀있던 셀들)
+    /// </summary>
+    List<Cell> pressedCells = null;
+
+    /// <summary>
     /// 셀에 지뢰가 설치되었다고 알리는 델리게이트
     /// </summary>
     public Action<int> onMineSet;
@@ -139,6 +149,13 @@ public class Cell : MonoBehaviour
         cover = child.GetComponent<SpriteRenderer>();
         child = transform.GetChild(1);
         inside = child.GetComponent<SpriteRenderer>();
+
+        pressedCells = new List<Cell>(9);
+    }
+
+    private void Start()
+    {
+        neighbors = Board.GetNeighbors(ID);
     }
 
     /// <summary>
@@ -195,6 +212,10 @@ public class Cell : MonoBehaviour
             else if(aroundMineCount == 0)
             {
                 // 주변 셀을 모두 열기
+                foreach(var cell in neighbors)
+                {
+                    cell.Open();
+                }
             }
         }
     }
@@ -205,9 +226,18 @@ public class Cell : MonoBehaviour
     public void CellLeftPress()
     {
         // 눌린 표시를 한다.
-        if(isOpen)
+        pressedCells.Clear();   // 새로 눌려졌으니 기존에 눌려져 있던 것들에 대한 기록은 제거
+        if (isOpen)
         {
             // 주변 8개 셀 중에 닫혀있는 셀만 누르는 표시를 한다.
+            foreach (var cell in neighbors)
+            {
+                if(!cell.isOpen && !cell.IsFlaged)  // 닫혀있고 깃발표시가 안되었으면
+                {
+                    pressedCells.Add(cell);         // 눌렸다고 표시하기
+                    cell.CellLeftPress();           // 누르기(이미지 변경)
+                }
+            }
         }
         else
         {
@@ -224,6 +254,7 @@ public class Cell : MonoBehaviour
                 default:
                     break;
             }
+            pressedCells.Add(this); // 자신을 눌려진 셀이라고 표시
         }
     }
 
@@ -234,10 +265,29 @@ public class Cell : MonoBehaviour
     {
         if(isOpen)
         {
-            // 셀에 기록된 깃발 개수와 주변에 설치된 깃발의 개수가 같으면 
-            //      주변 셀 중에서 닫혀있는 셀은 모두 연다.
-            //      아니면 다시 모두 원상복구
+            // 열린 셀에서 마우스 버튼을 땠을 때
 
+            // 주변의 깃발 개수 확인하기
+            int flagCount = 0;
+            foreach (var cell in neighbors)
+            {
+                if(cell.IsFlaged)
+                    flagCount++;
+            }
+
+            if( flagCount == aroundMineCount)
+            {
+                // 주변의 깃발 개수와 지뢰 개수가 같으면 남은 셀은 모두 열기
+                foreach( var cell in pressedCells)
+                {
+                    cell.Open();
+                }
+            }
+            else
+            {
+                // 깃발 개수가 다르면 눌려져 있던 셀들 복구
+                RestoreCovers();
+            }
         }
         else
         {
@@ -245,10 +295,6 @@ public class Cell : MonoBehaviour
             Open();
         }
     }
-    //1. 셀을 열때 주변 지뢰 개수가 0이면 주변셀을 모두 열기
-    //2. 열려있는 셀을 눌렀을 경우 주변 8개 셀 중 닫혀있는 셀은 모두 눌린 표시를 한다.
-    //3. 2번 상태일 때 마우스를 때면 주변 깃발 개수로 주변 지뢰 개수가 같으면 깃발 표시된 셀을 제외하고 모두 연다
-
 
     /// <summary>
     /// 셀을 마우스 오른쪽 버튼으로 눌렀을 때 실행되는 함수
@@ -274,7 +320,10 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void RestoreCover()
+    /// <summary>
+    /// 자기 자신의 커버를 복구하는 함수
+    /// </summary>
+    void RestoreCover()
     {
         switch (MarkState)
         {
@@ -288,6 +337,18 @@ public class Cell : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// 모든 눌려진 셀의 커버를 복구하는 함수
+    /// </summary>
+    public void RestoreCovers()
+    {
+        foreach(var cell in pressedCells)
+        {
+            cell.RestoreCover();
+        }
+        pressedCells.Clear();
     }
 }
 

@@ -45,7 +45,7 @@ public class Board : MonoBehaviour
         {
             if(currentCell != value)
             {
-                currentCell?.RestoreCover();    // 이전 셀은 원래 상태로 되돌리기
+                currentCell?.RestoreCovers();   // 이전 셀은 원래 상태로 되돌리기
                 currentCell = value;
                 currentCell?.CellLeftPress();   // 새 셀은 눌려진 상태로 만들기
             }
@@ -281,7 +281,6 @@ public class Board : MonoBehaviour
         }
     }
 
-
     /// <summary>
     /// 마우스 왼쪽 버튼을 땠을 때 실행되는 함수
     /// </summary>
@@ -319,6 +318,10 @@ public class Board : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 마우스가 움직일 때 실행될 함수
+    /// </summary>
+    /// <param name="context"></param>
     private void OnMouseMove(InputAction.CallbackContext context)
     {
         if (Mouse.current.leftButton.isPressed) // 눌려진 상태일 때
@@ -339,9 +342,29 @@ public class Board : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 특정 셀 주변에 있는 모든 셀을 리턴하는 함수
+    /// </summary>
+    /// <param name="id">이웃을 구할 셀의 ID</param>
+    /// <returns>ID 셀의 모든 이웃</returns>
+    public List<Cell> GetNeighbors(int id)
+    {
+        List<Cell> result = new List<Cell>(8);
+        Vector2Int grid = IndexToGrid(id);
+        for(int y=-1;y<2;y++)
+        {
+            for(int x=-1;x<2;x++)
+            {
+                int index = GridToIndex(x + grid.x, y + grid.y);
+                if( index != Cell.ID_NOT_VALID && !(x==0 && y==0))
+                {
+                    result.Add(cells[index]);
+                }
+            }
+        }
 
-    // 마우스 왼쪽 버튼을 누른 상태에서 마우스의 위치가 변경되면 눌려진 표시가 되는 셀도 변경되어야 한다.
-
+        return result;
+    }
 
     // 테스트 함수 ---------------------------------------------------------------------------------
     public void Test_ResetBoard()
