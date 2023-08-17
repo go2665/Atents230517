@@ -226,36 +226,39 @@ public class Cell : MonoBehaviour
     /// </summary>
     public void CellLeftPress()
     {
-        // 눌린 표시를 한다.
-        pressedCells.Clear();   // 새로 눌려졌으니 기존에 눌려져 있던 것들에 대한 기록은 제거
-        if (isOpen)
+        if( GameManager.Inst.IsPlaying )    // 게임 플레이 상태일때만 처리
         {
-            // 주변 8개 셀 중에 닫혀있는 셀만 누르는 표시를 한다.
-            foreach (var cell in neighbors)
+            // 눌린 표시를 한다.
+            pressedCells.Clear();   // 새로 눌려졌으니 기존에 눌려져 있던 것들에 대한 기록은 제거
+            if (isOpen)
             {
-                if(!cell.isOpen && !cell.IsFlaged)  // 닫혀있고 깃발표시가 안되었으면
+                // 주변 8개 셀 중에 닫혀있는 셀만 누르는 표시를 한다.
+                foreach (var cell in neighbors)
                 {
-                    pressedCells.Add(cell);         // 눌렸다고 표시하기
-                    cell.CellLeftPress();           // 누르기(이미지 변경)
+                    if(!cell.isOpen && !cell.IsFlaged)  // 닫혀있고 깃발표시가 안되었으면
+                    {
+                        pressedCells.Add(cell);         // 눌렸다고 표시하기
+                        cell.CellLeftPress();           // 누르기(이미지 변경)
+                    }
                 }
             }
-        }
-        else
-        {
-            // 이 셀만 누르고 있는 표시를 한다.
-            switch (MarkState)
+            else
             {
-                case CellMarkState.None:
-                    cover.sprite = Board[CloseCellType.Close_Press];
-                    break;
-                case CellMarkState.Question:
-                    cover.sprite = Board[CloseCellType.Question_Press];
-                    break;
-                case CellMarkState.Flag:
-                default:
-                    break;
+                // 이 셀만 누르고 있는 표시를 한다.
+                switch (MarkState)
+                {
+                    case CellMarkState.None:
+                        cover.sprite = Board[CloseCellType.Close_Press];
+                        break;
+                    case CellMarkState.Question:
+                        cover.sprite = Board[CloseCellType.Question_Press];
+                        break;
+                    case CellMarkState.Flag:
+                    default:
+                        break;
+                }
+                pressedCells.Add(this); // 자신을 눌려진 셀이라고 표시
             }
-            pressedCells.Add(this); // 자신을 눌려진 셀이라고 표시
         }
     }
 
@@ -264,36 +267,39 @@ public class Cell : MonoBehaviour
     /// </summary>
     public void CellLeftRelease()
     {
-        if(isOpen)
+        if (GameManager.Inst.IsPlaying)    // 게임 플레이 상태일때만 처리
         {
-            // 열린 셀에서 마우스 버튼을 땠을 때
-
-            // 주변의 깃발 개수 확인하기
-            int flagCount = 0;
-            foreach (var cell in neighbors)
+            if (isOpen)
             {
-                if(cell.IsFlaged)
-                    flagCount++;
-            }
+                // 열린 셀에서 마우스 버튼을 땠을 때
 
-            if( flagCount == aroundMineCount)
-            {
-                // 주변의 깃발 개수와 지뢰 개수가 같으면 남은 셀은 모두 열기
-                foreach( var cell in pressedCells)
+                // 주변의 깃발 개수 확인하기
+                int flagCount = 0;
+                foreach (var cell in neighbors)
                 {
-                    cell.Open();
+                    if (cell.IsFlaged)
+                        flagCount++;
+                }
+
+                if (flagCount == aroundMineCount)
+                {
+                    // 주변의 깃발 개수와 지뢰 개수가 같으면 남은 셀은 모두 열기
+                    foreach (var cell in pressedCells)
+                    {
+                        cell.Open();
+                    }
+                }
+                else
+                {
+                    // 깃발 개수가 다르면 눌려져 있던 셀들 복구
+                    RestoreCovers();
                 }
             }
             else
             {
-                // 깃발 개수가 다르면 눌려져 있던 셀들 복구
-                RestoreCovers();
+                // 이 셀을 연다.
+                Open();
             }
-        }
-        else
-        {
-            // 이 셀을 연다.
-            Open();
         }
     }
 
@@ -302,22 +308,25 @@ public class Cell : MonoBehaviour
     /// </summary>
     public void CellRightPress()
     {
-        // markState에 따라 우클릭 되었을 때 cover의 이미지 변경하기(프로퍼티 설정하면서 이미지 자동 변경)
-        switch (MarkState)
+        if (GameManager.Inst.IsPlaying)    // 게임 플레이 상태일때만 처리
         {
-            case CellMarkState.None:
-                MarkState = CellMarkState.Flag;     
-                onFlagUse?.Invoke();
-                break;
-            case CellMarkState.Flag:
-                MarkState = CellMarkState.Question;
-                onFlagReturn?.Invoke();
-                break;
-            case CellMarkState.Question:
-                MarkState = CellMarkState.None;
-                break;
-            default:
-                break;
+            // markState에 따라 우클릭 되었을 때 cover의 이미지 변경하기(프로퍼티 설정하면서 이미지 자동 변경)
+            switch (MarkState)
+            {
+                case CellMarkState.None:
+                    MarkState = CellMarkState.Flag;
+                    onFlagUse?.Invoke();
+                    break;
+                case CellMarkState.Flag:
+                    MarkState = CellMarkState.Question;
+                    onFlagReturn?.Invoke();
+                    break;
+                case CellMarkState.Question:
+                    MarkState = CellMarkState.None;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

@@ -48,6 +48,11 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
+    /// 게임이 진행중인지 아닌지 확인하기 위한 프로퍼티
+    /// </summary>
+    public bool IsPlaying => State == GameState.Play;
+
+    /// <summary>
     /// 게임이 재시작되면 초기화 되었을 때 실행될 델리게이트
     /// </summary>
     public Action onGameReady;
@@ -141,19 +146,19 @@ public class GameManager : Singleton<GameManager>
 
     public void GameReset()
     {
-        // 게임 초기화하기
-        // - 보드
-        // - 타이머(onGameReady 활용)
-        // - 플래그카운터(onGameReady 활용)
+        // 게임 초기화하고 레디 상태로 변경하기
+        FlagCount = mineCount;
         State = GameState.Ready;
     }
 
     public void GameOver()
     {
-        // 타이머 정지
-        // 셀 더 이상 열리지 않기(셀을 열거나 깃발 설치는 GameState.Play 일때만 가능하게)
-
         State = GameState.GameOver;
+    }
+
+    public void GameClear()
+    {
+        State = GameState.GameClear;
     }
 
     // 테스트 코드 -------------------------------------------------------------------------------------
