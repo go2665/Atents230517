@@ -37,6 +37,24 @@ public class Board : MonoBehaviour
     /// </summary>
     Cell[] cells;
 
+    /// <summary>
+    /// 현재 닫혀있는 셀의 개수
+    /// </summary>
+    int closeCellCount = 0;
+
+    /// <summary>
+    /// 보드가 클리어되었는지 확인하는 프로퍼티
+    /// </summary>
+    public bool IsBoardClear => (closeCellCount == mineCount) && !isBoardOver;
+
+    /// <summary>
+    /// 보드가 실패했는지 표시하는 변수
+    /// </summary>
+    bool isBoardOver = false;
+
+    /// <summary>
+    /// 현재 마우스 커서가 있는 셀
+    /// </summary>
     Cell currentCell = null;
     Cell CurrentCell
     {
@@ -140,6 +158,11 @@ public class Board : MonoBehaviour
                 cell.onMineSet += MineSet;                              // 지뢰 설치할 때
                 cell.onFlagUse += gameManager.DecreaseFlagCount;        // 깃발을 설치했을 때
                 cell.onFlagReturn += gameManager.IncreaseFlagCount;     // 설치된 깃발을 해제했을 때
+                cell.onAction += gameManager.FinishPlayerAction;        // 플레이어의 행동 한번이 끝났을 때
+                cell.onExplosion += gameManager.GameOver;               // 지뢰가 터졌을 때
+
+                cell.onExplosion += () => isBoardOver = true;           // 지뢰가 터졌을 때
+                cell.onCellOpen += () => closeCellCount--;              // 셀이 열렸을 때
 
                 cells[cell.ID] = cell;                          // 배열에 셀 저장
                 cellObj.name = $"Cell_{cell.ID}_({x},{y})";     // 셀 게임 오브젝트의 이름 변경
@@ -163,6 +186,9 @@ public class Board : MonoBehaviour
             cell.ResetData();
         }
 
+        // 닫힌 셀의 개수 초기화
+        closeCellCount = cells.Length;
+
         // 보드에 mineCount만큼 지뢰 배치하기
         int[] ids = new int[cells.Length];
         for(int i=0;i < cells.Length;i++)
@@ -174,6 +200,7 @@ public class Board : MonoBehaviour
         {
             cells[ids[i]].SetMine();
         }
+
     }
 
     /// <summary>

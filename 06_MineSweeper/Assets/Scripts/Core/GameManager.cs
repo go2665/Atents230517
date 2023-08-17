@@ -136,6 +136,14 @@ public class GameManager : Singleton<GameManager>
         FlagCount--;
     }
 
+    public void FinishPlayerAction()
+    {
+        if(Board.IsBoardClear)
+        {
+            GameClear();
+        }
+    }
+
     public void GameStart()
     {
         if(State == GameState.Ready)

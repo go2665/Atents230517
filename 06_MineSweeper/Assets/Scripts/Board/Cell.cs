@@ -143,6 +143,21 @@ public class Cell : MonoBehaviour
     /// </summary>
     public Action onFlagReturn;
 
+    /// <summary>
+    /// 셀이 열렸다고 알리는 델리게이트
+    /// </summary>
+    public Action onCellOpen;
+
+    /// <summary>
+    /// 행동을 수행했음을 알리는 델리게이트
+    /// </summary>
+    public Action onAction;
+
+    /// <summary>
+    /// 지뢰가 터졌음을 알리는 델리게이트
+    /// </summary>
+    public Action onExplosion;
+
     private void Awake()
     {
         Transform child = transform.GetChild(0);
@@ -204,11 +219,13 @@ public class Cell : MonoBehaviour
         {
             isOpen = true;
             cover.gameObject.SetActive(false);
-            if( hasMine )
+            onCellOpen?.Invoke();
+
+            if ( hasMine )
             {
                 inside.sprite = Board[OpenCellType.Mine_Explotion];
                 // 게임 오버 처리
-                GameManager.Inst.GameOver();
+                onExplosion?.Invoke();
             }
             else if(aroundMineCount == 0)
             {
@@ -288,6 +305,7 @@ public class Cell : MonoBehaviour
                     {
                         cell.Open();
                     }
+                    onAction?.Invoke();
                 }
                 else
                 {
@@ -299,6 +317,7 @@ public class Cell : MonoBehaviour
             {
                 // 이 셀을 연다.
                 Open();
+                onAction?.Invoke();
             }
         }
     }
@@ -308,7 +327,7 @@ public class Cell : MonoBehaviour
     /// </summary>
     public void CellRightPress()
     {
-        if (GameManager.Inst.IsPlaying)    // 게임 플레이 상태일때만 처리
+        if (GameManager.Inst.IsPlaying && !isOpen)    // 게임 플레이 상태이고 닫혀있을때만 처리
         {
             // markState에 따라 우클릭 되었을 때 cover의 이미지 변경하기(프로퍼티 설정하면서 이미지 자동 변경)
             switch (MarkState)
@@ -316,10 +335,12 @@ public class Cell : MonoBehaviour
                 case CellMarkState.None:
                     MarkState = CellMarkState.Flag;
                     onFlagUse?.Invoke();
+                    onAction?.Invoke();
                     break;
                 case CellMarkState.Flag:
                     MarkState = CellMarkState.Question;
                     onFlagReturn?.Invoke();
+                    onAction?.Invoke();
                     break;
                 case CellMarkState.Question:
                     MarkState = CellMarkState.None;
