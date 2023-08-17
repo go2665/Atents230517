@@ -208,6 +208,7 @@ public class Cell : MonoBehaviour
             {
                 inside.sprite = Board[OpenCellType.Mine_Explotion];
                 // 게임 오버 처리
+                GameManager.Inst.GameOver();
             }
             else if(aroundMineCount == 0)
             {

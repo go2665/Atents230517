@@ -136,6 +136,9 @@ public class Board : MonoBehaviour
             }
         }
 
+        gameManager.onGameReady += ResetBoard;
+        gameManager.onGameOver += OnGameOver;
+
         ResetBoard();
     }
 
@@ -161,6 +164,15 @@ public class Board : MonoBehaviour
         {
             cells[ids[i]].SetMine();
         }
+    }
+
+    /// <summary>
+    /// 게임 오버가 되었을 때 실행할 함수
+    /// </summary>
+    private void OnGameOver()
+    {
+        // 잘못찾은 것은 잘못 찾았다고 표시
+        // 못찾은 지뢰는 커버 열기
     }
 
     /// <summary>
@@ -276,6 +288,7 @@ public class Board : MonoBehaviour
         if( index != Cell.ID_NOT_VALID)
         {
             //Debug.Log(index);
+            GameManager.Inst.GameStart();   // 셀을 누르면 게임 시작
             Cell target = cells[index];
             target.CellLeftPress();
         }
@@ -312,7 +325,8 @@ public class Board : MonoBehaviour
         int index = GridToIndex(grid.x, grid.y);                // 그리드 좌료를 인덱스로 변환
 
         if (index != Cell.ID_NOT_VALID)
-        {            
+        {
+            GameManager.Inst.GameStart();   // 깃발이 설치되면 게임 시작
             Cell target = cells[index];
             target.CellRightPress();
         }

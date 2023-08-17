@@ -8,8 +8,8 @@ public class GameManager : Singleton<GameManager>
     // 게임 상태 관련 ------------------------------------------------------------------------------
     public enum GameState
     {
-        Ready = 0,  // 게임 시작 전(첫번째 셀이 아직 열리지 않은 상태)
-        Play,       // 게임 진행 중(첫번째 셀이 열린 이후)
+        Ready = 0,  // 게임 시작 전(시작하고 아무런 행동이 없는 상태)
+        Play,       // 게임 진행 중(첫번째 셀이 열린 이후나 깃발이 설치된 이후)
         GameClear,  // 모든 지뢰를 찾았을 때
         GameOver    // 지뢰가 있는 셀을 열었을 때
     }
@@ -18,6 +18,34 @@ public class GameManager : Singleton<GameManager>
     /// 게임의 현재 상태
     /// </summary>
     GameState state = GameState.Ready;
+
+    GameState State
+    {
+        get => state;
+        set
+        {
+            if( state != value)
+            {
+                state = value;
+                switch (state)
+                {
+                    case GameState.Ready:
+                        onGameReady?.Invoke();
+                        break;
+                    case GameState.Play:
+                        onGamePlay?.Invoke();
+                        break;
+                    case GameState.GameClear:
+                        onGameClear?.Invoke();
+                        break;
+                    case GameState.GameOver:
+                        onGameOver?.Invoke();
+                        break;
+                }
+                Debug.Log($"현재 상태 : {state}");
+            }
+        }
+    }
 
     /// <summary>
     /// 게임이 재시작되면 초기화 되었을 때 실행될 델리게이트
@@ -103,8 +131,32 @@ public class GameManager : Singleton<GameManager>
         FlagCount--;
     }
 
+    public void GameStart()
+    {
+        if(State == GameState.Ready)
+        {
+            State = GameState.Play;
+        }
+    }
 
-    // 테스트 코드
+    public void GameReset()
+    {
+        // 게임 초기화하기
+        // - 보드
+        // - 타이머(onGameReady 활용)
+        // - 플래그카운터(onGameReady 활용)
+        State = GameState.Ready;
+    }
+
+    public void GameOver()
+    {
+        // 타이머 정지
+        // 셀 더 이상 열리지 않기(셀을 열거나 깃발 설치는 GameState.Play 일때만 가능하게)
+
+        State = GameState.GameOver;
+    }
+
+    // 테스트 코드 -------------------------------------------------------------------------------------
     public void Test_Flag(int flag)
     {
         FlagCount = flag;
