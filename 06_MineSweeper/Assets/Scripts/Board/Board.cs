@@ -189,6 +189,9 @@ public class Board : MonoBehaviour
         // 닫힌 셀의 개수 초기화
         closeCellCount = cells.Length;
 
+        // 보드 상태 초기화
+        isBoardOver = false;
+
         // 보드에 mineCount만큼 지뢰 배치하기
         int[] ids = new int[cells.Length];
         for(int i=0;i < cells.Length;i++)

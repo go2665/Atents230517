@@ -136,11 +136,14 @@ public class GameManager : Singleton<GameManager>
         FlagCount--;
     }
 
+    /// <summary>
+    /// 플레이어 행동이 끝났을 때 실행될 함수
+    /// </summary>
     public void FinishPlayerAction()
     {
-        if(Board.IsBoardClear)
+        if(Board.IsBoardClear)  // 클리어된 상황인지 확인
         {
-            GameClear();
+            GameClear();        // 클리어되었으면 클리어 처리
         }
     }
 
