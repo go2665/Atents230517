@@ -65,6 +65,16 @@ public class Board : MonoBehaviour
     public Sprite this[CloseCellType type] => closeCellImage[(int)type];
 
     /// <summary>
+    /// 보드에 있는 셀이 눌려졌을 때 실행(왼클릭만)
+    /// </summary>
+    public Action onBoardLeftPress;
+
+    /// <summary>
+    /// 눌렀던 셀에서 버튼을 땠을 때 실행(왼클릭만)
+    /// </summary>
+    public Action onBoardLeftRelease;
+
+    /// <summary>
     /// 인풋액션
     /// </summary>
     PlayerInputActions inputActions;
@@ -291,6 +301,8 @@ public class Board : MonoBehaviour
             GameManager.Inst.GameStart();   // 셀을 누르면 게임 시작
             Cell target = cells[index];
             target.CellLeftPress();
+
+            onBoardLeftPress?.Invoke();
         }
     }
 
@@ -310,6 +322,8 @@ public class Board : MonoBehaviour
             //Debug.Log(index);
             Cell target = cells[index];
             target.CellLeftRelease();
+
+            onBoardLeftRelease?.Invoke();
         }
     }
 

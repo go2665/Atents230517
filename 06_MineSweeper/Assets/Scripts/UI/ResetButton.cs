@@ -55,6 +55,31 @@ public class ResetButton : MonoBehaviour
 
     private void Start()
     {
-        
+        GameManager gameManager = GameManager.Inst;
+        gameManager.Board.onBoardLeftPress += () =>
+        {
+            if (GameManager.Inst.IsPlaying)
+            {
+                State = ButtonState.Surprise;   // 게임 진행중에 셀을 누르면 서프라이즈로 변경
+            }
+        };
+
+        gameManager.Board.onBoardLeftRelease += () =>
+        {
+            if (GameManager.Inst.IsPlaying)
+            {
+                State = ButtonState.Normal;     // 눌렀던 셀을 때면 다시 원상 복구
+            }
+        };
+
+        gameManager.onGameOver += () => State = ButtonState.GameOver;   // GameOver가 되었을 때 이미지로 변경
+        gameManager.onGameClear += () => State = ButtonState.GameClear; // GameClear 되었을 때 이미지로 변경
+
+        button.onClick.AddListener(() =>
+        {
+            GameManager.Inst.GameReset();       // 리셋버튼이 눌려지면 게임 리셋
+            State = ButtonState.Normal;
+        });
+
     }
 }

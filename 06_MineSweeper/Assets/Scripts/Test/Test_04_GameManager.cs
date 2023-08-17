@@ -11,4 +11,9 @@ public class Test_04_GameManager : TestBase
 
         //ResetButton.ButtonState.Normal
     }
+
+    protected override void Test2(InputAction.CallbackContext context)
+    {
+        GameManager.Inst.GameClear();
+    }
 }
