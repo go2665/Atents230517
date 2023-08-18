@@ -387,16 +387,21 @@ public class Cell : MonoBehaviour
         pressedCells.Clear();
     }
 
+    /// <summary>
+    /// 지뢰가 아닌데 지뢰로 선택되어있었을 때 실행된다.
+    /// </summary>
     public void SetFlagIncorrect()
     {
-        // 지뢰가 아닌데 지뢰로 선택되어있었을 때 실행
-        // Mine_Mistake로 설정
+        cover.gameObject.SetActive(false);                  // 커버 제거하고
+        inside.sprite = Board[OpenCellType.Mine_Mistake];   // 내부를 Mine_Mistake로 설정
     }
 
+    /// <summary>
+    /// 지뢰인데 게임이 끝났을 때까지 못찾았을 때 실행된다.
+    /// </summary>
     public void SetMineNotFound()
     {
-        // 지뢰인데 게임이 끝났을 때까지 못찾았으면 실행
-        // 커버만 제거
+        cover.gameObject.SetActive(false);
     }
 }
 

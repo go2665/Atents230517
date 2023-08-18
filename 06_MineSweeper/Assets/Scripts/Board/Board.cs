@@ -228,8 +228,19 @@ public class Board : MonoBehaviour
     /// </summary>
     private void OnGameOver()
     {
-        // 잘못찾은 것은 잘못 찾았다고 표시
-        // 못찾은 지뢰는 커버 열기
+        foreach (var cell in cells)
+        {
+            if(cell.IsFlaged && !cell.HasMine)
+            {
+                // 깃발을 지뢰가 없는 곳에 설치했다.
+                cell.SetFlagIncorrect();    // 잘못찾은 것은 잘못 찾았다고 표시
+            }
+            else if( !cell.IsFlaged && cell.HasMine)
+            {
+                // 지뢰를 찾지 못했다.
+                cell.SetMineNotFound();     // 못찾은 지뢰는 커버 열기
+            }
+        }
     }
 
     /// <summary>
