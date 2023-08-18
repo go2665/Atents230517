@@ -303,7 +303,7 @@ public class Cell : MonoBehaviour
                         flagCount++;
                 }
 
-                if (flagCount == aroundMineCount)
+                if (aroundMineCount != 0 && flagCount == aroundMineCount)   // 주변 지뢰수가 0이 아니고 깃발 개수와 같을 때만 처리
                 {
                     // 주변의 깃발 개수와 지뢰 개수가 같으면 남은 셀은 모두 열기
                     foreach (var cell in pressedCells)
