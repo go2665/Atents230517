@@ -110,6 +110,37 @@ public class GameManager : Singleton<GameManager>
     public int boardHeight = 8;
     // --------------------------------------------------------------------------------------------
 
+    // UI 관련 ------------------------------------------------------------------------------------
+    
+    /// <summary>
+    /// 플레이어의 행동 횟수
+    /// </summary>
+    private int actionCount = 0;
+
+    /// <summary>
+    /// 행동 횟수를 확인하고 설정하는 프로퍼티
+    /// </summary>
+    public int ActionCount
+    {
+        get => actionCount;
+        private set
+        {
+            if( actionCount != value)   // 횟수가 변경되면
+            {
+                actionCount = value;
+                onActionCountChange?.Invoke(actionCount);   // 델리게이트 실행
+            }
+        }
+    }
+    /// <summary>
+    /// 행동 횟수가 변경되었을 때 실행될 델리게이트
+    /// </summary>
+    public Action<int> onActionCountChange;
+
+
+    // --------------------------------------------------------------------------------------------
+
+
     /// <summary>
     /// 초기화용 함수
     /// </summary>
@@ -141,6 +172,8 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     public void FinishPlayerAction()
     {
+        ActionCount++;          // 행동 회수 증가
+
         if(Board.IsBoardClear)  // 클리어된 상황인지 확인
         {
             GameClear();        // 클리어되었으면 클리어 처리
@@ -159,6 +192,7 @@ public class GameManager : Singleton<GameManager>
     {
         // 게임 초기화하고 레디 상태로 변경하기
         FlagCount = mineCount;
+        ActionCount = 0;
         State = GameState.Ready;
     }
 

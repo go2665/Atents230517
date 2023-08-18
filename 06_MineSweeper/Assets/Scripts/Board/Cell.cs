@@ -94,6 +94,11 @@ public class Cell : MonoBehaviour
     bool hasMine = false;
 
     /// <summary>
+    /// 지뢰 여부를 확인하기 위한 프로퍼티
+    /// </summary>
+    public bool HasMine => hasMine;
+
+    /// <summary>
     /// 이 셀 주변에 있는 지뢰의 개수
     /// </summary>
     int aroundMineCount = 0;
@@ -380,6 +385,18 @@ public class Cell : MonoBehaviour
             cell.RestoreCover();
         }
         pressedCells.Clear();
+    }
+
+    public void SetFlagIncorrect()
+    {
+        // 지뢰가 아닌데 지뢰로 선택되어있었을 때 실행
+        // Mine_Mistake로 설정
+    }
+
+    public void SetMineNotFound()
+    {
+        // 지뢰인데 게임이 끝났을 때까지 못찾았으면 실행
+        // 커버만 제거
     }
 }
 

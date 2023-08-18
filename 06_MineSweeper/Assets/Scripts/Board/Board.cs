@@ -83,6 +83,21 @@ public class Board : MonoBehaviour
     public Sprite this[CloseCellType type] => closeCellImage[(int)type];
 
     /// <summary>
+    /// 찾은 지뢰 개수
+    /// </summary>
+    private int foundMineCount = 0;
+
+    /// <summary>
+    /// 찾은 지뢰 개수 확인용 프로퍼티
+    /// </summary>
+    public int FoundMineCount => foundMineCount;
+
+    /// <summary>
+    /// 못찾은 지뢰 개수 확인용 프로퍼티
+    /// </summary>
+    public int NotFoundMineCount => mineCount - foundMineCount;
+
+    /// <summary>
     /// 보드에 있는 셀이 눌려졌을 때 실행(왼클릭만)
     /// </summary>
     public Action onBoardLeftPress;
@@ -171,6 +186,8 @@ public class Board : MonoBehaviour
 
         gameManager.onGameReady += ResetBoard;
         gameManager.onGameOver += OnGameOver;
+        gameManager.onGameOver += FindMineCount;
+        gameManager.onGameClear += FindMineCount;
 
         ResetBoard();
     }
@@ -422,6 +439,21 @@ public class Board : MonoBehaviour
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// 현재 찾은 지뢰 개수를 갱신하는 함수
+    /// </summary>
+    void FindMineCount()
+    {
+        foundMineCount = 0;
+        foreach(Cell cell in cells)
+        {
+            if(cell.HasMine && cell.IsFlaged)
+            {
+                foundMineCount++;
+            }
+        }
     }
 
     // 테스트 함수 ---------------------------------------------------------------------------------
