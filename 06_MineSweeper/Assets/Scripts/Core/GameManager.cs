@@ -137,6 +137,10 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     public Action<int> onActionCountChange;
 
+    // --------------------------------------------------------------------------------------------
+
+    RankDataManager rankDataManager;
+    public RankDataManager RankDataManager => rankDataManager;
 
     // --------------------------------------------------------------------------------------------
 
@@ -146,6 +150,8 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     protected override void OnInitialize()
     {
+        rankDataManager = GetComponent<RankDataManager>();
+
         FlagCount = mineCount;                                  // 깃발 개수 설정
         board = FindObjectOfType<Board>();                      // 보드 가져와서
         board.Initialize(boardWitdth, boardHeight, mineCount);  // 보드 생성하기
