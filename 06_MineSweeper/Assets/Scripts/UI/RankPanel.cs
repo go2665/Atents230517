@@ -4,5 +4,13 @@ using UnityEngine;
 
 public class RankPanel : MonoBehaviour
 {
-    
+    public void Open()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void Close()
+    {
+        gameObject.SetActive(false);
+    }
 }
