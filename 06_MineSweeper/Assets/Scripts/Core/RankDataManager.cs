@@ -41,8 +41,27 @@ public class RankDataManager : MonoBehaviour
     }
 
     // 저장
+    void SaveData()
+    {
+
+    }
+
     // 불러오기
+    void LoadData()
+    {
+
+    }
+
     // 갱신
+    void UpdateData(int actionCount, float playTime, string rankerName)
+    {
+        actionRank.Add(new(actionCount, rankerName));
+        timeRank.Add(new(playTime, rankerName));
+
+        // actionRank와 timeRank를 정렬하고 rankCount개수만 남겨 놓기
+        // IComparable 사용 권장
+
+    }
 
     // 테스트용
     public void Test_ActionRankSetting()
@@ -69,5 +88,11 @@ public class RankDataManager : MonoBehaviour
         timeRank.Add(new(10.55f, "CCC"));
         timeRank.Add(new(15.55f, "DDD"));
         timeRank.Add(new(20.55f, "EEE"));
+    }
+
+    public void Test_Update(int actionCount, float playTime, string rankerName)
+    {
+        rankCount = 5;
+        UpdateData(actionCount, playTime, rankerName);
     }
 }
