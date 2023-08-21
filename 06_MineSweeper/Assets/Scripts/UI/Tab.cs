@@ -25,13 +25,13 @@ public class Tab : MonoBehaviour
                 // 선택 되었다.
                 tabImage.color = Color.white;   // 찐하게 보이게 만들기
                 onTabSelected?.Invoke(this);    // 선택 되었다고 신호보내기
-                ChildPanelOpen();               // 서브 패널 열기
+                SubPanelOpen();               // 서브 패널 열기
             }
             else
             {
                 // 선택되지 않았다.
                 tabImage.color = UnSelectedColor;   // 반투명하게 보이도록 만들기
-                ChildPanelClose();                  // 서브패널 닫기
+                SubPanelClose();                  // 서브패널 닫기
             }
         }
     }
@@ -66,7 +66,7 @@ public class Tab : MonoBehaviour
     /// <summary>
     /// 서브 패널 여는 함수
     /// </summary>
-    public void ChildPanelOpen()
+    public void SubPanelOpen()
     {
         subPanel.gameObject.SetActive(true);
     }
@@ -74,7 +74,7 @@ public class Tab : MonoBehaviour
     /// <summary>
     /// 서브 패널 닫는 함수
     /// </summary>
-    public void ChildPanelClose()
+    public void SubPanelClose()
     {
         subPanel.gameObject.SetActive(false);
     }

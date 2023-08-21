@@ -244,7 +244,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -380, y: -50}
+  m_AnchoredPosition: {x: -393, y: -40}
   m_SizeDelta: {x: 875, y: 875}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &192629389
@@ -1386,6 +1386,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6029810238231801390, guid: 82c22cb4a230c074eb5cdab7f7e808b3, type: 3}
+      propertyPath: m_text
+      value: "\uC2DC\uAC04\uC21C\uC704"
+      objectReference: {fileID: 0}
+    - target: {fileID: 6029810238231801390, guid: 82c22cb4a230c074eb5cdab7f7e808b3, type: 3}
+      propertyPath: m_fontStyle
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6029810238424118765, guid: 82c22cb4a230c074eb5cdab7f7e808b3, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1803,7 +1811,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4192694416382407797, guid: 478558df1a5d4a54bbbe5cc3343b5acc, type: 3}
       propertyPath: mineCount
-      value: 20
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4192694416382407797, guid: 478558df1a5d4a54bbbe5cc3343b5acc, type: 3}
       propertyPath: boardHeight
