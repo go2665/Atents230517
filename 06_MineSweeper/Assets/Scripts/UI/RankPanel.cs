@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RankPanel : MonoBehaviour
 {
@@ -61,6 +63,8 @@ public class RankPanel : MonoBehaviour
                 SelectedTab.SubPanelClose();    // off 상태면 서브 패널 닫기
             }
         };
+
+        selectedTab = tabs[tabs.Length-1];      // 선택된 탭은 무조건 존재하게(마지막 탭으로 해서 처음 열릴때 문제없게 하기)
     }
 
     private void Start()

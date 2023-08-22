@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
@@ -137,6 +138,26 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     public Action<int> onActionCountChange;
 
+    /// <summary>
+    /// 시간 측정용 타이머
+    /// </summary>
+    Timer timer;
+
+    /// <summary>
+    /// 현재 플레이 시간을 확인하기 위한 프로퍼티
+    /// </summary>
+    public float PlayTime => timer.ElapsedTime;
+
+    /// <summary>
+    /// 플레이어의 이름
+    /// </summary>
+    string playerName = "플레이어";
+
+    /// <summary>
+    /// 플레이어 이름 확인용 프로퍼티
+    /// </summary>
+    public string PlayerName => playerName;
+
     // --------------------------------------------------------------------------------------------
 
     RankDataManager rankDataManager;
@@ -155,6 +176,11 @@ public class GameManager : Singleton<GameManager>
         FlagCount = mineCount;                                  // 깃발 개수 설정
         board = FindObjectOfType<Board>();                      // 보드 가져와서
         board.Initialize(boardWitdth, boardHeight, mineCount);  // 보드 생성하기
+
+        timer = FindObjectOfType<Timer>();
+
+        TMP_InputField inputField = FindObjectOfType<TMP_InputField>();
+        inputField.onEndEdit.AddListener((text) => playerName = text);  // 인풋필드에서 이름이 변경되면 항상 저장
     }
 
     /// <summary>

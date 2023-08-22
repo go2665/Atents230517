@@ -66,6 +66,11 @@ public class RankDataManager : MonoBehaviour
     private void Start()
     {
         LoadData();
+
+        GameManager.Inst.onGameClear += () =>
+        {
+            UpdateData(GameManager.Inst.ActionCount, GameManager.Inst.PlayTime, GameManager.Inst.PlayerName);
+        };
     }
 
     // 저장
