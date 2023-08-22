@@ -63,11 +63,6 @@ public class RankPanel : MonoBehaviour
         };
     }
 
-    private void OnEnable()
-    {
-        SelectedTab = tabs[0];  // 켤 때마다 선택된 탭은 첫번째 탭으로 설정
-    }
-
     private void Start()
     {
         GameManager.Inst.onGameClear += Open;       // 게임이 클리어되었을 때 열고
@@ -81,6 +76,7 @@ public class RankPanel : MonoBehaviour
     /// </summary>
     void Open()
     {
+        SelectedTab = tabs[0];          // 켤 때마다 선택된 탭은 첫번째 탭으로 설정
         gameObject.SetActive(true);
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,8 +6,8 @@ using UnityEngine;
 /// <summary>
 /// 랭킹 하나에 대한 정보를 저장하는 클래스
 /// </summary>
-/// <typeparam name="T">랭킹 정보용 데이터 타입</typeparam>
-public class RankData<T>
+/// <typeparam name="T">랭킹 정보용 데이터 타입(IComparable을 상속받아야 함)</typeparam>
+public class RankData<T> : IComparable<RankData<T>> where T : IComparable<T>
 {
     readonly T data;
     public T Data => data;
@@ -18,6 +19,15 @@ public class RankData<T>
     {
         this.data = data;
         this.name = name;
+    }
+
+    public int CompareTo(RankData<T> other)
+    {
+        // 0보다 작다 : this < other
+        // 0이다      : this == other
+        // 0보다 크다 : this > other
+
+        return data.CompareTo(other.data);  // 숫자가 작은 것이 앞, 큰것이 뒤
     }
 }
 
@@ -52,15 +62,30 @@ public class RankDataManager : MonoBehaviour
 
     }
 
-    // 갱신
+    /// <summary>
+    /// 랭킹 갱신하는 함수(클리어 때만 실행)
+    /// </summary>
+    /// <param name="actionCount">이번 클리어의 행동 회수 기록</param>
+    /// <param name="playTime">이번 클리어에 걸린 시간</param>
+    /// <param name="rankerName">플레이어 이름</param>
     void UpdateData(int actionCount, float playTime, string rankerName)
     {
-        actionRank.Add(new(actionCount, rankerName));
+        actionRank.Add(new(actionCount, rankerName));   // 리스트에 새기록 추가
         timeRank.Add(new(playTime, rankerName));
 
-        // actionRank와 timeRank를 정렬하고 rankCount개수만 남겨 놓기
-        // IComparable 사용 권장
+        actionRank.Sort();                              // 리스트 정렬
+        timeRank.Sort();
 
+        if(actionRank.Count > rankCount)                // 최대 개수 넘친 부분은 제거
+        {
+            actionRank.RemoveAt(rankCount);
+        }
+        if(timeRank.Count > rankCount)
+        {
+            timeRank.RemoveAt(rankCount);
+        }
+
+        SaveData();                                     // 데이터 저장
     }
 
     // 테스트용

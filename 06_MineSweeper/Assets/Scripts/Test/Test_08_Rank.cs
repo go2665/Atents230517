@@ -29,5 +29,7 @@ public class Test_08_Rank : TestBase
         RankDataManager rank = GameManager.Inst.RankDataManager;
         rank.Test_ActionRankSetting();
         rank.Test_TimeRankSetting();
+
+        rank.Test_Update(7, 20.0f, "----");
     }
 }
