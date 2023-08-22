@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,12 +32,24 @@ public class RankData<T> : IComparable<RankData<T>> where T : IComparable<T>
     }
 }
 
+[Serializable]
+public class SaveData
+{
+    public int[] actionCountRank;
+    public string[] actionRankerName;
+    public float[] playTimeRank;
+    public string[] playTimeRankerName;
+}
+
 /// <summary>
 /// 랭킹정보를 관리하는 클래스
 /// </summary>
 public class RankDataManager : MonoBehaviour
 {
     public int rankCount = 10;
+
+    const string RankDataFolder = "Save";
+    const string RankDataFileName = "Save.json";
 
     List<RankData<int>> actionRank;
     public List<RankData<int>> ActionRank => actionRank;
@@ -50,15 +63,71 @@ public class RankDataManager : MonoBehaviour
         timeRank = new List<RankData<float>>(rankCount + 1);
     }
 
+    private void Start()
+    {
+        LoadData();
+    }
+
     // 저장
     void SaveData()
     {
+        SaveData data = new();
+        data.actionCountRank = new int[ActionRank.Count];
+        data.actionRankerName = new string[ActionRank.Count];
+        data.playTimeRank = new float[TimeRank.Count];
+        data.playTimeRankerName = new string[TimeRank.Count];
 
+        int index = 0;
+        foreach(var rankData in ActionRank)
+        {
+            data.actionCountRank[index] = rankData.Data;
+            data.actionRankerName[index] = rankData.Name;
+            index++;
+        }
+        index = 0;
+        foreach(var rankData in timeRank)
+        {
+            data.playTimeRank[index] = rankData.Data;
+            data.playTimeRankerName[index] = rankData.Name; 
+            index++;
+        }
+
+        string json = JsonUtility.ToJson(data);
+        string path = $"{Application.dataPath}/{RankDataFolder}";
+        if( !Directory.Exists(path) )
+        {
+            Directory.CreateDirectory(path);
+        }
+
+        string fullPath = $"{path}/{RankDataFileName}";
+        File.WriteAllText(fullPath, json);
     }
 
     // 불러오기
     void LoadData()
     {
+        string path = $"{Application.dataPath}/{RankDataFolder}";
+        string fullPath = $"{path}/{RankDataFileName}";
+
+        if( Directory.Exists(path) && File.Exists(fullPath) ) 
+        { 
+            string json = File.ReadAllText(fullPath);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            int count = data.actionCountRank.Length;
+            actionRank.Clear();
+            for (int i=0; i < count; i++)
+            {
+                actionRank.Add(new(data.actionCountRank[i], data.actionRankerName[i]));
+            }
+            count = data.playTimeRank.Length;
+            timeRank.Clear();
+            for(int i=0; i < count;i++)
+            {
+                timeRank.Add(new(data.playTimeRank[i], data.playTimeRankerName[i]));
+            }
+        }
+
 
     }
 
