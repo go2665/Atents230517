@@ -31,13 +31,14 @@ public class Player : MonoBehaviour
     {
         Idle,
         Walk,
-        BackWalk
+        BackWalk,
+        None
     }
 
     /// <summary>
     /// 플레이어의 현재 애니메이션 상태
     /// </summary>
-    PlayerAnimState state = PlayerAnimState.BackWalk;
+    PlayerAnimState state = PlayerAnimState.None;
 
     /// <summary>
     /// 플레이어의 애니메이션 상태를 확인하고 설정하기 위한 프로퍼티
@@ -47,7 +48,7 @@ public class Player : MonoBehaviour
         get => state;
         set
         {
-            if( state != value) // 변경이 일어났을 때만 처리(트리거가 중복으로 쌓이는 현상을 제거하기 위해)
+            if(state != value) // 변경이 일어났을 때만 처리(트리거가 중복으로 쌓이는 현상을 제거하기 위해)
             {
                 state = value;                          // 상태 변경하고
                 animator.SetTrigger(state.ToString());  // 상태에 따른 트리거 날리기
@@ -71,14 +72,18 @@ public class Player : MonoBehaviour
     private void OnEnable()
     {
         inputActions.Player.Enable();
-        inputActions.Player.Move.performed += OnMoveInput;  // 이동 연결
-        inputActions.Player.Move.canceled += OnMoveInput;
+        inputActions.Player.MoveForward.performed += OnMoveInput;  // 이동 연결
+        inputActions.Player.MoveForward.canceled += OnMoveInput;
+        inputActions.Player.Rotate.performed += OnRotateInput;
+        inputActions.Player.Rotate.canceled += OnRotateInput;
     }
 
     private void OnDisable()
     {
-        inputActions.Player.Move.canceled -= OnMoveInput;   // 이동 연결 해제
-        inputActions.Player.Move.performed -= OnMoveInput;
+        inputActions.Player.Rotate.canceled -= OnRotateInput;
+        inputActions.Player.Rotate.performed -= OnRotateInput;
+        inputActions.Player.MoveForward.canceled -= OnMoveInput;   // 이동 연결 해제
+        inputActions.Player.MoveForward.performed -= OnMoveInput;
         inputActions.Player.Disable();
     }
 
@@ -90,8 +95,8 @@ public class Player : MonoBehaviour
 
     private void OnMoveInput(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
-        Vector2 moveInput = context.ReadValue<Vector2>();   // 입력값 받아오기
-        moveDir = moveInput.y * moveSpeed;      // (앞, 뒤, 정지)와 이동 속도 곱해서 저장하기
+        float moveInput = context.ReadValue<float>();   // 입력값 받아오기
+        moveDir = moveInput * moveSpeed;                // (앞, 뒤, 정지)와 이동 속도 곱해서 저장하기
 
         if(moveDir > 0.001f)        // 0.001f는 float 오차때문에 설정한 임계값. 0.001f보다 작으면 0으로 취급하기
         {
@@ -108,7 +113,12 @@ public class Player : MonoBehaviour
             // 정지
             State = PlayerAnimState.Idle;
         }
+    }
 
-        rotate = moveInput.x * rotateSpeed;     // (좌회전, 우회전)과 회전 속도 곱해서 저장하기
+    private void OnRotateInput(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        float rotateInput = context.ReadValue<float>();
+
+        rotate = rotateInput * rotateSpeed;         // (좌회전, 우회전)과 회전 속도 곱해서 저장하기
     }
 }
