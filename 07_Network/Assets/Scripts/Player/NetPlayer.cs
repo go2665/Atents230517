@@ -19,7 +19,7 @@ public class NetPlayer : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            Vector3 newPos = Random.insideUnitCircle;
+            Vector3 newPos = Random.insideUnitSphere;
             newPos.y = 0;
             position.Value = newPos;
             transform.position = newPos;
@@ -33,7 +33,7 @@ public class NetPlayer : NetworkBehaviour
     [ServerRpc]
     void SubmitPositionRequestServerRpc(ServerRpcParams rpcParams = default)
     {
-        Vector3 newPos = Random.insideUnitCircle;
+        Vector3 newPos = Random.insideUnitSphere;
         newPos.y = 0;
         position.Value = newPos;
     }
@@ -42,5 +42,7 @@ public class NetPlayer : NetworkBehaviour
     {
         transform.position = position.Value;
     }
+
+    // 네트워크를 통해 플레이어의 이동과 회전을 동기화 시키기
 
 }
