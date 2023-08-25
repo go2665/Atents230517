@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class TestNetController : MonoBehaviour
 {
-    private void Awake()
+    private void Start()
     {
         Transform child = transform.GetChild(0);
         Button startHost = child.GetComponent<Button>();

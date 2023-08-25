@@ -1457,7 +1457,7 @@ CharacterController:
   m_Radius: 0.25
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!114 &5346388152697942577
@@ -1474,6 +1474,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position:
     m_InternalValue: {x: 0, y: 0, z: 0}
+  moveSpeed: 3.5
+  rotateSpeed: 180
 --- !u!114 &5346388152697942576
 MonoBehaviour:
   m_ObjectHideFlags: 0
