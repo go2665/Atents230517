@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
+using Unity.Collections;
 
 public class NetPlayer : NetworkBehaviour
 {
@@ -31,6 +32,11 @@ public class NetPlayer : NetworkBehaviour
     /// </summary>
     NetworkVariable<float> netRotateDir = new NetworkVariable<float>();
 
+    /// <summary>
+    /// 지금 내가 보낸 채팅
+    /// </summary>
+    NetworkVariable<FixedString512Bytes> chatString = new NetworkVariable<FixedString512Bytes>();
+
     /// 컴포넌트
     CharacterController controller;
 
@@ -45,6 +51,8 @@ public class NetPlayer : NetworkBehaviour
         controller = GetComponent<CharacterController>();
 
         position.OnValueChanged += OnPositionChange;    // 위치 값이 변경되었을 때 실행할 함수 등록
+
+        chatString.OnValueChanged += OnChatRecieve;     // 채팅이 입력되면 실행될 함수 등록
     }
 
     private void Update()
@@ -145,8 +153,33 @@ public class NetPlayer : NetworkBehaviour
         transform.position = newValue;
     }
 
-    // ServerRpc는 서버에서 특정함수를 실행하는 것
+    /// <summary>
+    /// 채팅을 전송하는 함수
+    /// </summary>
+    /// <param name="message">채팅으로 보낼 메세지</param>
+    public void SendChat(string message)
+    {
+        if (IsServer)
+        {
+            chatString.Value = message;     // 내가 서버면 직접 수정
+        }
+        else
+        {
+            RequestChatServerRpc(message);  // 내가 서버가 아니면 서버에게 요청
+        }
+    }
 
+    /// <summary>
+    /// chatString이 변경되었을 때 실행될 함수
+    /// </summary>
+    /// <param name="previousValue">이전값</param>
+    /// <param name="newValue">현재값</param>
+    private void OnChatRecieve(FixedString512Bytes previousValue, FixedString512Bytes newValue)
+    {
+        GameManager.Inst.Log(newValue.ToString());  // 변경되면 로거로 찍기
+    }
+
+    // ServerRpc는 서버에서 특정함수를 실행하는 것
     [ServerRpc]
     void SubmitPositionRequestServerRpc(Vector3 newPos)
     {
@@ -163,6 +196,12 @@ public class NetPlayer : NetworkBehaviour
     void RotateRequestServerRpc(float rotate)
     {
         netRotateDir.Value = rotate;
+    }
+
+    [ServerRpc]
+    void RequestChatServerRpc(string text)
+    {
+        chatString.Value = text;
     }
 
 }

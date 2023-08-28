@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.DebugUI;
@@ -32,14 +33,25 @@ public class Logger : MonoBehaviour
 
     private void Awake()
     {
-        log = GetComponent<TextMeshProUGUI>();
+        Transform child = transform.GetChild(0).GetChild(0).GetChild(0);
+        log = child.GetComponent<TextMeshProUGUI>();
         inputField = GetComponentInChildren<TMP_InputField>();
 
         // onEndEdit 이벤트(입력이 끝났을 때 실행, 포커스를 옮기는 것으로도 실행이 된다.)
         // onSubmit 이벤트(입력이 완료되었을 때 실행, 비어있을 때나 focus 옮기는 것으로는 발동되지 않는다.)
         inputField.onSubmit.AddListener((text) =>
         {
-            Log(text);                          // 입력이 완료되면 로거에 글자 찍고
+            if(GameManager.Inst.Player != null)
+            {
+                // 접속해 있는 상황이면 
+                GameManager.Inst.Player.SendChat(text); // 채팅으로 보내기
+            }
+            else
+            {
+                // 접속해 있지 않은 상황이면
+                Log(text);  // 로거에 글자 찍기
+            }
+
             inputField.text = string.Empty;     // 인풋필드의 입력창 비우고
             inputField.ActivateInputField();    // 포커스 다시 활성화(무조건 활성화)
             //inputField.Select();  // 활성화 되어있을 떄는 비활성화, 비활성화 되어있을 때는 활성화
