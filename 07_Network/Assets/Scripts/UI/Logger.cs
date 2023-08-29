@@ -41,15 +41,23 @@ public class Logger : MonoBehaviour
         // onSubmit 이벤트(입력이 완료되었을 때 실행, 비어있을 때나 focus 옮기는 것으로는 발동되지 않는다.)
         inputField.onSubmit.AddListener((text) =>
         {
-            if(GameManager.Inst.Player != null)
+            if (text[0] == '/')
             {
-                // 접속해 있는 상황이면 
-                GameManager.Inst.Player.SendChat(text); // 채팅으로 보내기
+                // 개발용 콘솔 명령어 처리
+                ConsoleCommand(text);
             }
             else
-            {
-                // 접속해 있지 않은 상황이면
-                Log(text);  // 로거에 글자 찍기
+            {                
+                if(GameManager.Inst.Player != null) // 플레이어가 있으면(접속해 있는 상황이면)
+                {
+                    // 일반 채팅 처리
+                    GameManager.Inst.Player.SendChat(text); // 채팅으로 보내기
+                }
+                else
+                {
+                    // 접속해 있지 않은 상황이면 
+                    Log(text);  // 로거에 글자 찍기
+                }
             }
 
             inputField.text = string.Empty;     // 인풋필드의 입력창 비우고
@@ -186,6 +194,26 @@ public class Logger : MonoBehaviour
     public void Clear()
     {
         log.text = "";
+    }
+
+    /// <summary>
+    /// 콘솔명령어 처리하는 함수
+    /// </summary>
+    /// <param name="commandLine">입력 받은 명령어 한줄</param>
+    void ConsoleCommand(string commandLine)
+    {
+        // commandLine이 "/setname AAAbb가" 이렇게 입력되었을 경우
+        // GameManager.userName은 "AAAbb가"가 되어야 한다.
+
+        // commandLine이 "/setcolor 1,0,0" 이렇게 입력되었을 경우
+        // 플레이어의 색상은 빨간색으로 변경되어야 한다.(접속해 있을 때만)
+
+        //commandLine = commandLine.ToLower();
+        //switch (commandLine)
+        //{
+        //    case "/setname":
+        //        break;
+        //}
     }
 
     /// 테스트용 --------------------------------------------------------------------------------------

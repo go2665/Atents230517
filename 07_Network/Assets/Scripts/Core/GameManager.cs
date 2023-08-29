@@ -29,9 +29,7 @@ public class GameManager : NetSingleton<GameManager>
 
     public Action<int> onPlayersInGameChange;
 
-    // 실습
-    // playersInGame에 동접자 수 표현하기
-    // UI - PlayerInGame에도 표시하기
+    string userName = string.Empty;
 
     protected override void OnInitialize()
     {

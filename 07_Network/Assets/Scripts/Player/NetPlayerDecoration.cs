@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System;
+using Unity.Collections;
 
 public class NetPlayerDecoration : NetworkBehaviour
 {
@@ -11,10 +12,15 @@ public class NetPlayerDecoration : NetworkBehaviour
     Renderer playerRenderer;
     Material bodyMaterial;
 
+    NetworkVariable<FixedString32Bytes> playerName = new NetworkVariable<FixedString32Bytes>();
+    NamePlate namePlate;
+
     private void Awake()
     {
         playerRenderer = GetComponentInChildren<Renderer>();
         bodyMaterial = playerRenderer.material;
+
+        namePlate = GetComponentInChildren<NamePlate>();
     }
 
     public override void OnNetworkSpawn()
