@@ -27,12 +27,20 @@ public class GameManager : NetSingleton<GameManager>
     /// </summary>
     NetworkVariable<int> playersInGame = new NetworkVariable<int>(0);
 
+    public Action<int> onPlayersInGameChange;
+
+    // 실습
+    // playersInGame에 동접자 수 표현하기
+    // UI - PlayerInGame에도 표시하기
+
     protected override void OnInitialize()
     {
         logger = FindObjectOfType<Logger>();    // 로거는 로컬에서 사용되는 것이니까 그냥 찾기
 
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnect;      // 어떤 클라이언트가 접속할 때마다 실행될 함수 등록
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;  // 어떤 클라이언트가 접속 해제할 때마다 실행될 함수 등록
+
+        playersInGame.OnValueChanged += (_,newValue) => onPlayersInGameChange?.Invoke(newValue);
     }
 
     /// <summary>
@@ -41,6 +49,12 @@ public class GameManager : NetSingleton<GameManager>
     /// <param name="id">접속한 대상의 클라이언트ID</param>
     private void OnClientConnect(ulong id)
     {
+        if(IsServer)
+        {
+            playersInGame.Value++;  // 서버에서만 이 값을 증가시키기
+            //Log($"PlayerInGame : {playersInGame.Value}");
+        }
+
         NetworkObject netObj = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(id);    // id를 이용해서 네트워크 오브젝트 가져오기
         if (netObj.IsOwner)
         {
@@ -77,6 +91,12 @@ public class GameManager : NetSingleton<GameManager>
         if (netObj.IsOwner)
         {
             player = null;
+        }
+
+        if (IsServer)
+        {
+            playersInGame.Value--;  // 서버에서만 이 값을 감소시키기
+            //Log($"PlayerInGame : {playersInGame.Value}");
         }
     }
 
