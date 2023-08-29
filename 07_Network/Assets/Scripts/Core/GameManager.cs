@@ -100,7 +100,11 @@ public class GameManager : NetSingleton<GameManager>
             player = netObj.GetComponent<NetPlayer>();  // 네트워크 오브젝트의 오너가 true면 내 캐릭터라는 의미 => 따로 저장
             player.gameObject.name = $"Player_{id}";    // 내 게임 오브젝트 이름 바꾸기
 
-            deco = netObj.GetComponent<NetPlayerDecoration>();            
+            deco = netObj.GetComponent<NetPlayerDecoration>();
+            if (UserColor != Color.clear)
+            {
+                deco.SetColor(userColor);               // 색상이 지정되어 있으면 지정된 색상으로 설정
+            }
 
             foreach (var net in NetworkManager.Singleton.SpawnManager.SpawnedObjectsList)    // 네트워크에서 스폰된 모든 오브젝트 순회
             {

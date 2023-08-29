@@ -35,14 +35,7 @@ public class NetPlayerDecoration : NetworkBehaviour
         if( IsServer )  // 이 클라이언트가 Server다
         {
             // 서버쪽에서만 색상을 랜덤으로 지정
-            //if ( GameManager.Inst.UserColor == Color.clear)     // UserColor가 투명이면 랜덤으로 새로 정하기
-            //{
-            bodyColor.Value = UnityEngine.Random.ColorHSV(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);  
-            //}
-            //else
-            //{
-                //bodyColor.Value = GameManager.Inst.UserColor;
-            //}
+            bodyColor.Value = UnityEngine.Random.ColorHSV(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f); 
         }
         bodyMaterial.SetColor("_BaseColor", bodyColor.Value);   // 지정된 색상을 적용
     }
