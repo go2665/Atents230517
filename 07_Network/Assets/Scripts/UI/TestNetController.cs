@@ -8,6 +8,10 @@ using UnityEngine.UI;
 public class TestNetController : MonoBehaviour
 {
     TextMeshProUGUI playerInGame;
+    TextMeshProUGUI userName;
+
+    string colorText;
+    string userNameText;
 
     private void Start()
     {
@@ -46,9 +50,26 @@ public class TestNetController : MonoBehaviour
             NetworkManager.Singleton.Shutdown();
         });
 
+        // 동접자 변경 적용용
         child = transform.GetChild(3);
         playerInGame = child.GetComponent<TextMeshProUGUI>();
-
         GameManager.Inst.onPlayersInGameChange += (playerCount) => playerInGame.text = $"Players : {playerCount}";
+
+        // 플레이어 이름 변경 적용용
+        userNameText = GameManager.Inst.UserName;
+        colorText = $"<#{ColorUtility.ToHtmlStringRGB(Color.black)}>";
+
+        child = transform.GetChild(4);
+        userName = child.GetComponent<TextMeshProUGUI>();
+        GameManager.Inst.onUserNameChange += (name) =>
+        {
+            userNameText = name;
+            userName.text = $"Name : {colorText}{userNameText}</color>";
+        };
+        GameManager.Inst.onUserColorChange += (color) =>
+        {
+            colorText = $"<#{ColorUtility.ToHtmlStringRGB(color)}>";
+            userName.text = $"Name : {colorText}{userNameText}</color>";
+        };
     }
 }

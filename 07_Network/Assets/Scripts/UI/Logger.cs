@@ -5,6 +5,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 using static UnityEngine.Rendering.DebugUI;
 
 public class Logger : MonoBehaviour
@@ -208,12 +209,53 @@ public class Logger : MonoBehaviour
         // commandLine이 "/setcolor 1,0,0" 이렇게 입력되었을 경우
         // 플레이어의 색상은 빨간색으로 변경되어야 한다.(접속해 있을 때만)
 
-        //commandLine = commandLine.ToLower();
-        //switch (commandLine)
-        //{
-        //    case "/setname":
-        //        break;
-        //}
+        int space = commandLine.IndexOf(' ');
+        string commandToken = commandLine.Substring(0, space);
+        commandToken = commandToken.ToLower();
+        string parameterToken = commandLine.Substring(space + 1);
+
+        switch (commandToken)
+        {
+            case "/setname":
+                GameManager.Inst.UserName = parameterToken;
+                Log($"플레이어의 이름을 변경했습니다 : {GameManager.Inst.UserName}");
+                break;
+            case "/setcolor":
+                string[] splitNumbers = parameterToken.Split(',', ' ');
+
+                float[] colorValues = new float[4] { 0, 0, 0, 0 }; // r,g,b,a 순으로 들어간다.
+                int count = 0;
+                foreach (string number in splitNumbers)
+                {
+                    if (number.Length == 0) // 토큰의 길이가 0이면 스킵
+                        continue;
+
+                    if (count > 3)          // 최대 4개싸지 처리
+                    {
+                        break;
+                    }
+
+                    if (!float.TryParse(number, out colorValues[count])) // 일단 변경 시도하고
+                    {
+                        colorValues[count] = 0; // 실패하면 0
+                    }
+                    count++;
+                }
+
+                for (int i = 0; i < colorValues.Length; i++)
+                {
+                    colorValues[i] = Mathf.Clamp01(colorValues[i]);     // 숫자의 범위를 0~1사이로 조절
+                }
+
+                Color color = new Color(colorValues[0], colorValues[1], colorValues[2], colorValues[3]);
+                if(GameManager.Inst.PlayerDeco != null)
+                {
+                    GameManager.Inst.PlayerDeco.SetColor(color);    // 접속중이면 접속중인 캐릭터의 색상 변경
+                }
+                GameManager.Inst.UserColor = color;
+                Log($"플레이어의 색상을 변경했습니다 : ({color.r},{color.g},{color.b},{color.a})");
+                break;
+        }
     }
 
     /// 테스트용 --------------------------------------------------------------------------------------

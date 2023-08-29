@@ -16,20 +16,61 @@ public class GameManager : NetSingleton<GameManager>
     /// 내 플레이어(이 실행(클라이언트 프로그램)에서 접속한 플레이어)
     /// </summary>
     NetPlayer player;
+    NetPlayerDecoration deco;
 
     /// <summary>
     /// 내 플레이어 확인용 프로퍼티
     /// </summary>
     public NetPlayer Player => player;
+    public NetPlayerDecoration PlayerDeco => deco;
 
     /// <summary>
     /// 현재 동시접속자수
     /// </summary>
     NetworkVariable<int> playersInGame = new NetworkVariable<int>(0);
 
+    /// <summary>
+    /// 동시접속자수가 변경되면 실행될 델리게이트
+    /// </summary>
     public Action<int> onPlayersInGameChange;
 
-    string userName = string.Empty;
+    /// <summary>
+    /// 현재 접속자의 이름이 될 변수
+    /// </summary>
+    string userName = "디폴트";
+    public string UserName
+    {
+        get => userName;
+        set
+        {
+            userName = value;
+            onUserNameChange?.Invoke(userName); // 이름이 변경되면 델리게이트로 알림
+        }
+    }
+    /// <summary>
+    /// 이름이 변경되었을 때 알람을 보낼 델리게이트
+    /// </summary>
+    public Action<string> onUserNameChange;
+
+    /// <summary>
+    /// 현재 접속자의 색상이 될 변수
+    /// </summary>
+    Color userColor = Color.clear;
+    public Color UserColor
+    {
+        get => userColor;
+        set
+        {
+            userColor = value;
+            onUserColorChange?.Invoke(userColor);
+        }
+    }
+    /// <summary>
+    /// 색상이 변경되었을 때 알람을 보낼 델리게이트
+    /// </summary>
+    public Action<Color> onUserColorChange;
+
+        
 
     protected override void OnInitialize()
     {
@@ -59,7 +100,9 @@ public class GameManager : NetSingleton<GameManager>
             player = netObj.GetComponent<NetPlayer>();  // 네트워크 오브젝트의 오너가 true면 내 캐릭터라는 의미 => 따로 저장
             player.gameObject.name = $"Player_{id}";    // 내 게임 오브젝트 이름 바꾸기
 
-            foreach(var net in NetworkManager.Singleton.SpawnManager.SpawnedObjectsList)    // 네트워크에서 스폰된 모든 오브젝트 순회
+            deco = netObj.GetComponent<NetPlayerDecoration>();            
+
+            foreach (var net in NetworkManager.Singleton.SpawnManager.SpawnedObjectsList)    // 네트워크에서 스폰된 모든 오브젝트 순회
             {
                 NetPlayer netPlayer = net.GetComponent<NetPlayer>();
                 if(netPlayer != null && player != netPlayer)            // NetPlayer이고 내 Player와 다르다.
@@ -106,4 +149,5 @@ public class GameManager : NetSingleton<GameManager>
     {
         logger.Log(message);
     }
+
 }
