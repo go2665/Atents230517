@@ -37,8 +37,43 @@ public class NetPlayer : NetworkBehaviour
     /// </summary>
     NetworkVariable<FixedString512Bytes> chatString = new NetworkVariable<FixedString512Bytes>();
 
+    /// <summary>
+    /// 플레이어의 애니메이션 상태 종류
+    /// </summary>
+    enum PlayerAnimState
+    {
+        Idle,
+        Walk,
+        BackWalk,
+        None
+    }
+
+    /// <summary>
+    /// 플레이어의 현재 애니메이션 상태
+    /// </summary>
+    PlayerAnimState state = PlayerAnimState.None;
+
+    NetworkVariable<PlayerAnimState> netAnimState = new NetworkVariable<PlayerAnimState>();
+
+    /// <summary>
+    /// 플레이어의 애니메이션 상태를 확인하고 설정하기 위한 프로퍼티
+    /// </summary>
+    //PlayerAnimState State
+    //{
+    //    get => state;
+    //    set
+    //    {
+    //        if (state != value) // 변경이 일어났을 때만 처리(트리거가 중복으로 쌓이는 현상을 제거하기 위해)
+    //        {
+    //            state = value;                          // 상태 변경하고
+    //            animator.SetTrigger(state.ToString());  // 상태에 따른 트리거 날리기
+    //        }
+    //    }
+    //}
+
     /// 컴포넌트
     CharacterController controller;
+    Animator animator;
 
     /// 인풋 액션
     PlayerInputActions inputActions;
@@ -49,10 +84,13 @@ public class NetPlayer : NetworkBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
 
         position.OnValueChanged += OnPositionChange;    // 위치 값이 변경되었을 때 실행할 함수 등록
 
         chatString.OnValueChanged += OnChatRecieve;     // 채팅이 입력되면 실행될 함수 등록
+
+        netAnimState.OnValueChanged += OnAnimStateChange;
     }
 
     private void Update()
@@ -78,7 +116,7 @@ public class NetPlayer : NetworkBehaviour
 
             SetSpawnPosition();     // 스폰될 위치 결정
 
-            GameManager.Inst.VCam.Follow = transform.GetChild(0);       // 카메라 붙이기
+            GameManager.Inst.VCam.Follow = transform.GetChild(0);       // 카메라 붙이기            
         }
     }
 
@@ -110,6 +148,35 @@ public class NetPlayer : NetworkBehaviour
         else
         {
             MoveRequestServerRpc(moveDir);              // 클라이언트면 Rpc를 통해 서버에 수정 요청
+        }
+
+        if (moveDir > 0.001f)        // 0.001f는 float 오차때문에 설정한 임계값. 0.001f보다 작으면 0으로 취급하기
+        {
+            // 전진
+            state = PlayerAnimState.Walk;
+        }
+        else if (moveDir < -0.001f)
+        {
+            // 후진
+            state = PlayerAnimState.BackWalk;
+        }
+        else
+        {
+            // 정지
+            state = PlayerAnimState.Idle;
+        }
+
+        // 상태가 변경되면 네트워크 변수도 변경
+        if( state != netAnimState.Value)
+        {
+            if( IsServer )
+            {
+                netAnimState.Value = state;
+            }
+            else
+            {
+                UpdateAnimStateServerRpc(state);
+            }
         }
     }
 
@@ -181,6 +248,16 @@ public class NetPlayer : NetworkBehaviour
         GameManager.Inst.Log(newValue.ToString());  // 변경되면 로거로 찍기
     }
 
+    /// <summary>
+    /// netAnimState가 변경되었을 때 실행될 함수
+    /// </summary>
+    /// <param name="previousValue"></param>
+    /// <param name="newValue"></param>
+    private void OnAnimStateChange(PlayerAnimState previousValue, PlayerAnimState newValue)
+    {
+        animator.SetTrigger(newValue.ToString());
+    }
+
     // ServerRpc는 서버에서 특정함수를 실행하는 것
     [ServerRpc]
     void SubmitPositionRequestServerRpc(Vector3 newPos)
@@ -204,6 +281,12 @@ public class NetPlayer : NetworkBehaviour
     void RequestChatServerRpc(string text)
     {
         chatString.Value = text;
+    }
+
+    [ServerRpc]
+    void UpdateAnimStateServerRpc(PlayerAnimState newState)
+    {
+        netAnimState.Value = newState;
     }
 
 }
