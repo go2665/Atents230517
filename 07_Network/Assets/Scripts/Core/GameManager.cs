@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -70,16 +71,28 @@ public class GameManager : NetSingleton<GameManager>
     /// </summary>
     public Action<Color> onUserColorChange;
 
+
+    /// <summary>
+    /// 내 캐릭터를 따라다닐 가상카메라
+    /// </summary>
+    CinemachineVirtualCamera virtualCamera;
+
+    /// <summary>
+    /// 내 캐릭터를 따라다닐 가상카메라를 확인하기 위한 프로퍼티
+    /// </summary>
+    public CinemachineVirtualCamera VCam => virtualCamera;
         
 
     protected override void OnInitialize()
     {
         logger = FindObjectOfType<Logger>();    // 로거는 로컬에서 사용되는 것이니까 그냥 찾기
+        virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
 
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnect;      // 어떤 클라이언트가 접속할 때마다 실행될 함수 등록
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;  // 어떤 클라이언트가 접속 해제할 때마다 실행될 함수 등록
 
         playersInGame.OnValueChanged += (_,newValue) => onPlayersInGameChange?.Invoke(newValue);
+
     }
 
     /// <summary>
@@ -106,12 +119,20 @@ public class GameManager : NetSingleton<GameManager>
                 deco.SetColor(userColor);               // 색상이 지정되어 있으면 지정된 색상으로 설정
             }
 
+            deco.SetName($"{userName}_{id}");     // 게임 매니저가 로컬로 가지고 있던 이름을 자신의 이름으로 설정(네트워크로 공유)
+
             foreach (var net in NetworkManager.Singleton.SpawnManager.SpawnedObjectsList)    // 네트워크에서 스폰된 모든 오브젝트 순회
             {
                 NetPlayer netPlayer = net.GetComponent<NetPlayer>();
                 if(netPlayer != null && player != netPlayer)            // NetPlayer이고 내 Player와 다르다.
                 {
                     netPlayer.gameObject.name = $"OtherPlayer_{id}";    // 내 게임 오브젝트가 아닌 것들의 이름 변경하기
+                }
+
+                NetPlayerDecoration netDeco = net.GetComponent<NetPlayerDecoration>();
+                if(netDeco != null && deco != netDeco)
+                {
+                    netDeco.RefreshNamePlate();         // 이름판에 쓰여진 이름을 네트워크상에서 공유되는 이름으로 변경
                 }
             }
         }

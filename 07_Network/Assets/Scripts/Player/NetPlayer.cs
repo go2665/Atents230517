@@ -77,6 +77,8 @@ public class NetPlayer : NetworkBehaviour
             inputActions.Player.Rotate.canceled += OnRotateInput;
 
             SetSpawnPosition();     // 스폰될 위치 결정
+
+            GameManager.Inst.VCam.Follow = transform.GetChild(0);       // 카메라 붙이기
         }
     }
 
