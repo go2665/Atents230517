@@ -51,7 +51,10 @@ public class NetPlayerDecoration : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        GameManager.Inst.Log($"[[{userName.Value}]]가 접속 해제 했습니다.");
+        if (GameManager.Inst != null)
+        { 
+            GameManager.Inst.Log($"[[{userName.Value}]]가 접속 해제 했습니다.");
+        }
     }
 
     public void SetColor(Color color)

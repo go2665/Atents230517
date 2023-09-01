@@ -81,12 +81,16 @@ public class GameManager : NetSingleton<GameManager>
     /// 내 캐릭터를 따라다닐 가상카메라를 확인하기 위한 프로퍼티
     /// </summary>
     public CinemachineVirtualCamera VCam => virtualCamera;
+
+    VirtualPad virtualPad;
+    public VirtualPad VirtualPad => virtualPad;
         
 
     protected override void OnInitialize()
     {
         logger = FindObjectOfType<Logger>();    // 로거는 로컬에서 사용되는 것이니까 그냥 찾기
         virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+        virtualPad = FindObjectOfType<VirtualPad>();
 
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnect;      // 어떤 클라이언트가 접속할 때마다 실행될 함수 등록
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;  // 어떤 클라이언트가 접속 해제할 때마다 실행될 함수 등록

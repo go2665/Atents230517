@@ -117,6 +117,12 @@ public class NetPlayer : NetworkBehaviour
             SetSpawnPosition();     // 스폰될 위치 결정
 
             GameManager.Inst.VCam.Follow = transform.GetChild(0);       // 카메라 붙이기            
+            GameManager.Inst.VirtualPad.onMoveInput = (inputDir) =>
+            {
+                SetMoveInput(inputDir.y);
+                SetRotateInput(inputDir.x);
+                Debug.Log(inputDir);
+            };
         }
     }
 
@@ -127,6 +133,9 @@ public class NetPlayer : NetworkBehaviour
     {
         if( IsOwner && inputActions != null )   // 오너이고 인풋액션을 만들었으면 연결 끊고 제거
         {
+            if(GameManager.Inst != null && GameManager.Inst.VirtualPad != null)
+                GameManager.Inst.VirtualPad.onMoveInput = null;
+
             inputActions.Player.Rotate.canceled -= OnRotateInput;       // 회전 연결 해제
             inputActions.Player.Rotate.performed -= OnRotateInput;
             inputActions.Player.MoveForward.canceled -= OnMoveInput;    // 이동 연결 해제
@@ -139,9 +148,14 @@ public class NetPlayer : NetworkBehaviour
     private void OnMoveInput(InputAction.CallbackContext context)
     {
         float moveInput = context.ReadValue<float>();   // 입력값 받아오기
+        SetMoveInput(moveInput);
+    }
+
+    private void SetMoveInput(float moveInput)
+    {
         float moveDir = moveInput * moveSpeed;          // (앞, 뒤, 정지)와 이동 속도 곱해서 이동 정도 계산
 
-        if(NetworkManager.Singleton.IsServer)
+        if (NetworkManager.Singleton.IsServer)
         {
             netMoveDir.Value = moveDir;                 // 서버이면 네트워크 변수 직접 수정
         }
@@ -167,9 +181,9 @@ public class NetPlayer : NetworkBehaviour
         }
 
         // 상태가 변경되면 네트워크 변수도 변경
-        if( state != netAnimState.Value)
+        if (state != netAnimState.Value)
         {
-            if( IsServer )
+            if (IsServer)
             {
                 netAnimState.Value = state;
             }
@@ -183,7 +197,11 @@ public class NetPlayer : NetworkBehaviour
     private void OnRotateInput(InputAction.CallbackContext context)
     {
         float rotateInput = context.ReadValue<float>();
+        SetRotateInput(rotateInput);
+    }
 
+    private void SetRotateInput(float rotateInput)
+    {
         float rotateDir = rotateInput * rotateSpeed;    // (좌회전, 우회전)과 회전 속도 곱해서 회전 정도 계산
         if (NetworkManager.Singleton.IsServer)
         {
