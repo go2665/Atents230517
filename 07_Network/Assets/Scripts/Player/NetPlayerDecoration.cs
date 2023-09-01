@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Netcode;
 using System;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 
 public class NetPlayerDecoration : NetworkBehaviour
 {
@@ -34,6 +35,8 @@ public class NetPlayerDecoration : NetworkBehaviour
     private void OnNameSet(FixedString32Bytes previousValue, FixedString32Bytes newValue)
     {
         namePlate.SetName(newValue.ToString());
+
+        GameManager.Inst.Log($"[[{newValue}]]가 접속했습니다.");
     }
 
     public override void OnNetworkSpawn()
@@ -44,6 +47,11 @@ public class NetPlayerDecoration : NetworkBehaviour
             bodyColor.Value = UnityEngine.Random.ColorHSV(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f); 
         }
         bodyMaterial.SetColor("_BaseColor", bodyColor.Value);   // 지정된 색상을 적용
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        GameManager.Inst.Log($"[[{userName.Value}]]가 접속 해제 했습니다.");
     }
 
     public void SetColor(Color color)

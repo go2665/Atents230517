@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -71,7 +72,6 @@ public class GameManager : NetSingleton<GameManager>
     /// </summary>
     public Action<Color> onUserColorChange;
 
-
     /// <summary>
     /// 내 캐릭터를 따라다닐 가상카메라
     /// </summary>
@@ -92,7 +92,6 @@ public class GameManager : NetSingleton<GameManager>
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;  // 어떤 클라이언트가 접속 해제할 때마다 실행될 함수 등록
 
         playersInGame.OnValueChanged += (_,newValue) => onPlayersInGameChange?.Invoke(newValue);
-
     }
 
     /// <summary>
@@ -101,12 +100,6 @@ public class GameManager : NetSingleton<GameManager>
     /// <param name="id">접속한 대상의 클라이언트ID</param>
     private void OnClientConnect(ulong id)
     {
-        if(IsServer)
-        {
-            playersInGame.Value++;  // 서버에서만 이 값을 증가시키기
-            //Log($"PlayerInGame : {playersInGame.Value}");
-        }
-
         NetworkObject netObj = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(id);    // id를 이용해서 네트워크 오브젝트 가져오기
         if (netObj.IsOwner)
         {
@@ -144,6 +137,12 @@ public class GameManager : NetSingleton<GameManager>
             {
                 netObj.gameObject.name = $"OtherPlayer_{id}";       // 다른 사람의 게임 오브젝트 이름 변경하기
             }
+        }
+
+        if (IsServer)
+        {
+            playersInGame.Value++;  // 서버에서만 이 값을 증가시키기
+            //Log($"PlayerInGame : {playersInGame.Value}");
         }
     }
 
