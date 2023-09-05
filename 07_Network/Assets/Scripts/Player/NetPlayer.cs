@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
 using Unity.Collections;
+using Unity.VisualScripting;
 
 public class NetPlayer : NetworkBehaviour
 {
@@ -71,9 +72,30 @@ public class NetPlayer : NetworkBehaviour
     //    }
     //}
 
+    NetworkVariable<bool> netEffectState = new NetworkVariable<bool>(false);
+    public bool IsEffectOn
+    {
+        get => netEffectState.Value;
+        set 
+        {
+            if(netEffectState.Value != value)
+            {
+                if(IsServer)
+                {
+                    netEffectState.Value = value;
+                }
+                else
+                {
+                    UpdateEffectStateServerRpc(value);
+                }
+            }
+        }
+    }
+
     /// 컴포넌트
     CharacterController controller;
     Animator animator;
+    Material bodyMaterial;
 
     /// 인풋 액션
     PlayerInputActions inputActions;
@@ -91,6 +113,10 @@ public class NetPlayer : NetworkBehaviour
         chatString.OnValueChanged += OnChatRecieve;     // 채팅이 입력되면 실행될 함수 등록
 
         netAnimState.OnValueChanged += OnAnimStateChange;
+        netEffectState.OnValueChanged += OnEffectStateChange;
+
+        Renderer meshRenderer = GetComponentInChildren<Renderer>();
+        bodyMaterial = meshRenderer.material;
     }
 
     private void Update()
@@ -276,6 +302,18 @@ public class NetPlayer : NetworkBehaviour
         animator.SetTrigger(newValue.ToString());
     }
 
+    private void OnEffectStateChange(bool previousValue, bool newValue)
+    {
+        if(newValue)
+        {
+            bodyMaterial.SetFloat("_EmissionValue", 1);
+        }
+        else
+        {
+            bodyMaterial.SetFloat("_EmissionValue", 0);
+        }
+    }
+
     // ServerRpc는 서버에서 특정함수를 실행하는 것
     [ServerRpc]
     void SubmitPositionRequestServerRpc(Vector3 newPos)
@@ -307,4 +345,9 @@ public class NetPlayer : NetworkBehaviour
         netAnimState.Value = newState;
     }
 
+    [ServerRpc]
+    void UpdateEffectStateServerRpc(bool isEffectOn)
+    {
+        netEffectState.Value = isEffectOn;
+    }
 }

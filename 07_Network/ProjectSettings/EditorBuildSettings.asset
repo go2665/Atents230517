@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Test/06_VirtualPad.unity
-    guid: 76bc2a41012918147bc6cbaa903c7ba3
+    path: Assets/Scenes/Test/08_NetEffect.unity
+    guid: d309d0ff03295674b879615c8ab71b9b
   m_configObjects: {}
