@@ -20,7 +20,8 @@ public class Test_10_NetworkSpawn : NetTestBase
     [ServerRpc]
     void RequestSpanwBulletServerRpc()
     {
-        GameObject bullet = Instantiate(bulletPrefab, firePos);
+        GameObject bullet = Instantiate(bulletPrefab);
+        bullet.transform.position = firePos.position;
         NetworkObject netObj = bullet.GetComponent<NetworkObject>();
         netObj.Spawn(true);
     }
