@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class NetBullet : NetworkBehaviour
+public class NetEnergyOrb : NetworkBehaviour
 {
     public float speed = 10.0f;
-    public float lifeTime = 5.0f;
+    public float lifeTime = 20.0f;
     Rigidbody rigid;
 
     private void Awake()
@@ -16,6 +16,7 @@ public class NetBullet : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        transform.Rotate(-30.0f, 0.0f, 0.0f);
         rigid.velocity = speed * transform.forward;
         StartCoroutine(SelfDespawn());
     }
