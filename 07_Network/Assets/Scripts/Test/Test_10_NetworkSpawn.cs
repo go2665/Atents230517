@@ -47,3 +47,8 @@ public class Test_10_NetworkSpawn : NetTestBase
         netObj.Spawn(true);
     }
 }
+
+
+// 실습
+// 1. 플레이어가 총알이나 오브와 부딪치면 맵의 랜덤한 지점으로 순간이동 된다.
+// 2. 플레이어 공격에 쿨타임 적용하고 UI에도 표시하기

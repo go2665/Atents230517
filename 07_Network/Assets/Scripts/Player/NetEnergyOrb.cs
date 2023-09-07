@@ -40,7 +40,22 @@ public class NetEnergyOrb : NetworkBehaviour
         // 스폰 이후에만 동작
         Debug.Log($"충돌 : {collision.gameObject.name}");
         //vfx.SetFloat("Size", 5);
-        //this.NetworkObject.Despawn();
+        
+        if(collision.gameObject.CompareTag("Player"))
+        {
+            NetPlayer player = collision.gameObject.GetComponent<NetPlayer>();
+            player.Die();
+        }
+        
+        EffectProcessClientRpc();
+    }
+
+    /// <summary>
+    /// ClientRpc : 서버가 모든 클라이언트에게 로컬에서 실행하라고 하는 함수
+    /// </summary>
+    [ClientRpc]
+    void EffectProcessClientRpc()
+    {
         rigid.drag = float.MaxValue;
         rigid.angularDrag = float.MaxValue;
         StartCoroutine(EffectProcess());

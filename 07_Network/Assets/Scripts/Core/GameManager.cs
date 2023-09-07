@@ -178,4 +178,16 @@ public class GameManager : NetSingleton<GameManager>
         logger.Log(message);
     }
 
+    public Vector3 GetPlayerRespawnPosition()
+    {
+        Vector3 result = Vector3.zero;
+        Vector3 pos = new Vector3(UnityEngine.Random.Range(-11.0f, 20.0f), 0, UnityEngine.Random.Range(-1.0f, 28.0f));
+        pos += Vector3.up * 100.0f;
+        if (Physics.Raycast(pos, Vector3.down, out RaycastHit hit, 150.0f, LayerMask.GetMask("Wall")))
+        {
+            result = hit.point;
+        }
+        return result;
+    }
+
 }

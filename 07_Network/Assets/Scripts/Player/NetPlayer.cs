@@ -138,7 +138,10 @@ public class NetPlayer : NetworkBehaviour
 
     private void Update()
     {
-        controller.SimpleMove(netMoveDir.Value * transform.forward);                // 마지막 입력에 따라 이동
+        if(netMoveDir.Value != 0.0f)    // 값이 변경 되었을 때만 실행(안그러면 transform의 position을 수동으로 변경해도 적용이 안된다.)
+        { 
+            controller.SimpleMove(netMoveDir.Value * transform.forward);            // 마지막 입력에 따라 이동
+        }
         transform.Rotate(0, netRotateDir.Value * Time.deltaTime, 0, Space.World);   // 마지막 입력에 따라 회전
     }
 
@@ -192,6 +195,25 @@ public class NetPlayer : NetworkBehaviour
             inputActions.Player.MoveForward.performed -= OnMoveInput;
             inputActions.Player.Disable();
             inputActions = null;
+        }
+    }
+
+    public void Die()
+    {
+        if(IsOwner)
+        {
+            //transform.position = GameManager.Inst.GetPlayerRespawnPosition();
+            if (NetworkManager.Singleton.IsServer)  // 죽었을 때 netMoveDir을 0으로 만들어서 멈추게 만들기
+            {
+                netMoveDir.Value = 0.0f; 
+            }
+            else
+            {
+                MoveRequestServerRpc(0.0f);
+            }
+            SetSpawnPosition();                     // 위치 새로 설정
+
+            transform.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0.0f, 360.0f), 0);    // 회전도 랜덤으로 설정
         }
     }
 
@@ -297,8 +319,10 @@ public class NetPlayer : NetworkBehaviour
     /// </summary>
     void SetSpawnPosition()
     {
-        Vector3 newPos = Random.insideUnitSphere;   // (-1,-1,-1) ~ (1,1,1) 사이를 랜덤으로 결정
-        newPos.y = 0;                               // y는 0으로 설정
+        //Vector3 newPos = Random.insideUnitSphere;   // (-1,-1,-1) ~ (1,1,1) 사이를 랜덤으로 결정
+        //newPos.y = 0;                               // y는 0으로 설정
+
+        Vector3 newPos = GameManager.Inst.GetPlayerRespawnPosition();   // 리스폰 위치는 게임메니저에서 받아오기
         if (NetworkManager.Singleton.IsServer)
         {
             position.Value = newPos;                // 서버이면 네트워크 변수 직접 수정
