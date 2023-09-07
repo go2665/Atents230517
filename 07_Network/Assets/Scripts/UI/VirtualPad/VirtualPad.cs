@@ -14,10 +14,22 @@ public class VirtualPad : MonoBehaviour
         set => stick.onMoveInput = value;
     }    
 
+    public Action onAttack01Input
+    {
+        get => button[(int)ButtonType.Bullet].onPress;
+        set => button[(int)ButtonType.Bullet].onPress = value;
+    }
+
+    public Action onAttack02Input
+    {
+        get => button[(int)ButtonType.Orb].onPress;
+        set => button[(int)ButtonType.Orb].onPress = value;
+    }
+
     public enum ButtonType
     {
+        Orb = 0,
         Bullet,
-        Ball
     }
 
     private void Awake()

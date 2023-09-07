@@ -92,6 +92,21 @@ public class NetPlayer : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// 총알용 프리팹
+    /// </summary>
+    public GameObject bulletPrefab;
+
+    /// <summary>
+    /// 오브용 프리팹
+    /// </summary>
+    public GameObject orbPrefab;
+
+    /// <summary>
+    /// 총알이나 오브를 발사할 트랜스폼
+    /// </summary>
+    Transform firePosition;
+
     /// 컴포넌트
     CharacterController controller;
     Animator animator;
@@ -117,6 +132,8 @@ public class NetPlayer : NetworkBehaviour
 
         Renderer meshRenderer = GetComponentInChildren<Renderer>();
         bodyMaterial = meshRenderer.material;
+
+        firePosition = transform.GetChild(4);           // 발사 위치 가져오기
     }
 
     private void Update()
@@ -139,6 +156,8 @@ public class NetPlayer : NetworkBehaviour
             inputActions.Player.MoveForward.canceled += OnMoveInput;
             inputActions.Player.Rotate.performed += OnRotateInput;      // 회전 연결
             inputActions.Player.Rotate.canceled += OnRotateInput;
+            inputActions.Player.Attack01.performed += OnAttack01;       // 공격 연결
+            inputActions.Player.Attack02.performed += OnAttack02;
 
             SetSpawnPosition();     // 스폰될 위치 결정
 
@@ -149,6 +168,9 @@ public class NetPlayer : NetworkBehaviour
                 SetRotateInput(inputDir.x);
                 Debug.Log(inputDir);
             };
+
+            GameManager.Inst.VirtualPad.onAttack01Input = Attack01;     // 가상패드의 버튼과 공격함수 연결
+            GameManager.Inst.VirtualPad.onAttack02Input = Attack02;
         }
     }
 
@@ -162,6 +184,8 @@ public class NetPlayer : NetworkBehaviour
             if(GameManager.Inst != null && GameManager.Inst.VirtualPad != null)
                 GameManager.Inst.VirtualPad.onMoveInput = null;
 
+            inputActions.Player.Attack02.performed -= OnAttack02;       // 공격 연결 해제
+            inputActions.Player.Attack01.performed -= OnAttack01;
             inputActions.Player.Rotate.canceled -= OnRotateInput;       // 회전 연결 해제
             inputActions.Player.Rotate.performed -= OnRotateInput;
             inputActions.Player.MoveForward.canceled -= OnMoveInput;    // 이동 연결 해제
@@ -238,6 +262,35 @@ public class NetPlayer : NetworkBehaviour
             RotateRequestServerRpc(rotateDir);          // 클라이언트면 Rpc를 통해 서버에 수정 요청
         }
     }
+
+    private void OnAttack01(InputAction.CallbackContext context)
+    {
+        //GameManager.Inst.Log($"{GameManager.Inst.UserName} : {"왼쪽클릭"}");
+        Attack01();
+    }
+
+    private void OnAttack02(InputAction.CallbackContext context)
+    {
+        //GameManager.Inst.Log($"{GameManager.Inst.UserName} : {"오른쪽클릭"}");
+        Attack02();
+    }
+
+    /// <summary>
+    /// 총알을 발사하는 함수
+    /// </summary>
+    public void Attack01()
+    {
+        RequestSpanwBulletServerRpc();  // 서버RPC로 총알 생성 요청
+    }
+
+    /// <summary>
+    /// 오브를 발사하는 함수
+    /// </summary>
+    public void Attack02()
+    {
+        RequestEnergyOrbServerRpc();    // 서버RPC로 오브 생성 요청
+    }
+
 
     /// <summary>
     /// 이 네트워크 오브젝트가 스폰될 위치를 결정하는 함수
@@ -349,5 +402,25 @@ public class NetPlayer : NetworkBehaviour
     void UpdateEffectStateServerRpc(bool isEffectOn)
     {
         netEffectState.Value = isEffectOn;
+    }
+
+    [ServerRpc]
+    void RequestSpanwBulletServerRpc()
+    {
+        GameObject bullet = Instantiate(bulletPrefab);                  // 프리팹 생성하고
+        bullet.transform.position = firePosition.position;              // 위치랑 회전을 설정하고
+        bullet.transform.rotation = firePosition.rotation;
+        NetworkObject netObj = bullet.GetComponent<NetworkObject>();
+        netObj.Spawn(true);                                             // 스폰 요청하기
+    }
+
+    [ServerRpc]
+    void RequestEnergyOrbServerRpc()
+    {
+        GameObject energyOrb = Instantiate(orbPrefab);
+        energyOrb.transform.position = firePosition.position;
+        energyOrb.transform.rotation = firePosition.rotation;
+        NetworkObject netObj = energyOrb.GetComponent<NetworkObject>();
+        netObj.Spawn(true);
     }
 }

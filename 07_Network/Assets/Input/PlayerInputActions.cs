@@ -172,6 +172,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Attack01"",
+                    ""type"": ""Button"",
+                    ""id"": ""61d8e3a3-76b1-42ef-ab01-faa1125e40bf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Attack02"",
+                    ""type"": ""Button"",
+                    ""id"": ""1e67ea31-43dd-4353-85a3-ea9c1dc26136"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -240,6 +258,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""554e213c-ffe4-4e56-aa47-bf10ef9de336"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack01"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ede536cd-ba98-4b0f-bc4a-318118f561aa"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack02"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -275,6 +315,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_MoveForward = m_Player.FindAction("MoveForward", throwIfNotFound: true);
         m_Player_Rotate = m_Player.FindAction("Rotate", throwIfNotFound: true);
+        m_Player_Attack01 = m_Player.FindAction("Attack01", throwIfNotFound: true);
+        m_Player_Attack02 = m_Player.FindAction("Attack02", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -424,12 +466,16 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_MoveForward;
     private readonly InputAction m_Player_Rotate;
+    private readonly InputAction m_Player_Attack01;
+    private readonly InputAction m_Player_Attack02;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlayerActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @MoveForward => m_Wrapper.m_Player_MoveForward;
         public InputAction @Rotate => m_Wrapper.m_Player_Rotate;
+        public InputAction @Attack01 => m_Wrapper.m_Player_Attack01;
+        public InputAction @Attack02 => m_Wrapper.m_Player_Attack02;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -445,6 +491,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Rotate.started += instance.OnRotate;
             @Rotate.performed += instance.OnRotate;
             @Rotate.canceled += instance.OnRotate;
+            @Attack01.started += instance.OnAttack01;
+            @Attack01.performed += instance.OnAttack01;
+            @Attack01.canceled += instance.OnAttack01;
+            @Attack02.started += instance.OnAttack02;
+            @Attack02.performed += instance.OnAttack02;
+            @Attack02.canceled += instance.OnAttack02;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -455,6 +507,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Rotate.started -= instance.OnRotate;
             @Rotate.performed -= instance.OnRotate;
             @Rotate.canceled -= instance.OnRotate;
+            @Attack01.started -= instance.OnAttack01;
+            @Attack01.performed -= instance.OnAttack01;
+            @Attack01.canceled -= instance.OnAttack01;
+            @Attack02.started -= instance.OnAttack02;
+            @Attack02.performed -= instance.OnAttack02;
+            @Attack02.canceled -= instance.OnAttack02;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -494,5 +552,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         void OnMoveForward(InputAction.CallbackContext context);
         void OnRotate(InputAction.CallbackContext context);
+        void OnAttack01(InputAction.CallbackContext context);
+        void OnAttack02(InputAction.CallbackContext context);
     }
 }

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1112308997293537067}
   - component: {fileID: 889628421028866040}
   - component: {fileID: 7925271638862852705}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NetBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,6 +141,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3bdc46e27396742b1f3c1a04664601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 10
+  lifeTime: 5
 --- !u!1 &4859518373940622173
 GameObject:
   m_ObjectHideFlags: 0

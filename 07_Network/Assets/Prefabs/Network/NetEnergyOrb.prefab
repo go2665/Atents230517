@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4445006120673437029}
   - component: {fileID: 1693558765315394070}
   - component: {fileID: 3313405846957636071}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NetEnergyOrb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
