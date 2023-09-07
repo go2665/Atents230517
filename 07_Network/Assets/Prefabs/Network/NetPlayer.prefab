@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: 3943402373121773928}
   - component: {fileID: 4439448576285869135}
   - component: {fileID: 351220419739470014}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1593,7 +1593,7 @@ GameObject:
   - component: {fileID: 4146781273096018508}
   - component: {fileID: 7346342026315791668}
   - component: {fileID: 6461760596153559774}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: NetPlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1836,7 +1836,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8553179150753549001}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: FirePosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2256,7 +2256,7 @@ GameObject:
   - component: {fileID: 7447659115995353596}
   - component: {fileID: 7931347256568791951}
   - component: {fileID: 6354482902785152835}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: NamePlateCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2497,7 +2497,7 @@ GameObject:
   - component: {fileID: 8777783702571042916}
   - component: {fileID: 8662076330530651101}
   - component: {fileID: 1488900994600533897}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

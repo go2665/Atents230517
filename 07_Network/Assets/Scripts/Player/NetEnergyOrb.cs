@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class NetEnergyOrb : NetworkBehaviour
 {
@@ -9,9 +10,12 @@ public class NetEnergyOrb : NetworkBehaviour
     public float lifeTime = 20.0f;
     Rigidbody rigid;
 
+    VisualEffect vfx;
+
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
+        vfx = GetComponentInChildren<VisualEffect>();
     }
 
     public override void OnNetworkSpawn()
@@ -35,6 +39,36 @@ public class NetEnergyOrb : NetworkBehaviour
 
         // 스폰 이후에만 동작
         Debug.Log($"충돌 : {collision.gameObject.name}");
-        this.NetworkObject.Despawn();
+        //vfx.SetFloat("Size", 5);
+        //this.NetworkObject.Despawn();
+        rigid.drag = float.MaxValue;
+        rigid.angularDrag = float.MaxValue;
+        StartCoroutine(EffectProcess());
+    }
+
+    IEnumerator EffectProcess()
+    {
+        float elapsedTime = 0.0f;
+        while(elapsedTime < 0.5f)           // 0.5초 동안 최대치까지 확대
+        {
+            elapsedTime += Time.deltaTime;
+            vfx.SetFloat("Size", elapsedTime * 10.0f);  // 최대 5까지 증가
+            yield return null;
+        }
+        elapsedTime = 1.0f;
+        while(elapsedTime > 0.0f)           // 1초 동안 크기 감소
+        {
+            elapsedTime -= Time.deltaTime;
+            vfx.SetFloat("Size", elapsedTime * 5.0f);   // 5 -> 0이 될때까지
+            yield return null;
+        }
+
+        vfx.SendEvent("OnEffectFinish");    // 크기 감소가 끝나면 파티클 생성 중지
+
+        while(vfx.aliveParticleCount > 0)   // 살아있는 파티클이 없을 때까지 대기
+        {            
+            yield return null;
+        }
+        this.NetworkObject.Despawn();       // 살아있는 파티클이 없으면 디스폰
     }
 }
