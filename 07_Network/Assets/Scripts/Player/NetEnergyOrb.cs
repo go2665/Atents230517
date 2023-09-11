@@ -46,6 +46,9 @@ public class NetEnergyOrb : NetworkBehaviour
             NetPlayer player = collision.gameObject.GetComponent<NetPlayer>();
             player.Die();
         }
+
+        // 실습
+        // 오브가 터진 위치에서 일정 반경 안에 있는 플레이어는 리스폰된다.
         
         EffectProcessClientRpc();
     }

@@ -27,7 +27,10 @@ public class NetBullet : NetworkBehaviour
     {
         yield return new WaitForSeconds(lifeTime);
 
-        this.NetworkObject.Despawn();
+        if(IsOwner)
+        {
+            RequestDespawnServerRpc();
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -39,10 +42,20 @@ public class NetBullet : NetworkBehaviour
         Debug.Log($"충돌 : {collision.gameObject.name}");
         if(collision.gameObject.CompareTag("Player"))
         {
-            this.NetworkObject.Despawn();   // 플레이어라면 즉시 디스폰
+            NetPlayer hittedTarget = collision.gameObject.GetComponent<NetPlayer>();
 
-            NetPlayer player = collision.gameObject.GetComponent<NetPlayer>();
-            player.Die();
+            //this.NetworkObjectId;   // 오브젝트의 ID
+            //this.OwnerClientId;     // 이 오브젝트를 가지는 오너의 클라이이언트를 식별할 수 있는 ID
+
+            ClientRpcParams clientRpcParams = new ClientRpcParams { 
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { hittedTarget.OwnerClientId }    // 이 배열에 지정된 클라이언트만 Rpc를 받는다.
+                }
+            };
+            PlayerDieClientRpc(clientRpcParams);    // clientRpcParams가 없으면 모두에게 보낸다.
+
+            this.NetworkObject.Despawn();   // 플레이어라면 즉시 디스폰
         }
         else if( reflectCount > 0 )
         {
@@ -55,5 +68,18 @@ public class NetBullet : NetworkBehaviour
         {
             this.NetworkObject.Despawn();   // 튕길 수 있는 횟수가 0이하면 즉시 디스폰
         }
+    }
+
+    [ClientRpc]
+    void PlayerDieClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        GameManager.Inst.Player.Die();
+    }
+
+    //[ServerRpc(RequireOwnership = false)]
+    [ServerRpc]
+    void RequestDespawnServerRpc()
+    {
+        this.NetworkObject.Despawn();
     }
 }
