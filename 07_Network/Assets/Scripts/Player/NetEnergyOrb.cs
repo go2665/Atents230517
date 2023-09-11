@@ -8,6 +8,7 @@ public class NetEnergyOrb : NetworkBehaviour
 {
     public float speed = 10.0f;
     public float lifeTime = 20.0f;
+    public float maxSize = 5.0f;
     Rigidbody rigid;
 
     VisualEffect vfx;
@@ -29,7 +30,10 @@ public class NetEnergyOrb : NetworkBehaviour
     {
         yield return new WaitForSeconds(lifeTime);
 
-        this.NetworkObject.Despawn();
+        if(IsOwner)
+        {
+            RequestDespawnServerRpc();
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -40,15 +44,34 @@ public class NetEnergyOrb : NetworkBehaviour
         // 스폰 이후에만 동작
         Debug.Log($"충돌 : {collision.gameObject.name}");
         //vfx.SetFloat("Size", 5);
-        
-        if(collision.gameObject.CompareTag("Player"))
-        {
-            NetPlayer player = collision.gameObject.GetComponent<NetPlayer>();
-            player.Die();
-        }
+
+        //if(collision.gameObject.CompareTag("Player"))
+        //{
+        //    NetPlayer player = collision.gameObject.GetComponent<NetPlayer>();
+        //    player.Die();
+        //}
 
         // 실습
         // 오브가 터진 위치에서 일정 반경 안에 있는 플레이어는 리스폰된다.
+        Collider[] result = Physics.OverlapSphere(transform.position, maxSize, LayerMask.GetMask("Player"));
+        if(result.Length > 0 )
+        {
+            List<ulong> targets = new List<ulong>(result.Length);
+            foreach(Collider c in result)
+            {
+                NetPlayer hittedTarget = c.gameObject.GetComponent<NetPlayer>();
+                targets.Add(hittedTarget.OwnerClientId);                
+            }
+
+            ClientRpcParams clientRpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = targets.ToArray()
+                }
+            };
+            PlayerDieClientRpc(clientRpcParams);            // clientRpcParams가 없으면 모두에게 보낸다.
+        }
         
         EffectProcessClientRpc();
     }
@@ -88,5 +111,18 @@ public class NetEnergyOrb : NetworkBehaviour
             yield return null;
         }
         this.NetworkObject.Despawn();       // 살아있는 파티클이 없으면 디스폰
+    }
+
+
+    [ClientRpc]
+    void PlayerDieClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        GameManager.Inst.Player.Die();
+    }
+
+    [ServerRpc]
+    void RequestDespawnServerRpc()
+    {
+        this.NetworkObject.Despawn();
     }
 }

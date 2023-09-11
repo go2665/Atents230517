@@ -52,6 +52,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   lifeTime: 20
+  maxSize: 5
 --- !u!114 &1227042429934784011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,7 +193,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 0.1
+      - m_Value: 0.5
         m_Name: Size
         m_Overridden: 1
     m_Vector2f:

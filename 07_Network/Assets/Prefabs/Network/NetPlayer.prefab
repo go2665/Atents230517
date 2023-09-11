@@ -1593,7 +1593,7 @@ GameObject:
   - component: {fileID: 4146781273096018508}
   - component: {fileID: 7346342026315791668}
   - component: {fileID: 6461760596153559774}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: NetPlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
