@@ -16,6 +16,71 @@ public class Board : MonoBehaviour
     public const int NOT_VALID_INDEX = -1;
 
     /// <summary>
+    /// 보드에 배치되어 있는 배 정보(겹치는 것을 방지하기 위한 정보)
+    /// </summary>
+    ShipType[] shipInfo;
+
+    private void Awake()
+    {
+        shipInfo = new ShipType[BoardSize * BoardSize];
+    }
+
+    /// <summary>
+    /// 함선을 배치하는 함수
+    /// </summary>
+    /// <param name="ship">배치할 함선</param>
+    /// <param name="grid">배치될 그리드 좌표(함선 머리 위치)</param>
+    /// <returns>배치 성공하면 true, 배치가 불가능하면 false</returns>
+    public bool ShipDeployment(Ship ship, Vector2Int grid)
+    {
+        return false;
+    }
+
+    /// <summary>
+    /// 특정 배가 특정 위치에서 배치될 수 있는지 확인하는 함수
+    /// </summary>
+    /// <param name="ship">확인할 배</param>
+    /// <param name="grid">확인할 배의 위치(뱃머리 위치)</param>
+    /// <param name="resultPos">확실하게 배치할 수 있는 위치(결과가 true일때만 사용)</param>
+    /// <returns>true면 배치가능한 위치, false면 배치불가능한 위치</returns>
+    public bool IsShipDeplyment(Ship ship, Vector2Int grid, out Vector2Int[] resultPos)
+    {
+        resultPos = null;
+        return false;
+    }
+
+    /// <summary>
+    /// 특정 배가 특정 위치에서 배치될 수 있는지 확인하는 함수
+    /// </summary>
+    /// <param name="ship">확인할 배</param>
+    /// <param name="grid">확인할 배의 위치(뱃머리 위치)</param>
+    /// <returns>true면 배치가능한 위치, false면 배치불가능한 위치</returns>
+    public bool IsShipDeplyment(Ship ship, Vector2Int grid)
+    {
+        return false;
+    }
+
+    /// <summary>
+    /// 특정 배가 특정 위치에서 배치될 수 있는지 확인하는 함수
+    /// </summary>
+    /// <param name="ship">확인할 배</param>
+    /// <param name="world">확인할 배의 위치(뱃머리 위치, 월드 포지션)</param>
+    /// <returns>true면 배치가능한 위치, false면 배치불가능한 위치</returns>
+    public bool IsShipDeplyment(Ship ship, Vector3 world)
+    {
+        return false;
+    }
+
+    /// <summary>
+    /// 함선 배치 취소 함수
+    /// </summary>
+    /// <param name="ship">배치를 취소할 배</param>
+    public void UndoShipDeployment(Ship ship)
+    {
+
+    }
+
+    /// <summary>
     /// 월드 좌표를 그리드 좌표로 변경해주는 함수
     /// </summary>
     /// <param name="worldPos">월드 좌표</param>

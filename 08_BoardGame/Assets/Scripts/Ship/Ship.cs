@@ -148,12 +148,14 @@ public class Ship : MonoBehaviour
 
     public void Initialize(ShipType type)
     {
-        shipType = type;
+        Type = type;
 
         model = transform.GetChild(0);
         shipRenderer = model.GetComponentInChildren<Renderer>();
         
         ResetData();
+
+        gameObject.name = $"{shipType}_{Size}";
     }
 
     /// <summary>

@@ -60,10 +60,17 @@ public class ShipManager : Singleton<ShipManager>
     /// </summary>
     /// <param name="shipType">생성할 배의 종류</param>
     /// <param name="ownerTransform">생성된 배를 가지는 플레이어의 트랜스폼</param>
-    /// <returns></returns>
+    /// <returns>생성완료된 배</returns>
     public Ship MakeShip(ShipType shipType, Transform ownerTransform)
     {
-        return null;
+        GameObject shipObj = Instantiate(shipPrefab, ownerTransform);
+        GameObject modelPrefab = GetShipModel(shipType);
+        Instantiate(modelPrefab, shipObj.transform);
+
+        Ship ship = shipObj.GetComponent<Ship>();
+        ship.Initialize(shipType);
+
+        return ship;
     }
 
     /// <summary>
@@ -73,7 +80,7 @@ public class ShipManager : Singleton<ShipManager>
     /// <returns>함선 프리팹</returns>
     private GameObject GetShipModel(ShipType type)
     {
-        return null;
+        return shipModels[(int)type-1];
     }
 
     /// <summary>
