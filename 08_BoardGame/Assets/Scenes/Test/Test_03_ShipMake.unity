@@ -307,6 +307,61 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &342969448
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 342969449}
+  - component: {fileID: 342969450}
+  m_Layer: 0
+  m_Name: ShipManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &342969449
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342969448}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &342969450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342969448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 387951ba9b591224ca96ec61f286f7ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shipPrefab: {fileID: 483656784845425781, guid: 202080255004ec44ba8c53a60bcb7369,
+    type: 3}
+  shipModels:
+  - {fileID: 1322473083335384298, guid: 6f35d9bd45920c9449b2a8d24c207d7b, type: 3}
+  - {fileID: 4900985488255794650, guid: 9f3e48ba7733acc4d90d1fa933c2fd03, type: 3}
+  - {fileID: 6270760414634102450, guid: e224782238afe8f499771674dde0a41b, type: 3}
+  - {fileID: 1043968383752900730, guid: c7b6555ee1c468d439490d18552ed710, type: 3}
+  - {fileID: 1111470029533785032, guid: 468be6d2dd70dd840a6f42a9319806a4, type: 3}
+  shipMaterials:
+  - {fileID: 2100000, guid: 6315d9cab1d102b45b1c0d7d8e5712ca, type: 2}
+  - {fileID: 2100000, guid: 91bff6863b298314d88fbb4da44266f5, type: 2}
 --- !u!1001 &1045072654
 PrefabInstance:
   m_ObjectHideFlags: 0
