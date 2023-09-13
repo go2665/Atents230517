@@ -69,6 +69,7 @@ public class ShipManager : Singleton<ShipManager>
 
         Ship ship = shipObj.GetComponent<Ship>();
         ship.Initialize(shipType);
+        
 
         return ship;
     }

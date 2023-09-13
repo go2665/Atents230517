@@ -156,6 +156,7 @@ public class Ship : MonoBehaviour
         ResetData();
 
         gameObject.name = $"{shipType}_{Size}";
+        gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -198,7 +199,15 @@ public class Ship : MonoBehaviour
     /// <param name="isCW">true면 시계방향, false 반시계방향</param>
     public void Rotate(bool isCW = true)
     {
-
+        int dirCount = ShipManager.Inst.ShipDirectionCount;
+        if(isCW)
+        {
+            Direction = (ShipDirection)(((int)Direction + 1) % dirCount);
+        }
+        else
+        {
+            Direction = (ShipDirection)(((int)Direction + dirCount - 1) % dirCount);
+        }
     }
 
     /// <summary>
