@@ -24,7 +24,10 @@ public class Test_04_ShipDeployment : TestBase
                 if(targetShip != null)
                 {
                     targetShip.SetMaterialType();
-                    targetShip.gameObject.SetActive(false);
+                    if(!targetShip.IsDeployed)
+                    {
+                        targetShip.gameObject.SetActive(false);
+                    }
                 }
             }
             targetShip = value;
@@ -70,32 +73,68 @@ public class Test_04_ShipDeployment : TestBase
 
     protected override void Test1(InputAction.CallbackContext context)
     {
-        Debug.Log("항공모함 선택");
-        TargetShip = testShips[(int)ShipType.Carrier - 1];
+        Ship ship = testShips[(int)ShipType.Carrier - 1];
+        if (!ship.IsDeployed)
+        {
+            Debug.Log("항공모함 선택");
+            TargetShip = ship;
+        }
     }
 
     protected override void Test2(InputAction.CallbackContext context)
     {
-        Debug.Log("전함 선택");
-        TargetShip = testShips[(int)ShipType.BattleShip - 1];
+        Ship ship = testShips[(int)ShipType.BattleShip - 1];
+        if (!ship.IsDeployed)
+        {
+            Debug.Log("전함 선택");
+            TargetShip = ship;
+        }
     }
 
     protected override void Test3(InputAction.CallbackContext context)
     {
-        Debug.Log("구축함 선택");
-        TargetShip = testShips[(int)ShipType.Destroyer - 1];
+        Ship ship = testShips[(int)ShipType.Destroyer - 1];
+        if (!ship.IsDeployed)
+        {
+            Debug.Log("구축함 선택");
+            TargetShip = ship;
+        }
     }
 
     protected override void Test4(InputAction.CallbackContext context)
     {
-        Debug.Log("잠수함 선택");
-        TargetShip = testShips[(int)ShipType.Submarine - 1];
+        Ship ship = testShips[(int)ShipType.Submarine - 1];
+        if (!ship.IsDeployed)
+        {
+            Debug.Log("잠수함 선택");
+            TargetShip = ship;
+        }
     }
 
     protected override void Test5(InputAction.CallbackContext context)
     {
-        Debug.Log("경비정 선택");
-        TargetShip = testShips[(int)ShipType.PatrolBoat - 1];
+        Ship ship = testShips[(int)ShipType.PatrolBoat - 1];
+        if (!ship.IsDeployed)
+        {
+            Debug.Log("경비정 선택");
+            TargetShip = ship;
+        }
+    }
+
+    protected override void TestClick(InputAction.CallbackContext context)
+    {
+        Vector2 screen = Mouse.current.position.ReadValue();
+        Vector3 world = Camera.main.ScreenToWorldPoint(screen);
+
+        if(TargetShip != null && board.ShipDeployment(TargetShip, world))
+        {
+            Debug.Log("함선배치 성공");
+            TargetShip = null;
+        }
+        else
+        {
+            Debug.Log("배치할 함선이 없거나 실패했습니다.");
+        }
     }
 
     private void OnMouseWheel(InputAction.CallbackContext context)

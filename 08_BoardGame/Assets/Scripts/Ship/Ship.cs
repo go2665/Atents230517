@@ -180,9 +180,11 @@ public class Ship : MonoBehaviour
     /// 함선이 배치될 때 실행될 함수
     /// </summary>
     /// <param name="deployPositions">배치되는 위치들</param>
-    public void Deploy(Vector2Int deployPositions)
+    public void Deploy(Vector2Int[] deployPositions)
     {
-
+        positions = deployPositions;
+        isDeployed = true;
+        onDeploy?.Invoke(true);
     }
 
     /// <summary>

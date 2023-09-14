@@ -33,7 +33,32 @@ public class Board : MonoBehaviour
     /// <returns>배치 성공하면 true, 배치가 불가능하면 false</returns>
     public bool ShipDeployment(Ship ship, Vector2Int grid)
     {
-        return false;
+        Vector2Int[] girdPositions;
+        bool result = IsShipDeplymentAvailable(ship, grid, out girdPositions);  // 배치 가능한지 확인
+        if(result)
+        {
+            foreach(var pos in girdPositions)
+            {
+                shipInfo[GridToIndex(pos)] = ship.Type;     // 배치 가능하면 ShipInfo에 함선 배치 기록
+            }
+
+            Vector3 world = GridToWorld(grid);
+            ship.transform.position = world;                // 배의 위치 변경
+            ship.Deploy(girdPositions);                     // 배 배치 함수 실행
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 함선을 배치하는 함수
+    /// </summary>
+    /// <param name="ship">배치할 함선</param>
+    /// <param name="world">배치될 월드위치(함선 머리 위치)</param>
+    /// <returns>배치 성공하면 true, 배치가 불가능하면 false</returns>
+    public bool ShipDeployment(Ship ship, Vector3 world)
+    {
+        return ShipDeployment(ship, WorldToGrid(world));
     }
 
     /// <summary>
@@ -43,10 +68,44 @@ public class Board : MonoBehaviour
     /// <param name="grid">확인할 배의 위치(뱃머리 위치)</param>
     /// <param name="resultPos">확실하게 배치할 수 있는 위치(결과가 true일때만 사용)</param>
     /// <returns>true면 배치가능한 위치, false면 배치불가능한 위치</returns>
-    public bool IsShipDeplyment(Ship ship, Vector2Int grid, out Vector2Int[] resultPos)
+    public bool IsShipDeplymentAvailable(Ship ship, Vector2Int grid, out Vector2Int[] resultPos)
     {
-        resultPos = null;
-        return false;
+        resultPos = new Vector2Int[ship.Size];  // 배 크기만큼 결과 저장할 배열 생성
+
+        Vector2Int dir = Vector2Int.zero;
+        switch(ship.Direction)                  // 배가 바라보는 방향에 따라 그리드 좌표를 구하기 위한 방향 결정하기
+        {
+            case ShipDirection.North:
+                dir = Vector2Int.up;
+                break;
+            case ShipDirection.East:
+                dir = Vector2Int.left;
+                break;
+            case ShipDirection.South:
+                dir = Vector2Int.down;
+                break;
+            case ShipDirection.West:
+                dir = Vector2Int.right;
+                break;
+        }
+
+        // 확인할 그리드 위치들을 저장
+        for (int i=0;i<ship.Size;i++)
+        {
+            resultPos[i] = grid + dir * i;  
+        }
+
+        bool result = true;
+        foreach(var pos in resultPos)
+        {
+            if( !IsInBoard(pos) || IsShipDeployed(pos) )    // 한칸이라도 보드를 벗어나거나 배가 배치되어 있으면 실패
+            {
+                result = false;
+                break;
+            }
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -55,9 +114,9 @@ public class Board : MonoBehaviour
     /// <param name="ship">확인할 배</param>
     /// <param name="grid">확인할 배의 위치(뱃머리 위치)</param>
     /// <returns>true면 배치가능한 위치, false면 배치불가능한 위치</returns>
-    public bool IsShipDeplyment(Ship ship, Vector2Int grid)
+    public bool IsShipDeplymentAvailable(Ship ship, Vector2Int grid)
     {
-        return false;
+        return IsShipDeplymentAvailable(ship, grid, out _);
     }
 
     /// <summary>
@@ -66,9 +125,19 @@ public class Board : MonoBehaviour
     /// <param name="ship">확인할 배</param>
     /// <param name="world">확인할 배의 위치(뱃머리 위치, 월드 포지션)</param>
     /// <returns>true면 배치가능한 위치, false면 배치불가능한 위치</returns>
-    public bool IsShipDeplyment(Ship ship, Vector3 world)
+    public bool IsShipDeplymentAvailable(Ship ship, Vector3 world)
     {
-        return false;
+        return IsShipDeplymentAvailable(ship, WorldToGrid(world), out _);
+    }
+
+    /// <summary>
+    /// 특정 위치에 배가 배치되어 있는지 확인하는 함수
+    /// </summary>
+    /// <param name="grid">확인할 그리드 좌표</param>
+    /// <returns>true면 배가 있다. false면 배가 없다.</returns>
+    private bool IsShipDeployed(Vector2Int grid)
+    {
+        return shipInfo[GridToIndex(grid)] != ShipType.None;
     }
 
     /// <summary>
@@ -169,7 +238,7 @@ public class Board : MonoBehaviour
     public static int GridToIndex(int x, int y)
     {
         int result = NOT_VALID_INDEX;   // 적절하지 않은 경우 -1
-        if (IsVaildGridPosition(x,y))
+        if (IsInBoard(x,y))
         {
             result = x + y * BoardSize;
         }
@@ -178,12 +247,24 @@ public class Board : MonoBehaviour
     }
 
     /// <summary>
+    /// 그리드 좌표를 인덱스 값으로 변경해주는 함수
+    /// </summary>
+    /// <param name="grid">그리드 위치</param>
+    /// <returns>해당 위치의 인덱스 값</returns>
+    public static int GridToIndex(Vector2Int grid)
+    {
+        return GridToIndex(grid.x, grid.y);
+    }
+
+
+
+    /// <summary>
     /// 그리드 좌표가 적절한지 확인하는 함수
     /// </summary>
     /// <param name="x">x좌표</param>
     /// <param name="y">y좌표</param>
     /// <returns>true면 적절하고 false면 보드 밖의 좌표</returns>
-    public static bool IsVaildGridPosition(int x, int y)
+    public static bool IsInBoard(int x, int y)
     {
         return x > -1 && x < BoardSize && y > -1 && y <BoardSize;
     }
@@ -193,8 +274,8 @@ public class Board : MonoBehaviour
     /// </summary>
     /// <param name="grid">그리드 좌표</param>
     /// <returns>true면 적절하고 false면 보드 밖의 좌표</returns>
-    public static bool IsValidGridPosition(Vector2Int grid)
+    public static bool IsInBoard(Vector2Int grid)
     {
-        return IsVaildGridPosition(grid.x, grid.y);
+        return IsInBoard(grid.x, grid.y);
     }
 }
