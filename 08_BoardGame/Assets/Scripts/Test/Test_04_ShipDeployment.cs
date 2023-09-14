@@ -12,9 +12,9 @@ public class Test_04_ShipDeployment : TestBase
     // 4. 휠버튼을 이용해서 배를 배치전에 회전시킬 수 있어야 한다.
 
     public Board board;
-    Ship[] testShips;
-    Ship targetShip;
-    Ship TargetShip
+    protected Ship[] testShips;
+    protected Ship targetShip;
+    protected Ship TargetShip
     {
         get => targetShip; 
         set
@@ -45,7 +45,7 @@ public class Test_04_ShipDeployment : TestBase
         }
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         testShips = new Ship[ShipManager.Inst.ShipTypeCount];
         testShips[(int)ShipType.Carrier - 1] = ShipManager.Inst.MakeShip(ShipType.Carrier, transform);

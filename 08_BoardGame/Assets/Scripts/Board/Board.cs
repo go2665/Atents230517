@@ -153,6 +153,7 @@ public class Board : MonoBehaviour
                 shipInfo[GridToIndex(pos)] = ShipType.None; // 보드 기록 초기화
             }
             ship.UnDeploy();    // 함선 내부 처리
+            ship.gameObject.SetActive(false);
         }
     }
 
