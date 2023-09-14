@@ -164,7 +164,11 @@ public class Ship : MonoBehaviour
     /// </summary>
     void ResetData()
     {
-
+        hp = size;                          // hp를 배의 크기로 초기화
+        Direction = ShipDirection.North;    // 방향은 무조건 북쪽이 초기값
+        isAlive = true;                     // 배가 살아있다고 초기화
+        isDeployed = false;                 // 배치는 안되었다고 초기화
+        positions = null;                   // 배치 위치는 비우기
     }
 
     /// <summary>
@@ -173,7 +177,14 @@ public class Ship : MonoBehaviour
     /// <param name="isNormal">true 불투명 머티리얼 사용, false면 배치모드용 반투명 머티리얼 사용</param>
     public void SetMaterialType(bool isNormal = true)
     {
-
+        if(isNormal)
+        {
+            shipRenderer.material = ShipManager.Inst.NormalShipMaterial;
+        }
+        else
+        {
+            shipRenderer.material = ShipManager.Inst.DeployModeShipMaterial;
+        }
     }
 
     /// <summary>
@@ -182,9 +193,9 @@ public class Ship : MonoBehaviour
     /// <param name="deployPositions">배치되는 위치들</param>
     public void Deploy(Vector2Int[] deployPositions)
     {
-        positions = deployPositions;
-        isDeployed = true;
-        onDeploy?.Invoke(true);
+        positions = deployPositions;    // 위치 기록
+        isDeployed = true;              // 배치되었다고 표시
+        onDeploy?.Invoke(true);         // 배치 되었음을 알림
     }
 
     /// <summary>
@@ -192,7 +203,8 @@ public class Ship : MonoBehaviour
     /// </summary>
     public void UnDeploy()
     {
-
+        ResetData();                // 데이터 초기화
+        onDeploy?.Invoke(false);    // 배치 해제되었음을 알림
     }
 
     /// <summary>

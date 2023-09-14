@@ -126,10 +126,10 @@ public class Test_04_ShipDeployment : TestBase
         Vector2 screen = Mouse.current.position.ReadValue();
         Vector3 world = Camera.main.ScreenToWorldPoint(screen);
 
-        if(TargetShip != null && board.ShipDeployment(TargetShip, world))
+        if(TargetShip != null && board.ShipDeployment(TargetShip, world))   // 선택된 배가 있을 때 우선 배치 시도
         {
             Debug.Log("함선배치 성공");
-            TargetShip = null;
+            TargetShip = null;          // 배 선택 해제
         }
         else
         {
@@ -141,38 +141,58 @@ public class Test_04_ShipDeployment : TestBase
     {
         float delta = context.ReadValue<float>();
 
-        bool rotateDir = true;
-        if( delta < 0 )
+        bool rotateDir = true;  // 기본값은 시계방향
+        if( delta < 0 )         // 입력 방향 확인
         {
-            rotateDir = false;
+            rotateDir = false;  // 입력 방향이 아래쪽이면 반시계방향
         }
         if(TargetShip != null)
         {
-            TargetShip.Rotate(rotateDir);
+            TargetShip.Rotate(rotateDir);   // 선택된 배를 회전 시키기
+
+            bool isSuccess = board.IsShipDeplymentAvailable(TargetShip, TargetShip.transform.position); // 지금 상태로 배치가 가능한지 확인
+            ShipManager.Inst.SetDeloyModeColor(isSuccess);  // 결과에 따라 색상 변경
         }
     }
 
     private void OnMouseRClick(InputAction.CallbackContext context)
     {
+        Vector2 screen = Mouse.current.position.ReadValue();
+        Vector3 world = Camera.main.ScreenToWorldPoint(screen);
+
+        ShipType shipType = board.GetShipType(world);   // 우클릭한 위치의 함선정보 확인
+        if(shipType != ShipType.None)                   // 배가 있으면
+        {
+            Ship ship = testShips[(int)shipType - 1];   // 배 게임오브젝트 가져와서
+            board.UndoShipDeployment(ship);             // 보드에서 배치 취소
+            ship.gameObject.SetActive(false);           // 배 안보이게 하기
+        }
     }
 
     private void OnMouseMove(InputAction.CallbackContext obj)
     {
-        if (TargetShip != null && !TargetShip.IsDeployed)
+        if (TargetShip != null && !TargetShip.IsDeployed)               // 선택된 배가 있고 아직 배치가 안된 상황에서만 처리
         {
             Vector2 screen = Mouse.current.position.ReadValue();
             Vector3 world = Camera.main.ScreenToWorldPoint(screen);
             world.y = board.transform.position.y;
 
-            if( board.IsInBoard(world) )
+            if( board.IsInBoard(world) )        // 보드 안인지 확인
             {
                 Vector2Int grid = board.GetMouseGridPosition();
 
-                TargetShip.transform.position = board.GridToWorld(grid);
+                // 이동
+                TargetShip.transform.position = board.GridToWorld(grid);            // 보드 안쪽일 때만 위치 이동(칸단위로 이동)
+
+                // 색상 변경
+                bool isSuccess = board.IsShipDeplymentAvailable(TargetShip, grid);  // 배치 가능한지 확인 
+                ShipManager.Inst.SetDeloyModeColor(isSuccess);                      // 결과에 따라 색상 변경
+
             }
             else
             {
-                TargetShip.transform.position = world;
+                TargetShip.transform.position = world;      // 자유롭게 움직이기    
+                ShipManager.Inst.SetDeloyModeColor(false);  // 밖이면 무조건 빨간 색
             }
         }
     }

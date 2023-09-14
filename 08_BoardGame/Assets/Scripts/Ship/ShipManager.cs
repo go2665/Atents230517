@@ -91,5 +91,14 @@ public class ShipManager : Singleton<ShipManager>
     public void SetDeloyModeColor(bool isSuccess)
     {
         // DeployModeShipMaterial의 색상 변경
+        if(isSuccess)
+        {
+            DeployModeShipMaterial.SetColor("_BaseColor", successColor);
+            //DeployModeShipMaterial.color = successColor;  // 같다
+        }
+        else
+        {
+            DeployModeShipMaterial.SetColor("_BaseColor", failColor);
+        }
     }
 }

@@ -146,8 +146,36 @@ public class Board : MonoBehaviour
     /// <param name="ship">배치를 취소할 배</param>
     public void UndoShipDeployment(Ship ship)
     {
-
+        if (ship.IsDeployed)    // 이미 배치되어있는 경우에만 배치 해제 진행
+        {
+            foreach (var pos in ship.Positions)
+            {
+                shipInfo[GridToIndex(pos)] = ShipType.None; // 보드 기록 초기화
+            }
+            ship.UnDeploy();    // 함선 내부 처리
+        }
     }
+
+    /// <summary>
+    /// 특정 위치에 배치된 배 정보를 리턴하는 함수
+    /// </summary>
+    /// <param name="grid">확인할 그리드 좌표</param>
+    /// <returns>해당 위치의 배 정보</returns>
+    public ShipType GetShipType(Vector2Int grid)
+    {
+        return shipInfo[GridToIndex(grid)];
+    }
+
+    /// <summary>
+    /// 특정 위치에 배치된 배 정보를 리턴하는 함수
+    /// </summary>
+    /// <param name="world">확인할 월드 좌표</param>
+    /// <returns>해당 위치의 배 정보</returns>
+    public ShipType GetShipType(Vector3 world)
+    {
+        return GetShipType(WorldToGrid(world));
+    }
+
 
     /// <summary>
     /// 월드 좌표를 그리드 좌표로 변경해주는 함수
