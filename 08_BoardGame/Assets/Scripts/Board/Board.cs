@@ -20,6 +20,16 @@ public class Board : MonoBehaviour
     /// </summary>
     ShipType[] shipInfo;
 
+    /// <summary>
+    /// 보드가 공격당한 위치를 시각적으로 보여주는 클래스
+    /// </summary>
+    BombMark bombMark;
+
+    /// <summary>
+    /// 공격 받으면 true로 설정되는 배열
+    /// </summary>
+    bool[] isAttacked;
+
     private void Awake()
     {
         shipInfo = new ShipType[BoardSize * BoardSize];
@@ -155,6 +165,23 @@ public class Board : MonoBehaviour
             ship.UnDeploy();    // 함선 내부 처리
             ship.gameObject.SetActive(false);
         }
+    }
+
+    /// <summary>
+    /// 보드가 공격을 받았을 때 실행되는 함수
+    /// </summary>
+    /// <param name="grid">공격 받은 그리드 위치</param>
+    /// <returns>공격이 배에 명중되었으면 true, 아니면 false</returns>
+    public bool OnAttacked(Vector2Int grid)
+    {
+        bool result = false;
+
+        // 공격이 성공했으면 그 위치에 BombSuccess 생성
+        // 공격이 실패했으면 그 위치에 BombFailure 생성
+
+        // 공격 당한 위치는 다시 공격 당할 수 없다.
+
+        return result;
     }
 
     /// <summary>
