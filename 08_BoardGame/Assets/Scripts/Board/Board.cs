@@ -33,6 +33,28 @@ public class Board : MonoBehaviour
     private void Awake()
     {
         shipInfo = new ShipType[BoardSize * BoardSize];
+
+        bombMark = GetComponentInChildren<BombMark>();
+        isAttacked = new bool[BoardSize * BoardSize];
+    }
+
+    /// <summary>
+    /// 보드 초기화
+    /// </summary>
+    /// <param name="ships"></param>
+    public void ResetBoard(Ship[] ships)
+    {
+        foreach(var ship in ships)
+        {
+            UndoShipDeployment(ship);   // 배는 전부 배치 취소
+        }
+
+        // 공격 표시 초기화
+        for(int i=0;i<isAttacked.Length;i++)
+        {
+            isAttacked[i] = false;
+        }
+        bombMark.ResetBombMarks();  // 폭탄 마크 리셋
     }
 
     /// <summary>
@@ -176,12 +198,42 @@ public class Board : MonoBehaviour
     {
         bool result = false;
 
-        // 공격이 성공했으면 그 위치에 BombSuccess 생성
-        // 공격이 실패했으면 그 위치에 BombFailure 생성
+        if( IsInBoard(grid))                    // 보드 안쪽만 확인
+        {
+            int index = GridToIndex(grid);
+            if( IsAttackable(index))            // 공격 가능한 위치인지 확인
+            {
+                isAttacked[index] = true;       // 공격 했다고 표시
 
-        // 공격 당한 위치는 다시 공격 당할 수 없다.
+                if (shipInfo[index] != ShipType.None)   // 배가 있으면
+                {                    
+                    result = true;                      // 공격 성공으로 체크
+                }
 
+                bombMark.SetBombMark(GridToWorld(grid), result);    // BombMark 표시
+            }
+        }
         return result;
+    }
+
+    /// <summary>
+    /// 지정된 위치가 공격 가능한지 확인하는 함수
+    /// </summary>
+    /// <param name="index">확인할 위치의 인덱스</param>
+    /// <returns>공격 가능하면 true, 이미 공격 당한지점이면 false</returns>
+    public bool IsAttackable(int index)
+    {
+        return !isAttacked[index];
+    }
+
+    /// <summary>
+    /// 지정된 위치가 공격 가능한지 확인하는 함수
+    /// </summary>
+    /// <param name="grid">확인할 위치의 그리드 좌표</param>
+    /// <returns>공격 가능하면 true, 이미 공격 당한지점이면 false</returns>
+    public bool IsAttackable(Vector2Int grid)
+    {
+        return IsAttackable(GridToIndex(grid));
     }
 
     /// <summary>

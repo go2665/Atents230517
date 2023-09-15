@@ -15,6 +15,10 @@ public class BombMark : MonoBehaviour
     public void SetBombMark(Vector3 world, bool isSuccess)
     {
         // isSuccess에 따라 프리팹 생성
+        GameObject prefab = isSuccess ? successPrefab : failurePrefab;  // 프리팹 결정
+        GameObject instance = Instantiate(prefab, transform);           // 프리팹 생성
+        world.y = transform.position.y;
+        instance.transform.position = world;                            // 위치 이동
     }
 
     /// <summary>
@@ -22,6 +26,11 @@ public class BombMark : MonoBehaviour
     /// </summary>
     public void ResetBombMarks()
     {
-
+        while(transform.childCount > 0)                 // 자식이 남아있으면 계속 반복
+        {
+            Transform child = transform.GetChild(0);    // 첫번째 자식 제거하기
+            child.SetParent(null);
+            Destroy(child.gameObject);
+        }
     }
 }

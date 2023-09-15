@@ -242,10 +242,7 @@ public class Test_05_ShipDeploymentAuto : Test_04_ShipDeployment
 
     private void ClearBoard()
     {
-        foreach(var ship in testShips)
-        {
-            board.UndoShipDeployment(ship);
-        }
+        board.ResetBoard(testShips);
     }
 
     // 실습
