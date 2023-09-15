@@ -193,6 +193,7 @@ public class Ship : MonoBehaviour
     /// <param name="deployPositions">배치되는 위치들</param>
     public void Deploy(Vector2Int[] deployPositions)
     {
+        SetMaterialType();              // 머티리얼 normal로 설정
         positions = deployPositions;    // 위치 기록
         isDeployed = true;              // 배치되었다고 표시
         onDeploy?.Invoke(true);         // 배치 되었음을 알림
@@ -229,7 +230,12 @@ public class Ship : MonoBehaviour
     /// </summary>
     public void RandomRotate()
     {
-
+        int rotateCount = UnityEngine.Random.Range(0, ShipManager.Inst.ShipDirectionCount); // 함선을 몇번 회전시킬지 결정
+        bool isCW = UnityEngine.Random.Range(0, 2) == 0;    // 정방향인지 역방향인지 결정
+        for(int i = 0; i < rotateCount; i++)                // 결정된 횟수와 방향으로 회전
+        {
+            Rotate(isCW);
+        }
     }
 
     /// <summary>
