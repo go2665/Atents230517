@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -30,12 +31,25 @@ public class Board : MonoBehaviour
     /// </summary>
     bool[] isAttacked;
 
+    /// <summary>
+    /// 배 종류별로 공격 당했을 때 실행될 델리게이트를 가지는 딕셔너리
+    /// </summary>
+    public Dictionary<ShipType, Action> onShipAttacked;
+
     private void Awake()
     {
         shipInfo = new ShipType[BoardSize * BoardSize];
 
         bombMark = GetComponentInChildren<BombMark>();
         isAttacked = new bool[BoardSize * BoardSize];
+
+        onShipAttacked = new Dictionary<ShipType, Action>(ShipManager.Inst.ShipTypeCount + 1);
+        onShipAttacked[ShipType.None] = null;           // 열결될 함수는 없음. 없는 키 참조로 인해 에러가 나는 것 방지
+        onShipAttacked[ShipType.Carrier] = null;
+        onShipAttacked[ShipType.BattleShip] = null;
+        onShipAttacked[ShipType.Destroyer] = null;
+        onShipAttacked[ShipType.Submarine] = null;
+        onShipAttacked[ShipType.PatrolBoat] = null;
     }
 
     /// <summary>
@@ -208,6 +222,7 @@ public class Board : MonoBehaviour
                 if (shipInfo[index] != ShipType.None)   // 배가 있으면
                 {                    
                     result = true;                      // 공격 성공으로 체크
+                    onShipAttacked[shipInfo[index]]?.Invoke();  // 공격당한 배의 델리게이트 실행
                 }
 
                 bombMark.SetBombMark(GridToWorld(grid), result);    // BombMark 표시
