@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerBase : MonoBehaviour
@@ -35,6 +34,31 @@ public class PlayerBase : MonoBehaviour
     /// </summary>
     protected PlayerBase opponent;
 
+    /// <summary>
+    /// 일반 공격 후보 인덱스
+    /// </summary>
+    List<int> attackIndeices;
+
+    /// <summary>
+    /// 우선 순위가 높은 공격 후보 인덱스
+    /// </summary>
+    List<int> attackHighIndeices;
+
+    /// <summary>
+    /// 마지막으로 공격을 성공한 위치
+    /// </summary>
+    Vector2Int lastAttackSuccessPosition;
+
+    /// <summary>
+    /// 이전 공격이 성공하지 않았다고 표시하는 변수
+    /// </summary>
+    readonly Vector2Int NOT_SUCCESS = -Vector2Int.one;
+
+    /// <summary>
+    /// 이웃 위치 확인용
+    /// </summary>
+    readonly Vector2Int[] neighbors = { new(-1, 0), new(1, 0), new(0, 1), new(0, -1) };
+
 
     /// <summary>
     /// 이 플레이어의 공격이 실패했음을 알리는 델리게이트(파라메터:자기자신)
@@ -59,18 +83,35 @@ public class PlayerBase : MonoBehaviour
 
     protected virtual void Start()
     {
+        // 배 생성
         int shipTypeCount = ShipManager.Inst.ShipTypeCount;
         ships = new Ship[shipTypeCount];
         for(int i = 0; i < shipTypeCount; i++)
         {
             ShipType shipType = (ShipType)(i + 1);
-            ships[i] = ShipManager.Inst.MakeShip(shipType, transform);
+            ships[i] = ShipManager.Inst.MakeShip(shipType, transform);  // 배 종류별로 만들기
 
             ships[i].onSinking += OnShipDestroy;                // 함선이 침몰하면 OnShipDestroy 실행
 
             board.onShipAttacked[shipType] = ships[i].OnHitted; // 배가 맞을 때마다 실행될 함수 등록
         }
-        remainShipCount = shipTypeCount;
+        remainShipCount = shipTypeCount;                    // 배 갯수 설정
+
+        // 일반 공격 후보 지역 만들기
+        int fullSize = Board.BoardSize * Board.BoardSize;
+        int[] temp = new int[fullSize];
+        for(int i=0;i<fullSize;i++)
+        {
+            temp[i] = i;        // 순서대로 0~99까지 채우기
+        }
+        Util.Shuffle(temp);     // 채운것 섞기
+        attackIndeices = new List<int>(temp);   // 섞은 것을 기준으로 리스트만들기
+
+        // 우선 순위가 높은 공격 후보지역 만들기(비어있음)
+        attackHighIndeices = new List<int>(10);
+
+        // 공격 관련 변수(이전에 공격이 성공한 적 없다고 표시)
+        lastAttackSuccessPosition = NOT_SUCCESS;
     }
 
     // 턴 관리용 함수 ------------------------------------------------------------------------------
@@ -101,7 +142,26 @@ public class PlayerBase : MonoBehaviour
     public void Attack(Vector2Int attackGridPos)
     {
         Debug.Log($"{gameObject.name}가 ({attackGridPos.x},{attackGridPos.y})를 공격했습니다.");
-        opponent.Board.OnAttacked(attackGridPos);
+        bool result = opponent.Board.OnAttacked(attackGridPos);     // 상대방 보드에 공격
+        if(result)  // 공격 성공
+        {
+            // 이전 턴의 공격 성공 여부 확인
+            if( lastAttackSuccessPosition != NOT_SUCCESS )
+            {
+                // 한턴 앞의 공격이 성공했다.
+                AddHighFromTwoPoint(attackGridPos, lastAttackSuccessPosition);
+            }
+            else
+            {
+                // 처음 성공한 공격이다.
+                AddHighFromNeighbors(attackGridPos);
+            }
+            lastAttackSuccessPosition = attackGridPos;  // 공격 성공했다고 표시
+        }
+        else
+        {
+            lastAttackSuccessPosition = NOT_SUCCESS;
+        }
     }
 
     /// <summary>
@@ -127,10 +187,91 @@ public class PlayerBase : MonoBehaviour
     /// </summary>
     public void AutoAttack()
     {
+        // 확인할 순서 : 한줄로 공격이 성공했나? -> 이전 공격이 성공했나? -> 무작위로 공격
         // 1. 무작위로 공격(중복은 안되어야 함)
         // 2. 공격이 성공했을 때 다음 공격은 공격 성공 위치의 위아래좌우 4방향 중 하나를 공격.
         // 3. 공격이 한줄로 성공했을 때 다음 공격은 줄의 양끝 바깥 중 하나를 공격
+
         // 4. 함선을 침몰시키면 우선순위가 높은 후보지역은 모두 제거한다.
+
+        int target;
+        if( attackHighIndeices.Count > 0 )  // 우선 순위 높은 후보가 있는지 확인
+        {
+            target = attackHighIndeices[0]; // 우선 순위가 높은 후보가 있으면 첫번째것 사용
+            RemoveHigh(target);             // 높은 우선 순위 목록에서 제거
+            attackIndeices.Remove(target);  // 일반 우선 순위 목록에서 제거
+        }
+        else
+        {
+            target = attackIndeices[0];     // 일반 우선 순위 목록의 첫번째 것 사용.
+            attackIndeices.RemoveAt(0);     // 일반 우선 순위 목록에서 제거
+        }
+
+        Attack(target);
+    }
+
+    /// <summary>
+    /// 높은 우선 순위 목록에 인덱스를 추가하는 함수
+    /// </summary>
+    /// <param name="index">추가할 인덱스</param>
+    private void AddHigh(int index)
+    {
+        if( !attackHighIndeices.Contains(index) )   // 안들어 있을 때만 추가
+        {
+            attackHighIndeices.Insert(0, index);    // 항상 앞에 추가(새로 추가되는 위치가 성공 확률이 더 높아보임)
+        }
+    }
+
+    /// <summary>
+    /// 현재 성공지점의 양 끝을 우선순위 높은 후보지역으로 만드는 함수
+    /// </summary>
+    /// <param name="now">지금 공격한 위치</param>
+    /// <param name="last">이전에 공격한 위치</param>
+    private void AddHighFromTwoPoint(Vector2Int now, Vector2Int last)
+    {
+
+    }
+
+    /// <summary>
+    /// start에서 end 한칸 앞까지 모두 공격 성공이었는지 체크하는 함수
+    /// </summary>
+    /// <param name="start">확인 시작점</param>
+    /// <param name="end">확인 종료지점</param>
+    /// <param name="isHorizontal">true면 가로로 체크, false면 세로로 체크</param>
+    /// <returns>true면 같은 줄이고 그 사이는 모두 공격 성공, false면 다른 줄이거나 중간에 공격 실패가 있다.</returns>
+    private bool InSuccessLine(Vector2Int start, Vector2Int end, bool isHorizontal)
+    {
+        bool result = true;
+        return result;
+    }
+
+    /// <summary>
+    /// grid 주변 사방을 모두 우선 순위가 높은 후보지역에 추가흔 ㄴ함수
+    /// </summary>
+    /// <param name="grid">중심 위치</param>
+    private void AddHighFromNeighbors(Vector2Int grid)
+    {
+        Util.Shuffle(neighbors);    // 다양성을 위해 한번 섞기
+        foreach(Vector2Int neighbor in neighbors)
+        {
+            Vector2Int pos = grid + neighbor;
+            if( Board.IsInBoard(pos) && opponent.Board.IsAttackable(pos))   // 보드 안이고 공격 가능할 때만 추가
+            {
+                AddHigh(Board.GridToIndex(pos));
+            }
+        }
+    }
+
+    /// <summary>
+    /// 높은 우선 순위 목록에서 제거하는 함수
+    /// </summary>
+    /// <param name="index">제거할 인덱스</param>
+    private void RemoveHigh(int index)
+    {
+        if(attackHighIndeices.Contains(index))  // 있으면
+        {
+            attackHighIndeices.Remove(index);   // 제거한다.
+        }
     }
 
     // 함선 배치용 함수 ----------------------------------------------------------------------------

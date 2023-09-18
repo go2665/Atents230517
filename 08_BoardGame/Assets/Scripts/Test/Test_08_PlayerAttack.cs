@@ -37,10 +37,12 @@ public class Test_08_PlayerAttack : TestBase
     protected override void OnEnable()
     {
         base.OnEnable();
+        inputActions.Test.R_Click.performed += OnR_Click;
     }
 
     protected override void OnDisable()
     {
+        inputActions.Test.R_Click.performed -= OnR_Click;
         base.OnDisable();
     }
 
@@ -51,6 +53,11 @@ public class Test_08_PlayerAttack : TestBase
         Vector3 world = Camera.main.ScreenToWorldPoint(screen);
 
         user.Attack(world);
+    }
+
+    private void OnR_Click(InputAction.CallbackContext context)
+    {
+        user.AutoAttack();
     }
 
 }
