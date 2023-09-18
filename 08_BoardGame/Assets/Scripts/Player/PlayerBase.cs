@@ -100,7 +100,8 @@ public class PlayerBase : MonoBehaviour
     /// <param name="attackGridPos">공격하는 위치</param>
     public void Attack(Vector2Int attackGridPos)
     {
-
+        Debug.Log($"{gameObject.name}가 ({attackGridPos.x},{attackGridPos.y})를 공격했습니다.");
+        opponent.Board.OnAttacked(attackGridPos);
     }
 
     /// <summary>
@@ -126,7 +127,10 @@ public class PlayerBase : MonoBehaviour
     /// </summary>
     public void AutoAttack()
     {
-
+        // 1. 무작위로 공격(중복은 안되어야 함)
+        // 2. 공격이 성공했을 때 다음 공격은 공격 성공 위치의 위아래좌우 4방향 중 하나를 공격.
+        // 3. 공격이 한줄로 성공했을 때 다음 공격은 줄의 양끝 바깥 중 하나를 공격
+        // 4. 함선을 침몰시키면 우선순위가 높은 후보지역은 모두 제거한다.
     }
 
     // 함선 배치용 함수 ----------------------------------------------------------------------------
@@ -408,5 +412,14 @@ public class PlayerBase : MonoBehaviour
     public void Clear()
     {
 
+    }
+
+    /// <summary>
+    /// 테스트용 함수
+    /// </summary>
+    /// <param name="player"></param>
+    public void Test_SetOpponent(PlayerBase player)
+    {
+        opponent = player;
     }
 }
