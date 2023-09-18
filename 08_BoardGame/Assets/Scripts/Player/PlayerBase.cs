@@ -52,8 +52,25 @@ public class PlayerBase : MonoBehaviour
     public Action<PlayerBase> onDefeat;
 
 
+    protected virtual void Awake()
+    {
+        board = GetComponentInChildren<Board>();
+    }
+
+    protected virtual void Start()
+    {
+        int shipTypeCount = ShipManager.Inst.ShipTypeCount;
+        ships = new Ship[shipTypeCount];
+        for(int i = 0; i < shipTypeCount; i++)
+        {
+            ShipType shipType = (ShipType)(i + 1);
+            ships[i] = ShipManager.Inst.MakeShip(shipType, transform);
+        }
+        remainShipCount = shipTypeCount;
+    }
+
     // 턴 관리용 함수 ------------------------------------------------------------------------------
-    
+
     /// <summary>
     /// 턴이 시작될 때 플레이어가 처리해야 할 일을 수행하는 함수
     /// </summary>
@@ -113,7 +130,7 @@ public class PlayerBase : MonoBehaviour
     /// <summary>
     /// 자동으로 이 플레이어의 보드에 함선을 배치하는 함수
     /// </summary>
-    /// <param name="isShowShips"></param>
+    /// <param name="isShowShips">함선배치 후 보이게 할 것이면 true, 아니면 false</param>
     public void AutoShipDeployment(bool isShowShips)
     {
 
@@ -157,6 +174,16 @@ public class PlayerBase : MonoBehaviour
     }
 
     // 기타 ---------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// 입력 받은 종류의 함선을 리턴하는 함수
+    /// </summary>
+    /// <param name="shipType">리턴할 함선 종류</param>
+    /// <returns>shipType이 None이면 null 리턴, 그 외는 함선에 맞는 참조 리턴</returns>
+    public Ship GetShip(ShipType shipType)
+    {
+        return (shipType != ShipType.None) ? ships[(int)shipType - 1] : null;
+    }
     
     /// <summary>
     /// 초기화 함수. 게임 시작 직전 상태로 변경
