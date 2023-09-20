@@ -401,4 +401,30 @@ public class Board : MonoBehaviour
     {
         return IsInBoard(grid.x, grid.y);
     }
+
+    /// <summary>
+    /// 특정한 위치가 공격 성공한 위치인지 확인하는 함수
+    /// </summary>
+    /// <param name="grid">확인할 위치</param>
+    /// <returns>true면 공격이 성공한 위치, false면 실패</returns>
+    public bool IsAttackSuccessPosition(Vector2Int grid)
+    {
+        int index = GridToIndex(grid);
+
+        // 보드 안에 있는 위치 && 공격했던 위치 && 배가 있는 위치
+        return index != NOT_VALID_INDEX && isAttacked[index] && (shipInfo[index] != ShipType.None);
+    }
+
+    /// <summary>
+    /// 특정한 위치가 공격 실패한 위치인지 확인하는 함수
+    /// </summary>
+    /// <param name="grid">확인할 위치</param>
+    /// <returns>true면 공격이 실패한 위치, false면 성공한 위치</returns>
+    public bool IsAttackFailPosition(Vector2Int grid)
+    {
+        int index = GridToIndex(grid);
+
+        // 보드 안에 있는 위치 && 공격했던 위치 && 배가 없는 위치
+        return index != NOT_VALID_INDEX && isAttacked[index] && (shipInfo[index] == ShipType.None);
+    }
 }

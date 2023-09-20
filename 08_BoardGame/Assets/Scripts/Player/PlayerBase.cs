@@ -37,12 +37,12 @@ public class PlayerBase : MonoBehaviour
     /// <summary>
     /// 일반 공격 후보 인덱스
     /// </summary>
-    List<int> attackIndeices;
+    List<int> attackIndices;
 
     /// <summary>
     /// 우선 순위가 높은 공격 후보 인덱스
     /// </summary>
-    List<int> attackHighIndeices;
+    List<int> attackHighIndices;
 
     /// <summary>
     /// 마지막으로 공격을 성공한 위치
@@ -105,10 +105,10 @@ public class PlayerBase : MonoBehaviour
             temp[i] = i;        // 순서대로 0~99까지 채우기
         }
         Util.Shuffle(temp);     // 채운것 섞기
-        attackIndeices = new List<int>(temp);   // 섞은 것을 기준으로 리스트만들기
+        attackIndices = new List<int>(temp);   // 섞은 것을 기준으로 리스트만들기
 
         // 우선 순위가 높은 공격 후보지역 만들기(비어있음)
-        attackHighIndeices = new List<int>(10);
+        attackHighIndices = new List<int>(10);
 
         // 공격 관련 변수(이전에 공격이 성공한 적 없다고 표시)
         lastAttackSuccessPosition = NOT_SUCCESS;
@@ -162,6 +162,10 @@ public class PlayerBase : MonoBehaviour
         {
             lastAttackSuccessPosition = NOT_SUCCESS;
         }
+
+        int attackIndex = Board.GridToIndex(attackGridPos);
+        RemoveHigh(attackIndex);            // 공격한 위치는 더 이상 후보지역이 아님
+        attackIndices.Remove(attackIndex);
     }
 
     /// <summary>
@@ -195,16 +199,16 @@ public class PlayerBase : MonoBehaviour
         // 4. 함선을 침몰시키면 우선순위가 높은 후보지역은 모두 제거한다.
 
         int target;
-        if( attackHighIndeices.Count > 0 )  // 우선 순위 높은 후보가 있는지 확인
+        if( attackHighIndices.Count > 0 )  // 우선 순위 높은 후보가 있는지 확인
         {
-            target = attackHighIndeices[0]; // 우선 순위가 높은 후보가 있으면 첫번째것 사용
+            target = attackHighIndices[0]; // 우선 순위가 높은 후보가 있으면 첫번째것 사용
             RemoveHigh(target);             // 높은 우선 순위 목록에서 제거
-            attackIndeices.Remove(target);  // 일반 우선 순위 목록에서 제거
+            attackIndices.Remove(target);  // 일반 우선 순위 목록에서 제거
         }
         else
         {
-            target = attackIndeices[0];     // 일반 우선 순위 목록의 첫번째 것 사용.
-            attackIndeices.RemoveAt(0);     // 일반 우선 순위 목록에서 제거
+            target = attackIndices[0];     // 일반 우선 순위 목록의 첫번째 것 사용.
+            attackIndices.RemoveAt(0);     // 일반 우선 순위 목록에서 제거
         }
 
         Attack(target);
@@ -216,9 +220,9 @@ public class PlayerBase : MonoBehaviour
     /// <param name="index">추가할 인덱스</param>
     private void AddHigh(int index)
     {
-        if( !attackHighIndeices.Contains(index) )   // 안들어 있을 때만 추가
+        if( !attackHighIndices.Contains(index) )   // 안들어 있을 때만 추가
         {
-            attackHighIndeices.Insert(0, index);    // 항상 앞에 추가(새로 추가되는 위치가 성공 확률이 더 높아보임)
+            attackHighIndices.Insert(0, index);    // 항상 앞에 추가(새로 추가되는 위치가 성공 확률이 더 높아보임)
         }
     }
 
@@ -229,11 +233,116 @@ public class PlayerBase : MonoBehaviour
     /// <param name="last">이전에 공격한 위치</param>
     private void AddHighFromTwoPoint(Vector2Int now, Vector2Int last)
     {
+        if(InSuccessLine(last, now, true))
+        {
+            // 가로 방향으로 붙어있는 한 줄이다. ((연속으로 공격이 성공 && 붙어있다) == 같은배다)
 
+            // 같은 가로선 상에 있지 않은 높은 후보지역 모두 제거
+            Vector2Int grid;
+            List<int> dels = new List<int>();
+            foreach(var index in attackHighIndices)
+            {
+                grid = Board.IndexToGrid(index);
+                if(grid.y != now.y)
+                {
+                    dels.Add(index);    // foreach안에서 컬랙션 노드를 제거할 수 없다.
+                }                    
+            }
+            foreach(var index in dels)  
+            {
+                RemoveHigh(index);      // 따로 제거
+            }
+
+            // now에서 왼쪽 오른쪽으로 이동하며 양끝을 찾아 높은 후보지역에 추가
+            grid = now;
+            for(int i = now.x - 1; i>-1; i--)   // i는 now의 왼쪽칸에서 보드 끝(0)까지 진행
+            {
+                grid.x = i;
+                if(!Board.IsInBoard(grid))                      // 우선 보드 안쪽
+                    break;
+                if (opponent.Board.IsAttackFailPosition(grid))  // 공격실패가 아니여야 함
+                    break;
+                if(opponent.Board.IsAttackable(grid))           // 공격 가능한 지점이여야 한다.
+                {
+                    AddHigh(Board.GridToIndex(grid));           // 높은 후보지역에 추가
+                    break;
+                }
+            }
+
+            for (int i = now.x + 1; i < Board.BoardSize; i++)   // i는 now의 오른쪽칸에서 보드 끝(Board.BoardSize)까지 진행
+            {
+                grid.x = i;
+                if (!Board.IsInBoard(grid))                     // 우선 보드 안쪽
+                    break;
+                if (opponent.Board.IsAttackFailPosition(grid))  // 공격실패가 아니여야 함
+                    break;
+                if (opponent.Board.IsAttackable(grid))          // 공격 가능한 지점이여야 한다.
+                {
+                    AddHigh(Board.GridToIndex(grid));           // 높은 후보지역에 추가
+                    break;
+                }
+            }
+
+        }
+        else if(InSuccessLine(last, now, false))
+        {
+            // 세로 방향으로 붙어있는 한 줄이다. ((연속으로 공격이 성공 && 붙어있다) == 같은배다)
+
+            // 같은 세로선 상에 있지 않은 높은 후보지역 모두 제거
+            Vector2Int grid;
+            List<int> dels = new List<int>();
+            foreach (var index in attackHighIndices)
+            {
+                grid = Board.IndexToGrid(index);
+                if (grid.x != now.x)
+                {
+                    dels.Add(index);    // foreach안에서 컬랙션 노드를 제거할 수 없다.
+                }
+            }
+            foreach (var index in dels)
+            {
+                RemoveHigh(index);      // 따로 제거
+            }
+
+            // now에서 아래쪽 위쪽으로 이동하며 양끝을 찾아 높은 후보지역에 추가
+            grid = now;
+            for (int i = now.y - 1; i > -1; i--)   // i는 now의 왼쪽칸에서 보드 끝(0)까지 진행
+            {
+                grid.y = i;
+                if (!Board.IsInBoard(grid))                      // 우선 보드 안쪽
+                    break;
+                if (opponent.Board.IsAttackFailPosition(grid))  // 공격실패가 아니여야 함
+                    break;
+                if (opponent.Board.IsAttackable(grid))           // 공격 가능한 지점이여야 한다.
+                {
+                    AddHigh(Board.GridToIndex(grid));           // 높은 후보지역에 추가
+                    break;
+                }
+            }
+
+            for (int i = now.y + 1; i < Board.BoardSize; i++)   // i는 now의 오른쪽칸에서 보드 끝(Board.BoardSize)까지 진행
+            {
+                grid.y = i;
+                if (!Board.IsInBoard(grid))                     // 우선 보드 안쪽
+                    break;
+                if (opponent.Board.IsAttackFailPosition(grid))  // 공격실패가 아니여야 함
+                    break;
+                if (opponent.Board.IsAttackable(grid))          // 공격 가능한 지점이여야 한다.
+                {
+                    AddHigh(Board.GridToIndex(grid));           // 높은 후보지역에 추가
+                    break;
+                }
+            }
+        }
+        else
+        {
+            // 같은 줄이 아니다 == 다른 배다
+            AddHighFromNeighbors(now);  // 다른 배니까 주변 지역 모두 추가
+        }
     }
 
     /// <summary>
-    /// start에서 end 한칸 앞까지 모두 공격 성공이었는지 체크하는 함수
+    /// start에서 end까지 모두 공격 성공이었는지 체크하는 함수
     /// </summary>
     /// <param name="start">확인 시작점</param>
     /// <param name="end">확인 종료지점</param>
@@ -241,7 +350,69 @@ public class PlayerBase : MonoBehaviour
     /// <returns>true면 같은 줄이고 그 사이는 모두 공격 성공, false면 다른 줄이거나 중간에 공격 실패가 있다.</returns>
     private bool InSuccessLine(Vector2Int start, Vector2Int end, bool isHorizontal)
     {
-        bool result = true;
+        bool result = true;         // 함수 최종 결과값
+        Vector2Int pos = start;     // start에서 end까지 순차적으로 위치를 저장할 임시 변수
+        int dir = 1;                // 진행방향이 정방향인지 역방향인지 표시하는 변수(1 or -1)
+
+        if(isHorizontal)
+        {
+            // 가로 방향의 선
+            if( start.y == end.y )      // y가 같아야 가로
+            {
+                if( start.x > end.x )   // 정방향인지 역방향인지 확인
+                {
+                    dir = -1;           // start가 end보다 크면 역방향
+                }
+
+                start.x *= dir;         // for문에서 비교를 할 때 공통으로 처리하기 위해 설정
+                end.x *= dir;
+                end.x++;                // end 위치까지 확인하기 위해 1더함
+
+                for (int i = start.x; i < end.x; i++)   // start에서 end로 i가 증가
+                {
+                    pos.x = i * dir;    // 이미 변수 갱신(dir이 -1일 때는 다시 곱해서 뒤집기)
+                    if (!opponent.Board.IsAttackSuccessPosition(pos))   // 공격이 성공한 지점인지 확인
+                    {
+                        result = false; // 하나라도 실패했다면 결과는 false
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                result = false;         // y가 다르면 가로로 된 직선이 아니다. 그래서 실패
+            }
+        }
+        else
+        {
+            // 세로 방향의 선
+            if (start.x == end.x)       // x가 같아야 세로
+            {
+                if (start.y > end.y)    // 역방향인지 확인
+                {
+                    dir = -1;
+                }
+
+                start.y *= dir;         // for문에서 비교를 할 때 공통으로 처리하기 위해 설정
+                end.y *= dir;
+                end.y++;                // end 위치까지 확인하기 위해 1더함
+
+                for (int i = start.y; i < end.y; i ++)  // start에서 end로 i가 증가
+                {
+                    pos.y = i * dir;                                    // 이미 변수 갱신(dir이 -1일 때는 다시 곱해서 뒤집기)
+                    if (!opponent.Board.IsAttackSuccessPosition(pos))   // 공격이 성공한 지점인지 확인
+                    {
+                        result = false; // 하나라도 실패했다면 결과는 false
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                result = false;
+            }
+        }
+
         return result;
     }
 
@@ -268,9 +439,9 @@ public class PlayerBase : MonoBehaviour
     /// <param name="index">제거할 인덱스</param>
     private void RemoveHigh(int index)
     {
-        if(attackHighIndeices.Contains(index))  // 있으면
+        if(attackHighIndices.Contains(index))  // 있으면
         {
-            attackHighIndeices.Remove(index);   // 제거한다.
+            attackHighIndices.Remove(index);   // 제거한다.
         }
     }
 
@@ -562,5 +733,10 @@ public class PlayerBase : MonoBehaviour
     public void Test_SetOpponent(PlayerBase player)
     {
         opponent = player;
+    }
+
+    public bool Test_InSuccessLine(Vector2Int start, Vector2Int end, bool isHorizontal)
+    {
+        return InSuccessLine(start, end, isHorizontal);
     }
 }

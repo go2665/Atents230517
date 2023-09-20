@@ -55,7 +55,7 @@ public class Test_08_PlayerAttack : TestBase
         user.Attack(world);
     }
 
-    private void OnR_Click(InputAction.CallbackContext context)
+    protected virtual void OnR_Click(InputAction.CallbackContext context)
     {
         user.AutoAttack();
     }
