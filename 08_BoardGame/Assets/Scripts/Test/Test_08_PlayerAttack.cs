@@ -15,7 +15,7 @@ public class Test_08_PlayerAttack : TestBase
     Board userBoard;
     Board enemyBoard;
 
-    private void Start()
+    protected virtual void Start()
     {
         reset.onClick.AddListener(enemy.UndoAllShipDeployment);
         random.onClick.AddListener(() => enemy.AutoShipDeployment(true));
