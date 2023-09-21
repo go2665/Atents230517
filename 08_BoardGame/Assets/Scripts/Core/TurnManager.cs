@@ -8,12 +8,13 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>
     /// 현재 턴 번호
     /// </summary>
-    int turnNumber = 0;
+    int turnNumber = 1;
 
     /// <summary>
     /// 한턴이 타임아웃 되는데 걸리는 시간
     /// </summary>
-    public float turnDuration = 5.0f;
+    const float turnDuration = 5.0f;
+    public float TurnDuration => turnDuration;
 
     /// <summary>
     /// 타임 아웃이 될 때까지 남은 시간
@@ -33,7 +34,7 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>
     /// 현재 턴 진행 상태
     /// </summary>
-    TurnProcessState state = TurnProcessState.BothDone;
+    TurnProcessState state = TurnProcessState.None;
 
     /// <summary>
     /// 턴이 진행중인지를 표시하는 변수
@@ -43,12 +44,17 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>
     /// 턴이 시작될 때 실행될 델리게이트(파라메터:턴 번호)
     /// </summary>
-    Action<int> onTurnStart;
+    public Action<int> onTurnStart;
 
     /// <summary>
     /// 턴이 종료될 때 실행될 델리게이트
     /// </summary>
-    Action onTurnEnd;
+    public Action onTurnEnd;
+
+    /// <summary>
+    /// 턴 종료 처리중인지 확인하는 변수
+    /// </summary>
+    bool isEndProcess = false;
 
     /// <summary>
     /// 씬이 로드되었을 때 실행될 함수
@@ -56,8 +62,8 @@ public class TurnManager : Singleton<TurnManager>
     protected override void OnInitialize()
     {
         turnNumber = 0;                     // 각종 데이터 초기화
-        turnRemainTime = 0.0f;
-        state = TurnProcessState.BothDone;
+        turnRemainTime = turnDuration;
+        state = TurnProcessState.None;
         isTurnPlay = true;
     }
 
@@ -66,13 +72,16 @@ public class TurnManager : Singleton<TurnManager>
     /// </summary>
     void OnTurnStart()
     {
-        turnNumber++;   // 턴 번호 증가
+        if(isTurnPlay)
+        {
+            turnNumber++;   // 턴 번호 증가
 
-        Debug.Log($"{turnNumber}턴 시작");
-        state = TurnProcessState.None;      // 턴 진행 상황 리셋
-        turnRemainTime = turnDuration;      // 턴 진행 시간 리셋
+            Debug.Log($"{turnNumber}턴 시작");
+            state = TurnProcessState.None;      // 턴 진행 상황 리셋
+            turnRemainTime = turnDuration;      // 턴 진행 시간 리셋
 
-        onTurnStart?.Invoke(turnNumber);    // 턴이 시작되었음을 알림
+            onTurnStart?.Invoke(turnNumber);    // 턴이 시작되었음을 알림
+        }
     }
 
     /// <summary>
@@ -80,10 +89,15 @@ public class TurnManager : Singleton<TurnManager>
     /// </summary>
     void OnTurnEnd()
     {
-        onTurnEnd?.Invoke();                // 턴이 종료되었음을 알림
-        Debug.Log($"{turnNumber}턴 종료");
+        if (isTurnPlay)
+        {
+            isEndProcess = true;                // 턴 종료 처리가 시작되었다고 표시
+            onTurnEnd?.Invoke();                // 턴이 종료되었음을 알림
+            Debug.Log($"{turnNumber}턴 종료");
 
-        OnTurnStart();                      // 다음 턴 시작
+            isEndProcess = false;               // 턴 종료 처리가 끝났다고 표시
+            OnTurnStart();                      // 다음 턴 시작
+        }
     }
 
     private void Update()
@@ -100,11 +114,14 @@ public class TurnManager : Singleton<TurnManager>
     /// </summary>
     public void CheckTurnEnd()
     {
-        state++;    // 다음 단계로 상태 변경
-        if(state >= TurnProcessState.BothDone)
+        if( !isEndProcess )     // 턴 종료 처리 중에는 체크하지 않음
         {
-            OnTurnEnd();    // 둘 다 행동이 끝나면 턴 종료
-        }
+            state++;            // 다음 단계로 상태 변경
+            if (state >= TurnProcessState.BothDone)
+            {
+                OnTurnEnd();    // 둘 다 행동이 끝나면 턴 종료
+            }
+        }        
     }
 
     /// <summary>

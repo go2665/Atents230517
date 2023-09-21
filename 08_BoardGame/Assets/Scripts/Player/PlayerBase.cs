@@ -134,6 +134,16 @@ public class PlayerBase : MonoBehaviour
 
         // 공격 관련 변수(이전에 공격이 성공한 적 없다고 표시)
         lastAttackSuccessPosition = NOT_SUCCESS;
+
+        // 행동이 완료되면 턴 진행 체크
+        onActionEnd += TurnManager.Inst.CheckTurnEnd;
+
+        // 패배하면 턴 메니저를 정지 시키기
+        onDefeat += (_) => TurnManager.Inst.TurnStop();
+
+        // 턴 시작 초기화 함수와 종로 함수 연결
+        TurnManager.Inst.onTurnStart += OnPlayerTurnStart;
+        TurnManager.Inst.onTurnEnd += OnPlayerTurnEnd;
     }
 
     // 턴 관리용 함수 ------------------------------------------------------------------------------
@@ -142,7 +152,7 @@ public class PlayerBase : MonoBehaviour
     /// 턴이 시작될 때 플레이어가 처리해야 할 일을 수행하는 함수
     /// </summary>
     /// <param name="_">현재 몇번째 턴인지. 사용안함.</param>
-    public virtual void OnPlayerTurnStart(int _)
+    protected virtual void OnPlayerTurnStart(int _)
     {
         isActionDone = false;
     }
@@ -150,9 +160,12 @@ public class PlayerBase : MonoBehaviour
     /// <summary>
     /// 턴이 종료될 때 플레이어가 처리해야 할 일을 수행하는 함수
     /// </summary>
-    public virtual void OnPlayerTurnEnd()
+    protected virtual void OnPlayerTurnEnd()
     {
-        // 기능없음
+        if(!IsActionDone)
+        {
+            AutoAttack();
+        }
     }
 
     // 공격 관련 함수 ------------------------------------------------------------------------------
@@ -163,42 +176,51 @@ public class PlayerBase : MonoBehaviour
     /// <param name="attackGridPos">공격하는 위치</param>
     public void Attack(Vector2Int attackGridPos)
     {
-        Debug.Log($"{gameObject.name}가 ({attackGridPos.x},{attackGridPos.y})를 공격했습니다.");
-        bool result = opponent.Board.OnAttacked(attackGridPos);     // 상대방 보드에 공격
-        if(result)  // 공격 성공
+        if (!IsActionDone)  // 행동을 안했을 때만 처리
         {
-            if(opponentShipDestroyed)
+            if (Board.IsInBoard(attackGridPos)) // 보드 안에 있을 때만 처리
             {
-                // 이번 공격으로 적의 함선이 침몰했으면
-                RemoveAllHigh();                // 후보지역 전부 제거
-                opponentShipDestroyed = false;  // 표시 리셋
-            }
-            else
-            {
-                // 이번 공격으로 적의 함선이 침몰하지 않은 경우 
-
-                // 이전 턴의 공격 성공 여부 확인
-                if( lastAttackSuccessPosition != NOT_SUCCESS )
+                Debug.Log($"{gameObject.name}가 ({attackGridPos.x},{attackGridPos.y})를 공격했습니다.");
+                bool result = opponent.Board.OnAttacked(attackGridPos);     // 상대방 보드에 공격
+                if (result)  // 공격 성공
                 {
-                    // 한턴 앞의 공격이 성공했다.
-                    AddHighFromTwoPoint(attackGridPos, lastAttackSuccessPosition);
+                    if (opponentShipDestroyed)
+                    {
+                        // 이번 공격으로 적의 함선이 침몰했으면
+                        RemoveAllHigh();                // 후보지역 전부 제거
+                        opponentShipDestroyed = false;  // 표시 리셋
+                    }
+                    else
+                    {
+                        // 이번 공격으로 적의 함선이 침몰하지 않은 경우 
+
+                        // 이전 턴의 공격 성공 여부 확인
+                        if (lastAttackSuccessPosition != NOT_SUCCESS)
+                        {
+                            // 한턴 앞의 공격이 성공했다.
+                            AddHighFromTwoPoint(attackGridPos, lastAttackSuccessPosition);
+                        }
+                        else
+                        {
+                            // 처음 성공한 공격이다.
+                            AddHighFromNeighbors(attackGridPos);
+                        }
+                        lastAttackSuccessPosition = attackGridPos;  // 공격 성공했다고 표시
+                    }
                 }
                 else
                 {
-                    // 처음 성공한 공격이다.
-                    AddHighFromNeighbors(attackGridPos);
+                    lastAttackSuccessPosition = NOT_SUCCESS;
                 }
-                lastAttackSuccessPosition = attackGridPos;  // 공격 성공했다고 표시
-            }
-        }
-        else
-        {
-            lastAttackSuccessPosition = NOT_SUCCESS;
-        }
 
-        int attackIndex = Board.GridToIndex(attackGridPos);
-        RemoveHigh(attackIndex);            // 공격한 위치는 더 이상 후보지역이 아님
-        attackIndices.Remove(attackIndex);
+                int attackIndex = Board.GridToIndex(attackGridPos);
+                RemoveHigh(attackIndex);            // 공격한 위치는 더 이상 후보지역이 아님
+                attackIndices.Remove(attackIndex);
+
+                isActionDone = true;    // 행동 완료했다고 표시
+                onActionEnd?.Invoke();  // 행동 완료했다고 알림
+            }  
+        }
     }
 
     /// <summary>
@@ -224,27 +246,30 @@ public class PlayerBase : MonoBehaviour
     /// </summary>
     public void AutoAttack()
     {
-        // 확인할 순서 : 한줄로 공격이 성공했나? -> 이전 공격이 성공했나? -> 무작위로 공격
-        // 1. 무작위로 공격(중복은 안되어야 함)
-        // 2. 공격이 성공했을 때 다음 공격은 공격 성공 위치의 위아래좌우 4방향 중 하나를 공격.
-        // 3. 공격이 한줄로 성공했을 때 다음 공격은 줄의 양끝 바깥 중 하나를 공격
-
-        // 4. 함선을 침몰시키면 우선순위가 높은 후보지역은 모두 제거한다.
-
-        int target;
-        if( attackHighIndices.Count > 0 )  // 우선 순위 높은 후보가 있는지 확인
+        if (!IsActionDone)
         {
-            target = attackHighIndices[0]; // 우선 순위가 높은 후보가 있으면 첫번째것 사용
-            RemoveHigh(target);             // 높은 우선 순위 목록에서 제거
-            attackIndices.Remove(target);  // 일반 우선 순위 목록에서 제거
-        }
-        else
-        {
-            target = attackIndices[0];     // 일반 우선 순위 목록의 첫번째 것 사용.
-            attackIndices.RemoveAt(0);     // 일반 우선 순위 목록에서 제거
-        }
+            // 확인할 순서 : 한줄로 공격이 성공했나? -> 이전 공격이 성공했나? -> 무작위로 공격
+            // 1. 무작위로 공격(중복은 안되어야 함)
+            // 2. 공격이 성공했을 때 다음 공격은 공격 성공 위치의 위아래좌우 4방향 중 하나를 공격.
+            // 3. 공격이 한줄로 성공했을 때 다음 공격은 줄의 양끝 바깥 중 하나를 공격
 
-        Attack(target);
+            // 4. 함선을 침몰시키면 우선순위가 높은 후보지역은 모두 제거한다.
+
+            int target;
+            if (attackHighIndices.Count > 0)  // 우선 순위 높은 후보가 있는지 확인
+            {
+                target = attackHighIndices[0]; // 우선 순위가 높은 후보가 있으면 첫번째것 사용
+                RemoveHigh(target);             // 높은 우선 순위 목록에서 제거
+                attackIndices.Remove(target);  // 일반 우선 순위 목록에서 제거
+            }
+            else
+            {
+                target = attackIndices[0];     // 일반 우선 순위 목록의 첫번째 것 사용.
+                attackIndices.RemoveAt(0);     // 일반 우선 순위 목록에서 제거
+            }
+
+            Attack(target);
+        }
     }
 
     /// <summary>
@@ -767,7 +792,7 @@ public class PlayerBase : MonoBehaviour
     /// <summary>
     /// 모든 배가 침몰했을 때 실행될 함수
     /// </summary>
-    private void OnDefeat()
+    protected virtual void OnDefeat()
     {
         Debug.Log($"[{this.gameObject.name}] 패배");
         onDefeat?.Invoke(this);
@@ -793,6 +818,7 @@ public class PlayerBase : MonoBehaviour
         remainShipCount = ShipManager.Inst.ShipTypeCount;
 
         opponentShipDestroyed = false;
+        isActionDone = false;
 
         Board.ResetBoard(ships);
         RemoveAllHigh();

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Test_09_Turn : Test_08_PlayerAttack
 {
@@ -9,6 +10,11 @@ public class Test_09_Turn : Test_08_PlayerAttack
         base.Start();
 
         user.AutoShipDeployment(true);
+    }
+
+    protected override void OnR_Click(InputAction.CallbackContext context)
+    {
+        enemy.AutoAttack();
     }
 }
 
