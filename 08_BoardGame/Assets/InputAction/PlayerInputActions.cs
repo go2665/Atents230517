@@ -210,6 +210,74 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Player"",
+            ""id"": ""db3374a0-09b7-46c4-9e31-2249b84328bd"",
+            ""actions"": [
+                {
+                    ""name"": ""MouseClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""3281b6c9-ee21-481b-9e5e-afe61a05872e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseMove"",
+                    ""type"": ""Value"",
+                    ""id"": ""5fb64562-f6ec-4b09-a1a7-9498ca7d3027"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MouseWheel"",
+                    ""type"": ""Value"",
+                    ""id"": ""2757fa16-5664-4967-b3a3-da76f8bf4668"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""4ac17c2a-35e6-4c67-95e7-239fe3394c7e"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KM"",
+                    ""action"": ""MouseClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fa94d28b-5ef5-48a6-b5b1-0650d2c1f8b6"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KM"",
+                    ""action"": ""MouseMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c0585d20-c35d-463c-9579-3c9bf70a6bde"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KM"",
+                    ""action"": ""MouseWheel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -242,6 +310,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Test_MouseMove = m_Test.FindAction("MouseMove", throwIfNotFound: true);
         m_Test_R_Click = m_Test.FindAction("R_Click", throwIfNotFound: true);
         m_Test_MouseWheel = m_Test.FindAction("MouseWheel", throwIfNotFound: true);
+        // Player
+        m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
+        m_Player_MouseClick = m_Player.FindAction("MouseClick", throwIfNotFound: true);
+        m_Player_MouseMove = m_Player.FindAction("MouseMove", throwIfNotFound: true);
+        m_Player_MouseWheel = m_Player.FindAction("MouseWheel", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -409,6 +482,68 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public TestActions @Test => new TestActions(this);
+
+    // Player
+    private readonly InputActionMap m_Player;
+    private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
+    private readonly InputAction m_Player_MouseClick;
+    private readonly InputAction m_Player_MouseMove;
+    private readonly InputAction m_Player_MouseWheel;
+    public struct PlayerActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public PlayerActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @MouseClick => m_Wrapper.m_Player_MouseClick;
+        public InputAction @MouseMove => m_Wrapper.m_Player_MouseMove;
+        public InputAction @MouseWheel => m_Wrapper.m_Player_MouseWheel;
+        public InputActionMap Get() { return m_Wrapper.m_Player; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
+        public void AddCallbacks(IPlayerActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
+            @MouseClick.started += instance.OnMouseClick;
+            @MouseClick.performed += instance.OnMouseClick;
+            @MouseClick.canceled += instance.OnMouseClick;
+            @MouseMove.started += instance.OnMouseMove;
+            @MouseMove.performed += instance.OnMouseMove;
+            @MouseMove.canceled += instance.OnMouseMove;
+            @MouseWheel.started += instance.OnMouseWheel;
+            @MouseWheel.performed += instance.OnMouseWheel;
+            @MouseWheel.canceled += instance.OnMouseWheel;
+        }
+
+        private void UnregisterCallbacks(IPlayerActions instance)
+        {
+            @MouseClick.started -= instance.OnMouseClick;
+            @MouseClick.performed -= instance.OnMouseClick;
+            @MouseClick.canceled -= instance.OnMouseClick;
+            @MouseMove.started -= instance.OnMouseMove;
+            @MouseMove.performed -= instance.OnMouseMove;
+            @MouseMove.canceled -= instance.OnMouseMove;
+            @MouseWheel.started -= instance.OnMouseWheel;
+            @MouseWheel.performed -= instance.OnMouseWheel;
+            @MouseWheel.canceled -= instance.OnMouseWheel;
+        }
+
+        public void RemoveCallbacks(IPlayerActions instance)
+        {
+            if (m_Wrapper.m_PlayerActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IPlayerActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PlayerActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PlayerActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public PlayerActions @Player => new PlayerActions(this);
     private int m_KMSchemeIndex = -1;
     public InputControlScheme KMScheme
     {
@@ -428,6 +563,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnTestClick(InputAction.CallbackContext context);
         void OnMouseMove(InputAction.CallbackContext context);
         void OnR_Click(InputAction.CallbackContext context);
+        void OnMouseWheel(InputAction.CallbackContext context);
+    }
+    public interface IPlayerActions
+    {
+        void OnMouseClick(InputAction.CallbackContext context);
+        void OnMouseMove(InputAction.CallbackContext context);
         void OnMouseWheel(InputAction.CallbackContext context);
     }
 }

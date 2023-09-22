@@ -19,11 +19,31 @@ public class UserPlayer : PlayerBase
         }
     }
 
+    private GameState state;
+
     // 입력 관련 델리게이트 -------------------------------------------------------------------------
     // 상태별로 따로 처리(만약 null이면 그 상태에서 수행하는 일이 없다는 의미)
     Action<Vector2>[] onClick;
     Action<Vector2>[] onMouseMove;
     Action<float>[] onMouseWheel;
+
+    protected override void Start()
+    {
+        base.Start();
+        GameManager.Inst.onStateChange += OnStateChange;    // 반드시 GameManager.OnInitialize 이후에 실행되어야 한다.
+    }
+
+    // 상태 관련 함수들 ----------------------------------------------------------------------------
+
+    /// <summary>
+    /// 게임 상태가 변경되면 실행될 함수
+    /// </summary>
+    /// <param name="gameState">현재 게임 상태</param>
+    private void OnStateChange(GameState gameState)
+    {
+        state = gameState;
+    }
+
 
     // 함선 배치 씬용 입력 함수들 -------------------------------------------------------------------
     private void OnClick_ShipDeployment(Vector2 screen)
