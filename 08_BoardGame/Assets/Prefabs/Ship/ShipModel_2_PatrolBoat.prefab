@@ -67,5 +67,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShipModel_2_PatrolBoat
       objectReference: {fileID: 0}
+    - target: {fileID: 8261191007433803422, guid: 4922e127c339b9448ae4b27d80ec596b,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4922e127c339b9448ae4b27d80ec596b, type: 3}

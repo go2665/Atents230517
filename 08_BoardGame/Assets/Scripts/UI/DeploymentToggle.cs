@@ -10,7 +10,7 @@ public class DeploymentToggle : MonoBehaviour
 {
     Button button;
     Image image;
-    TextMeshProUGUI deployEnd;
+    Transform deployEnd;
 
     /// <summary>
     /// 선택되었을 때 버튼의 색상
@@ -105,12 +105,28 @@ public class DeploymentToggle : MonoBehaviour
         image = GetComponent<Image>();
         button = GetComponent<Button>();
         button.onClick.AddListener(OnClick);
-        deployEnd = GetComponentInChildren<TextMeshProUGUI>(true);
+        deployEnd = transform.GetChild(0);
     }
 
     private void Start()
     {
         player = GameManager.Inst.UserPlayer;
+
+        Ship ship = player.GetShip(shipType);
+        if(ship != null)
+        {
+            ship.onDeploy += (isDeploy) =>
+            {
+                if (isDeploy)
+                {
+                    State = DeployState.Deployed;
+                }
+                else
+                {
+                    State = DeployState.NotSelect;
+                }
+            };
+        }
     }
 
     /// <summary>
@@ -131,8 +147,7 @@ public class DeploymentToggle : MonoBehaviour
                 State = DeployState.NotSelect;
                 break;
             case DeployState.Deployed:
-                // 배치 취소 된 것 => 배 배치 취소하고 선택 해제
-                State = DeployState.NotSelect;
+                // 배치 취소 된 것 => 배 배치 취소하고 선택 해제                
                 player.UndoShipDeploy(shipType);        // 배 배치 해제
                 break;
         }
@@ -141,6 +156,7 @@ public class DeploymentToggle : MonoBehaviour
         // 1. 함선 배치 구현하기
         //   1.1 UserPlayer의 입력 델리게이트 연결 처리
         // 2. 함선 배치 취소하기
+        // 3. 버튼 표시 변경
     }
 
     /// <summary>
@@ -160,5 +176,10 @@ public class DeploymentToggle : MonoBehaviour
         {
             State = DeployState.NotSelect;
         }
+    }
+
+    public void Test_State(int index)
+    {
+        State = (DeployState)index;
     }
 }
