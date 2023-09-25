@@ -194,6 +194,6 @@ public class UserPlayer : PlayerBase
     /// <param name="shipType">배치를 취소할 함선</param>
     public void UndoShipDeploy(ShipType shipType)
     {
-
+        Board.UndoShipDeployment(ships[(int)shipType - 1]); // 보드를 이용해서 배치 취소
     }
 }

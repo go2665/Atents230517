@@ -151,12 +151,6 @@ public class DeploymentToggle : MonoBehaviour
                 player.UndoShipDeploy(shipType);        // 배 배치 해제
                 break;
         }
-
-        // 실습
-        // 1. 함선 배치 구현하기
-        //   1.1 UserPlayer의 입력 델리게이트 연결 처리
-        // 2. 함선 배치 취소하기
-        // 3. 버튼 표시 변경
     }
 
     /// <summary>
@@ -178,6 +172,7 @@ public class DeploymentToggle : MonoBehaviour
         }
     }
 
+    // 테스트용 코드 -------------------------------------------------------------------------------
     public void Test_State(int index)
     {
         State = (DeployState)index;
