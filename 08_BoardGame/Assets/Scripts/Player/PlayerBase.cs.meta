@@ -6,7 +6,7 @@ MonoImporter:
   defaultReferences:
   - highMarkPrefab: {fileID: 7635649027242730777, guid: 05b987f958b85d14ebb700696a7d0b80,
       type: 3}
-  executionOrder: 0
+  executionOrder: -5
   icon: {instanceID: 0}
   userData: 
   assetBundleName: 

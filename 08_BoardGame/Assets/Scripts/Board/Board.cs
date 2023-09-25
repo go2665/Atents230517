@@ -255,17 +255,23 @@ public class Board : MonoBehaviour
     /// 특정 위치에 배치된 배 정보를 리턴하는 함수
     /// </summary>
     /// <param name="grid">확인할 그리드 좌표</param>
-    /// <returns>해당 위치의 배 정보</returns>
+    /// <returns>해당 위치의 배 정보. 적합한 위치가 아니면 None</returns>
     public ShipType GetShipType(Vector2Int grid)
     {
-        return shipInfo[GridToIndex(grid)];
+        ShipType result = ShipType.None;
+        if( IsInBoard(grid) )
+        {
+            result = shipInfo[GridToIndex(grid)];
+        }
+
+        return result;
     }
 
     /// <summary>
     /// 특정 위치에 배치된 배 정보를 리턴하는 함수
     /// </summary>
     /// <param name="world">확인할 월드 좌표</param>
-    /// <returns>해당 위치의 배 정보</returns>
+    /// <returns>해당 위치의 배 정보. 적합한 위치가 아니면 None</returns>
     public ShipType GetShipType(Vector3 world)
     {
         return GetShipType(WorldToGrid(world));

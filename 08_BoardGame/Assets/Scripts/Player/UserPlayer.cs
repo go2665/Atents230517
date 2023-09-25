@@ -44,7 +44,30 @@ public class UserPlayer : PlayerBase
         }
     }
 
+    /// <summary>
+    /// 현재 게임 상태
+    /// </summary>
     private GameState state = GameState.Title;
+
+    /// <summary>
+    /// 모든 배가 배치되었는지 확인하는 프로퍼티
+    /// </summary>
+    public bool IsAllDeployed
+    {
+        get
+        {
+            bool result = true;
+            foreach (var ship in ships)
+            {
+                if (!ship.IsDeployed)
+                {
+                    result = false;     // 배가 하나라도 배치되지 않았으면 false 리턴
+                    break;
+                }
+            }
+            return result;
+        }
+    }
 
     // 입력 관련 델리게이트 -------------------------------------------------------------------------
     // 상태별로 따로 처리(만약 null이면 그 상태에서 수행하는 일이 없다는 의미)
@@ -113,14 +136,33 @@ public class UserPlayer : PlayerBase
         //Debug.Log($"ShipDeployment : Click ({screen.x},{screen.y})");
         Vector3 world = Camera.main.ScreenToWorldPoint(screen);
 
-        if (SelectedShip != null && board.ShipDeployment(SelectedShip, world))   // 선택된 배가 있을 때 우선 배치 시도
+        if (SelectedShip != null)   // 선택된 배가 있을 때
         {
-            Debug.Log("함선배치 성공");
-            SelectedShip = null;          // 배 선택 해제
+            if( board.ShipDeployment(SelectedShip, world) ) // 배치 시도
+            {
+                Debug.Log("함선배치 성공");
+                SelectedShip = null;          // 배 선택 해제
+            }
+            else
+            {
+                Debug.Log("배치에 실패했습니다.");
+            }
         }
         else
         {
-            Debug.Log("배치할 함선이 없거나 실패했습니다.");
+            // 선택된 배가 없을 때
+            if(Board.IsInBoard(world)) // 보드 안쪽을 클릭했으면
+            {
+                ShipType shipType = Board.GetShipType(world);   // 클릭한 위치에 있는 배 확인
+                if(shipType != ShipType.None)
+                {
+                    UndoShipDeploy(shipType);                   // 배가 있으면 배치 해제
+                }
+                else
+                {
+                    Debug.Log("배치할 함선이 없습니다.");
+                }
+            }
         }
     }
 
