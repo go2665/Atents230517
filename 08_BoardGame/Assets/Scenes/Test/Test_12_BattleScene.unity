@@ -258,6 +258,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 21132335}
   m_CullTransparentMesh: 1
+--- !u!114 &23973933 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6752246153494445106, guid: ab5c3986583e4a14ea7b88f2c911c29b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1857141771}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81a7866dfca0a7249829fedf367745b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &69622281
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -265,6 +277,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1725195664348763443, guid: 709f421f802a86d4584952bbcc54c255,
+        type: 3}
+      propertyPath: IsTestMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1725195664348763446, guid: 709f421f802a86d4584952bbcc54c255,
         type: 3}
       propertyPath: m_Name
@@ -2073,6 +2090,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1221894933}
   m_CullTransparentMesh: 1
+--- !u!114 &1226399291 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4222859850152244932, guid: 4451cd2ed789e3a4b8198d9b49f7b4b1,
+    type: 3}
+  m_PrefabInstance: {fileID: 663540360}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f542950830cd2840968f14f95a93bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1232154684
 GameObject:
   m_ObjectHideFlags: 0
@@ -2199,7 +2228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c2133a04d1554d48a6d825b52d7a2e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 0}
+  player: {fileID: 23973933}
 --- !u!1 &1471164041
 GameObject:
   m_ObjectHideFlags: 0
@@ -2775,7 +2804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c2133a04d1554d48a6d825b52d7a2e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 0}
+  player: {fileID: 1226399291}
 --- !u!1001 &1857141771
 PrefabInstance:
   m_ObjectHideFlags: 0
