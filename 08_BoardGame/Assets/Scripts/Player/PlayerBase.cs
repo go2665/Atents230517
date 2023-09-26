@@ -95,6 +95,8 @@ public class PlayerBase : MonoBehaviour
     /// </summary>
     public Action<PlayerBase> onDefeat;
 
+    bool isInitialized = false;
+
 
     protected virtual void Awake()
     {
@@ -105,48 +107,62 @@ public class PlayerBase : MonoBehaviour
 
     protected virtual void Start()
     {
-        // 배 생성
-        int shipTypeCount = ShipManager.Inst.ShipTypeCount;
-        ships = new Ship[shipTypeCount];
-        for(int i = 0; i < shipTypeCount; i++)
+        Initialize();
+    }
+
+    protected void Initialize()
+    {
+        if(!isInitialized)
         {
-            ShipType shipType = (ShipType)(i + 1);
-            ships[i] = ShipManager.Inst.MakeShip(shipType, transform);  // 배 종류별로 만들기
+            // 배 생성
+            int shipTypeCount = ShipManager.Inst.ShipTypeCount;
+            ships = new Ship[shipTypeCount];
+            for (int i = 0; i < shipTypeCount; i++)
+            {
+                ShipType shipType = (ShipType)(i + 1);
+                ships[i] = ShipManager.Inst.MakeShip(shipType, transform);  // 배 종류별로 만들기
 
-            ships[i].onSinking += OnShipDestroy;                // 함선이 침몰하면 OnShipDestroy 실행
+                ships[i].onSinking += OnShipDestroy;                // 함선이 침몰하면 OnShipDestroy 실행
 
-            board.onShipAttacked[shipType] = ships[i].OnHitted; // 배가 맞을 때마다 실행될 함수 등록
-        }
-        remainShipCount = shipTypeCount;                    // 배 갯수 설정
+                board.onShipAttacked[shipType] = ships[i].OnHitted; // 배가 맞을 때마다 실행될 함수 등록
+            }
+            remainShipCount = shipTypeCount;                    // 배 갯수 설정
 
-        // 일반 공격 후보 지역 만들기
-        int fullSize = Board.BoardSize * Board.BoardSize;
-        int[] temp = new int[fullSize];
-        for(int i=0;i<fullSize;i++)
-        {
-            temp[i] = i;        // 순서대로 0~99까지 채우기
-        }
-        Util.Shuffle(temp);     // 채운것 섞기
-        attackIndices = new List<int>(temp);   // 섞은 것을 기준으로 리스트만들기
+            // 보드 초기화
+            Board.ResetBoard(ships);
 
-        // 우선 순위가 높은 공격 후보지역 만들기(비어있음)
-        attackHighIndices = new List<int>(10);
+            // 일반 공격 후보 지역 만들기
+            int fullSize = Board.BoardSize * Board.BoardSize;
+            int[] temp = new int[fullSize];
+            for (int i = 0; i < fullSize; i++)
+            {
+                temp[i] = i;        // 순서대로 0~99까지 채우기
+            }
+            Util.Shuffle(temp);     // 채운것 섞기
+            attackIndices = new List<int>(temp);   // 섞은 것을 기준으로 리스트만들기
 
-        // 공격 관련 변수(이전에 공격이 성공한 적 없다고 표시)
-        lastAttackSuccessPosition = NOT_SUCCESS;
+            // 우선 순위가 높은 공격 후보지역 만들기(비어있음)
+            attackHighIndices = new List<int>(10);
 
-        // 전투 씬일 때만 턴매니저 사용
-        if(GameManager.Inst.GameState == GameState.Battle)
-        {
-            // 행동이 완료되면 턴 진행 체크
-            onActionEnd += TurnManager.Inst.CheckTurnEnd;
+            // 공격 관련 변수(이전에 공격이 성공한 적 없다고 표시)
+            lastAttackSuccessPosition = NOT_SUCCESS;
 
-            // 패배하면 턴 메니저를 정지 시키기
-            onDefeat += (_) => TurnManager.Inst.TurnStop();
+            // 전투 씬일 때만 턴매니저 사용
+            if (GameManager.Inst.GameState == GameState.Battle)
+            {
+                // 행동이 완료되면 턴 진행 체크
+                onActionEnd += TurnManager.Inst.CheckTurnEnd;
 
-            // 턴 시작 초기화 함수와 종로 함수 연결
-            TurnManager.Inst.onTurnStart += OnPlayerTurnStart;
-            TurnManager.Inst.onTurnEnd += OnPlayerTurnEnd;
+                // 패배하면 턴 메니저를 정지 시키기
+                onDefeat += (_) => TurnManager.Inst.TurnStop();
+
+                // 턴 시작 초기화 함수와 종로 함수 연결
+                TurnManager.Inst.onTurnStart += OnPlayerTurnStart;
+                TurnManager.Inst.onTurnEnd += OnPlayerTurnEnd;
+            }
+
+            OnPlayerTurnStart(0);
+            isInitialized = true;
         }
     }
 
@@ -826,6 +842,14 @@ public class PlayerBase : MonoBehaviour
 
         Board.ResetBoard(ships);
         RemoveAllHigh();
+    }
+
+    /// <summary>
+    /// 게임 상태가 변경되었을 때 실행되는 델리게이트에 연결될 함수
+    /// </summary>
+    /// <param name="state">변화된 상태</param>
+    public virtual void OnStateChange(GameState state)
+    {
     }
 
     /// <summary>

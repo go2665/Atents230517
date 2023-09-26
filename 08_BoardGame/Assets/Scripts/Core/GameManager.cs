@@ -44,6 +44,10 @@ public class GameManager : Singleton<GameManager>
     // 함선 배치 정보 저장 -------------------------------------------------------------------------
     ShipDeployData[] shipDeployDatas;
 
+
+    // 테스트용 ------------------------------------------------------------------------------------
+    public bool IsTestMode = true;
+
     // 함수들 --------------------------------------------------------------------------------------
     protected override void OnPreInitialize()
     {
@@ -57,6 +61,14 @@ public class GameManager : Singleton<GameManager>
         enemy = FindAnyObjectByType<EnemyPlayer>();
 
         onStateChange = null;
+        if(user != null )
+        {
+            onStateChange += user.OnStateChange;    // 순서가 답이 없음
+        }
+        if(enemy != null )
+        {
+            onStateChange += enemy.OnStateChange;
+        }
     }
 
     /// <summary>
@@ -64,15 +76,18 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     /// <param name="targetPlayer">배치 정보를 저장할 플레이어</param>
     /// <returns>true면 저장 성공, false면 저장 실패(배치되어있지 않은 배가 있다.)</returns>
-    public bool SaveShipDeployData(PlayerBase targetPlayer)
-    {
-        //모든 배가 배치되어있을 때만 저장
-        bool result = true;
-        shipDeployDatas = new ShipDeployData[targetPlayer.Ships.Length];
-        for(int i=0;i<shipDeployDatas.Length; i++)
+    public bool SaveShipDeployData(UserPlayer targetPlayer)
+    {        
+        bool result = false;
+        if( targetPlayer.IsAllDeployed)    //모든 배가 배치되어있을 때만 저장
         {
-            Ship ship = targetPlayer.Ships[i];
-            shipDeployDatas[i] = new ShipDeployData(ship.Direction, ship.Positions[0]);
+            shipDeployDatas = new ShipDeployData[targetPlayer.Ships.Length];
+            for(int i=0;i<shipDeployDatas.Length; i++)
+            {
+                Ship ship = targetPlayer.Ships[i];
+                shipDeployDatas[i] = new ShipDeployData(ship.Direction, ship.Positions[0]); // 함선의 위치와 방향 저장
+            }
+            result = true;
         }
 
         return result;
@@ -83,9 +98,21 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     /// <param name="targetPlayer">저장된 데이터를 로딩할 플레이어</param>
     /// <returns>성공여부. true면 성공, false면 저장된 데이터가 없다.</returns>
-    public bool LoadShipDeployData( PlayerBase targetPlayer)
+    public bool LoadShipDeployData(UserPlayer targetPlayer)
     {
         bool result = false;
+        if(shipDeployDatas != null)
+        {
+            targetPlayer.UndoAllShipDeployment();                   // 일단 모든 배치 취소
+            for (int i=0; i<shipDeployDatas.Length; i++)
+            {
+                Ship ship = targetPlayer.Ships[i];
+                ship.Direction = shipDeployDatas[i].Direction;      // 배 방향 설정
+                targetPlayer.Board.ShipDeployment(ship, shipDeployDatas[i].Position);   // 배 배치
+                ship.gameObject.SetActive(true);                    // 게임 오브젝트 보이게 만들기
+            }
+            result = true;
+        }
         return result;
     }
 }

@@ -93,7 +93,6 @@ public class UserPlayer : PlayerBase
     protected override void Start()
     {
         base.Start();
-        GameManager.Inst.onStateChange += OnStateChange;    // 반드시 GameManager.OnInitialize 이후에 실행되어야 한다.
 
         GameManager.Inst.Input.onMouseClick += OnMouseClick;
         GameManager.Inst.Input.onMouseMove += OnMouseMove;
@@ -103,12 +102,27 @@ public class UserPlayer : PlayerBase
     // 상태 관련 함수들 ----------------------------------------------------------------------------
 
     /// <summary>
-    /// 게임 상태가 변경되면 실행될 함수
+    /// 게임 상태가 변경되면 실행될 델리게이트에 연결된 함수
     /// </summary>
     /// <param name="gameState">현재 게임 상태</param>
-    private void OnStateChange(GameState gameState)
+    public override void OnStateChange(GameState gameState)
     {
         state = gameState;
+
+        Initialize();
+        switch (state)
+        {
+            case GameState.ShipDeployment:
+                // 우선은 하는 일 없음
+                break;
+            case GameState.Battle:                
+                opponent = GameManager.Inst.EnemyPlayer;        // 적 설정
+                if(!GameManager.Inst.LoadShipDeployData(this))  // 일단 로딩 시도
+                {
+                    AutoShipDeployment(true);   // 로딩 실패하면 자동 배치
+                }
+                break;
+        }
     }
 
 
@@ -217,6 +231,8 @@ public class UserPlayer : PlayerBase
     private void OnClick_Battle(Vector2 screen)
     {
         //Debug.Log($"Battle : Click ({screen.x},{screen.y})");
+        Vector3 world = Camera.main.ScreenToWorldPoint(screen);
+        Attack(world);
     }
 
     // 함선 배치용 함수 ----------------------------------------------------------------------------

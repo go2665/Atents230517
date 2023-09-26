@@ -13,7 +13,7 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>
     /// 한턴이 타임아웃 되는데 걸리는 시간
     /// </summary>
-    const float turnDuration = 5.0f;
+    float turnDuration = 5.0f;
     public float TurnDuration => turnDuration;
 
     /// <summary>
@@ -62,7 +62,13 @@ public class TurnManager : Singleton<TurnManager>
     protected override void OnInitialize()
     {
         turnNumber = 0;                     // 각종 데이터 초기화
+
+        if(GameManager.Inst.IsTestMode)     // 테스트 모드일 때는 타임아웃이 안 일어나도록 설정
+        {
+            turnDuration = float.MaxValue;
+        }
         turnRemainTime = turnDuration;
+
         state = TurnProcessState.None;
         isTurnPlay = true;
     }

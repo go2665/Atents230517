@@ -39,9 +39,30 @@ public class EnemyPlayer : PlayerBase
         AutoAttack();                           // 자동 공격
     }
 
+    /// <summary>
+    /// 패배했을 때 실행될 함수
+    /// </summary>
     protected override void OnDefeat()
     {
         StopAllCoroutines();
         base.OnDefeat();
+    }
+
+    /// <summary>
+    /// 게임 상태가 변경되면 실행될 델리게이트에 연결된 함수
+    /// </summary>
+    /// <param name="gameState">현재 게임 상태</param>
+    public override void OnStateChange(GameState gameState)
+    {
+        Initialize();
+        if (gameState == GameState.Battle)
+        {
+            opponent = GameManager.Inst.UserPlayer;             // 상대방 설정
+            AutoShipDeployment(GameManager.Inst.IsTestMode);    // 함선 자동 배치
+        }
+        else
+        {
+            UndoAllShipDeployment();
+        }
     }
 }
