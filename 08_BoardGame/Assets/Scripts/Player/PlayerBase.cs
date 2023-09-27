@@ -156,6 +156,8 @@ public class PlayerBase : MonoBehaviour
                 // 패배하면 턴 메니저를 정지 시키기
                 onDefeat += (_) => TurnManager.Inst.TurnStop();
 
+                TurnManager temp2 = TurnManager.Inst;
+
                 // 턴 시작 초기화 함수와 종로 함수 연결
                 TurnManager.Inst.onTurnStart += OnPlayerTurnStart;
                 TurnManager.Inst.onTurnEnd += OnPlayerTurnEnd;

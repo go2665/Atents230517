@@ -277,6 +277,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1725195664348763441, guid: 709f421f802a86d4584952bbcc54c255,
+        type: 3}
+      propertyPath: turnDuration
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1725195664348763443, guid: 709f421f802a86d4584952bbcc54c255,
         type: 3}
       propertyPath: IsTestMode

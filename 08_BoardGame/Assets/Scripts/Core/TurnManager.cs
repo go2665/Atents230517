@@ -13,7 +13,7 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>
     /// 한턴이 타임아웃 되는데 걸리는 시간
     /// </summary>
-    float turnDuration = 5.0f;
+    public float turnDuration = 5.0f;
     public float TurnDuration => turnDuration;
 
     /// <summary>
@@ -71,6 +71,8 @@ public class TurnManager : Singleton<TurnManager>
 
         state = TurnProcessState.None;
         isTurnPlay = true;
+
+        OnTurnStart();
     }
 
     /// <summary>
