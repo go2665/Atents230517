@@ -43,18 +43,23 @@ public class Ship : MonoBehaviour
             {
                 case ShipType.Carrier:
                     size = 5;
+                    shipName = "항공모함";
                     break;
                 case ShipType.BattleShip:
                     size = 4;
+                    shipName = "전함";
                     break;
                 case ShipType.Destroyer:
                     size = 3;
+                    shipName = "구축함";
                     break;
                 case ShipType.Submarine:
                     size = 3;
+                    shipName = "잠수함";
                     break;
                 case ShipType.PatrolBoat:
                     size = 2;
+                    shipName = "경비정";
                     break;
                 default:
                     break;
