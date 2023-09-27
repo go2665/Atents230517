@@ -233,6 +233,7 @@ public class PlayerBase : MonoBehaviour
                 else
                 {
                     lastAttackSuccessPosition = NOT_SUCCESS;
+                    onAttackFail?.Invoke(this);
                 }
 
                 int attackIndex = Board.GridToIndex(attackGridPos);
