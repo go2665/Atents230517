@@ -30,6 +30,18 @@ public class PlayerBase : MonoBehaviour
     public bool IsActionDone => isActionDone;
 
     /// <summary>
+    /// 성공한 공격 회수
+    /// </summary>
+    int successAttackCount;
+    public int SuccessAttackCount => successAttackCount;
+
+    /// <summary>
+    /// 실패한 공격 회수
+    /// </summary>
+    int failAttackCount;
+    public int FailAttackCount => failAttackCount;
+
+    /// <summary>
     /// 대전 상대
     /// </summary>
     protected PlayerBase opponent;
@@ -95,7 +107,12 @@ public class PlayerBase : MonoBehaviour
     /// </summary>
     public Action<PlayerBase> onDefeat;
 
+    /// <summary>
+    /// 초기화가 되었다는 표시
+    /// </summary>
     bool isInitialized = false;
+
+
 
 
     protected virtual void Awake()
@@ -163,6 +180,9 @@ public class PlayerBase : MonoBehaviour
                 TurnManager.Inst.onTurnEnd += OnPlayerTurnEnd;
             }
 
+            successAttackCount = 0;     // 결과 UI가 뜨는 타이밍 수정 필요
+            failAttackCount = 0;
+
             OnPlayerTurnStart(0);
             isInitialized = true;
         }
@@ -206,6 +226,7 @@ public class PlayerBase : MonoBehaviour
                 bool result = opponent.Board.OnAttacked(attackGridPos);     // 상대방 보드에 공격
                 if (result)  // 공격 성공
                 {
+                    successAttackCount++;
                     if (opponentShipDestroyed)
                     {
                         // 이번 공격으로 적의 함선이 침몰했으면
@@ -228,10 +249,11 @@ public class PlayerBase : MonoBehaviour
                             AddHighFromNeighbors(attackGridPos);
                         }
                         lastAttackSuccessPosition = attackGridPos;  // 공격 성공했다고 표시
-                    }
+                    }                    
                 }
                 else
                 {
+                    failAttackCount++;
                     lastAttackSuccessPosition = NOT_SUCCESS;
                     onAttackFail?.Invoke(this);
                 }
