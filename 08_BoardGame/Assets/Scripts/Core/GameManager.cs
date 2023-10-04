@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +45,9 @@ public class GameManager : Singleton<GameManager>
     // 함선 배치 정보 저장 -------------------------------------------------------------------------
     ShipDeployData[] shipDeployDatas;
 
+    // 카메라 용 -----------------------------------------------------------------------------------
+    CinemachineImpulseSource impulseSource;
+    public CinemachineImpulseSource ImpulseSource => impulseSource;
 
     // 테스트용 ------------------------------------------------------------------------------------
     public bool IsTestMode = true;
@@ -69,6 +73,9 @@ public class GameManager : Singleton<GameManager>
         {
             onStateChange += enemy.OnStateChange;
         }
+
+        CinemachineVirtualCamera vcam = FindAnyObjectByType<CinemachineVirtualCamera>();
+        impulseSource = vcam.GetComponent<CinemachineImpulseSource>();
     }
 
     /// <summary>
