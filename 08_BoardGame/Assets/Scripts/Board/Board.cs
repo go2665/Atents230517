@@ -210,24 +210,20 @@ public class Board : MonoBehaviour
     /// <returns>공격이 배에 명중되었으면 true, 아니면 false</returns>
     public bool OnAttacked(Vector2Int grid)
     {
+        // 이 함수가 실행이 될 때는 무조건 grid가 보드 안쪽이고 공격이 가능한 위치라는 보장이 있을 때만 사용
         bool result = false;
 
-        if( IsInBoard(grid))                    // 보드 안쪽만 확인
-        {
-            int index = GridToIndex(grid);
-            if( IsAttackable(index))            // 공격 가능한 위치인지 확인
-            {
-                isAttacked[index] = true;       // 공격 했다고 표시
+        int index = GridToIndex(grid);
+        isAttacked[index] = true;               // 공격 했다고 표시
 
-                if (shipInfo[index] != ShipType.None)   // 배가 있으면
-                {                    
-                    result = true;                      // 공격 성공으로 체크
-                    onShipAttacked[shipInfo[index]]?.Invoke();  // 공격당한 배의 델리게이트 실행
-                }
-
-                bombMark.SetBombMark(GridToWorld(grid), result);    // BombMark 표시
-            }
+        if (shipInfo[index] != ShipType.None)   // 배가 있으면
+        {                    
+            result = true;                      // 공격 성공으로 체크                    
+            onShipAttacked[shipInfo[index]]?.Invoke();      // 공격당한 배의 델리게이트 실행
         }
+
+        bombMark.SetBombMark(GridToWorld(grid), result);    // BombMark 표시
+
         return result;
     }
 

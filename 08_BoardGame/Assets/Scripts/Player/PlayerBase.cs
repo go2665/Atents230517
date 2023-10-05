@@ -139,9 +139,10 @@ public class PlayerBase : MonoBehaviour
                 ShipType shipType = (ShipType)(i + 1);
                 ships[i] = ShipManager.Inst.MakeShip(shipType, transform);  // 배 종류별로 만들기
 
-                ships[i].onSinking += OnShipDestroy;                // 함선이 침몰하면 OnShipDestroy 실행
+                ships[i].onSinking += OnShipDestroy;                        // 함선이 침몰하면 OnShipDestroy 실행
 
-                board.onShipAttacked[shipType] = ships[i].OnHitted; // 배가 맞을 때마다 실행될 함수 등록
+                board.onShipAttacked[shipType] = () => opponent.successAttackCount++;   // 내 보드가 맞았으니까 상대방의 공격이 성공했다.
+                board.onShipAttacked[shipType] += ships[i].OnHitted;        // 배가 맞을 때마다 실행될 함수 등록
             }
             remainShipCount = shipTypeCount;                    // 배 갯수 설정
 
@@ -218,53 +219,50 @@ public class PlayerBase : MonoBehaviour
     /// <param name="attackGridPos">공격하는 위치</param>
     public void Attack(Vector2Int attackGridPos)
     {
-        if (!IsActionDone)  // 행동을 안했을 때만 처리
+        // 행동을 안했고, 공격 지점이 보드 안이고, 공격 가능한 위치일때만 처리
+        if (!IsActionDone && Board.IsInBoard(attackGridPos) && opponent.Board.IsAttackable(attackGridPos))  
         {
-            if (Board.IsInBoard(attackGridPos)) // 보드 안에 있을 때만 처리
+            Debug.Log($"{gameObject.name}가 ({attackGridPos.x},{attackGridPos.y})를 공격했습니다.");
+            bool result = opponent.Board.OnAttacked(attackGridPos);     // 상대방 보드에 공격
+            if (result)  // 공격 성공
             {
-                Debug.Log($"{gameObject.name}가 ({attackGridPos.x},{attackGridPos.y})를 공격했습니다.");
-                bool result = opponent.Board.OnAttacked(attackGridPos);     // 상대방 보드에 공격
-                if (result)  // 공격 성공
+                if (opponentShipDestroyed)
                 {
-                    successAttackCount++;
-                    if (opponentShipDestroyed)
-                    {
-                        // 이번 공격으로 적의 함선이 침몰했으면
-                        RemoveAllHigh();                // 후보지역 전부 제거
-                        opponentShipDestroyed = false;  // 표시 리셋
-                    }
-                    else
-                    {
-                        // 이번 공격으로 적의 함선이 침몰하지 않은 경우 
-
-                        // 이전 턴의 공격 성공 여부 확인
-                        if (lastAttackSuccessPosition != NOT_SUCCESS)
-                        {
-                            // 한턴 앞의 공격이 성공했다.
-                            AddHighFromTwoPoint(attackGridPos, lastAttackSuccessPosition);
-                        }
-                        else
-                        {
-                            // 처음 성공한 공격이다.
-                            AddHighFromNeighbors(attackGridPos);
-                        }
-                        lastAttackSuccessPosition = attackGridPos;  // 공격 성공했다고 표시
-                    }                    
+                    // 이번 공격으로 적의 함선이 침몰했으면
+                    RemoveAllHigh();                // 후보지역 전부 제거
+                    opponentShipDestroyed = false;  // 표시 리셋
                 }
                 else
                 {
-                    failAttackCount++;
-                    lastAttackSuccessPosition = NOT_SUCCESS;
-                    onAttackFail?.Invoke(this);
-                }
+                    // 이번 공격으로 적의 함선이 침몰하지 않은 경우 
 
-                int attackIndex = Board.GridToIndex(attackGridPos);
-                RemoveHigh(attackIndex);            // 공격한 위치는 더 이상 후보지역이 아님
-                attackIndices.Remove(attackIndex);
+                    // 이전 턴의 공격 성공 여부 확인
+                    if (lastAttackSuccessPosition != NOT_SUCCESS)
+                    {
+                        // 한턴 앞의 공격이 성공했다.
+                        AddHighFromTwoPoint(attackGridPos, lastAttackSuccessPosition);
+                    }
+                    else
+                    {
+                        // 처음 성공한 공격이다.
+                        AddHighFromNeighbors(attackGridPos);
+                    }
+                    lastAttackSuccessPosition = attackGridPos;  // 공격 성공했다고 표시
+                }                    
+            }
+            else
+            {
+                failAttackCount++;
+                lastAttackSuccessPosition = NOT_SUCCESS;
+                onAttackFail?.Invoke(this);
+            }
 
-                isActionDone = true;    // 행동 완료했다고 표시
-                onActionEnd?.Invoke();  // 행동 완료했다고 알림
-            }  
+            int attackIndex = Board.GridToIndex(attackGridPos);
+            RemoveHigh(attackIndex);            // 공격한 위치는 더 이상 후보지역이 아님
+            attackIndices.Remove(attackIndex);
+
+            isActionDone = true;    // 행동 완료했다고 표시
+            onActionEnd?.Invoke();  // 행동 완료했다고 알림
         }
     }
 

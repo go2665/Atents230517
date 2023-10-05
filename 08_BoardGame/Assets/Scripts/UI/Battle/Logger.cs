@@ -159,7 +159,7 @@ public class Logger : MonoBehaviour
             attackerColor = ColorUtility.ToHtmlStringRGB(enemyColor);
             attackerName = ENEMY;
         }
-        Log($"<#{attackerColor}>{attackerName}의 공격</color> : <#{attackerColor}>적</color>의 포탄이 빗나갔습니다.");
+        Log($"<#{attackerColor}>{attackerName}의 공격</color>\t: <#{attackerColor}>{attackerName}</color>의 포탄이 빗나갔습니다.");
     }
 
     /// <summary>
@@ -195,7 +195,7 @@ public class Logger : MonoBehaviour
         string sinkShipColor;
         sinkShipColor = ColorUtility.ToHtmlStringRGB(shipColor);
 
-        Log($"<#{attackerColor}>{attackerName}</color>의 공격 : <#{sinkedColor}>{sinkedName}</color>의 <#{sinkShipColor}>{ship.ShipName}</color>이 침몰했습니다.");
+        Log($"<#{attackerColor}>{attackerName}</color>의 공격\t: <#{sinkedColor}>{sinkedName}</color>의 <#{sinkShipColor}>{ship.ShipName}</color>이 침몰했습니다.");
     }
 
     /// <summary>
