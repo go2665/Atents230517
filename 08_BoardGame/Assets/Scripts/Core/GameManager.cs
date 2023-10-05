@@ -32,6 +32,7 @@ public class GameManager : Singleton<GameManager>
             if( gameState != value )
             {
                 gameState = value;
+                Input.ResetBind();
                 onStateChange?.Invoke( gameState );
             }
         }

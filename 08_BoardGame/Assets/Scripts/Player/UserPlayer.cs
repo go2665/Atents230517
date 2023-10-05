@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
-using UnityEngine.Device;
 using UnityEngine.InputSystem;
 
 public class UserPlayer : PlayerBase
@@ -94,7 +92,7 @@ public class UserPlayer : PlayerBase
     {
         base.Start();
 
-        GameManager.Inst.Input.onMouseClick += OnMouseClick;
+        GameManager.Inst.Input.onMouseClick += OnMouseClick;    // 해제는 GameManager가 씬이 변경될 때 일괄적으로 초기화
         GameManager.Inst.Input.onMouseMove += OnMouseMove;
         GameManager.Inst.Input.onMouseWheel += OnMouseWheel;
     }
