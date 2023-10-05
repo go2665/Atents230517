@@ -331,6 +331,8 @@ public class PlayerBase : MonoBehaviour
             Vector2Int grid = Board.IndexToGrid(index);
             obj.gameObject.name = $"High_({grid.x},{grid.y})";  // 이름 알아보기 쉽게 변경
 
+            obj.SetActive(GameManager.Inst.IsTestMode);         // 테스트 모드일 때만 보이기
+
             highMarks[index] = obj;                             // 딕셔너리에 기록
         }
     }
@@ -709,7 +711,7 @@ public class PlayerBase : MonoBehaviour
 
                 // 실제 배치
                 board.ShipDeployment(ship, grid);
-                ship.gameObject.SetActive(true);
+                ship.gameObject.SetActive(isShowShips);
 
                 // 배치된 위치를 high와 low에서 제거
                 List<int> tempList = new List<int>(shipPositions.Length);

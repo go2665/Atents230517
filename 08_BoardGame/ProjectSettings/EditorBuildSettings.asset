@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Test/Test_01_GridDraw.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/Title.unity
+    guid: 364281c2a79997742bdb4e3a731cad30
+  - enabled: 1
+    path: Assets/Scenes/ShipDeployment.unity
+    guid: 1d89143179417c14ebfe068218d0daa9
+  - enabled: 1
+    path: Assets/Scenes/Battle.unity
+    guid: 4e8be69153f373247beb5b18c2a991b9
   m_configObjects: {}

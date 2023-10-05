@@ -75,7 +75,10 @@ public class GameManager : Singleton<GameManager>
         }
 
         CinemachineVirtualCamera vcam = FindAnyObjectByType<CinemachineVirtualCamera>();
-        impulseSource = vcam.GetComponent<CinemachineImpulseSource>();
+        if( vcam != null )
+        {
+            impulseSource = vcam.GetComponent<CinemachineImpulseSource>();
+        }
     }
 
     /// <summary>

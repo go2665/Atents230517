@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class FinishDeploymentButton : MonoBehaviour
@@ -38,5 +39,6 @@ public class FinishDeploymentButton : MonoBehaviour
         UserPlayer player = GameManager.Inst.UserPlayer;
 
         Debug.Log("Finish 버튼 클릭");
+        SceneManager.LoadScene(2);
     }
 }
