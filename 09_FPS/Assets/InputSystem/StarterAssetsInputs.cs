@@ -46,6 +46,16 @@ namespace StarterAssets
             //SprintInput(context.ReadValueAsButton());
         }
 
+		public void OnFire(InputAction.CallbackContext context)
+		{
+			Debug.Log("Fire");
+		}
+
+		public void OnZoom(InputAction.CallbackContext context)
+		{
+			Debug.Log("Zoom");
+		}
+
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         public void OnMove(InputValue value)
 		{
