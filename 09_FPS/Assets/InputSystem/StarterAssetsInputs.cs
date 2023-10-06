@@ -1,6 +1,8 @@
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
+using static UnityEngine.Rendering.DebugUI;
 #endif
 
 namespace StarterAssets
@@ -18,10 +20,34 @@ namespace StarterAssets
 
 		[Header("Mouse Cursor Settings")]
 		public bool cursorLocked = true;		// 커서락 기능을 사용할지 여부(락이 되면 마우스커서가 안보인다)
-		public bool cursorInputForLook = true;	// 커서 입력을 카메라 회전용으로 사용
+		public bool cursorInputForLook = true;  // 커서 입력을 카메라 회전용으로 사용
+
+        public void OnMove(InputAction.CallbackContext context)
+		{
+			MoveInput(context.ReadValue<Vector2>());			
+        }
+
+		public void OnLook(InputAction.CallbackContext context)
+		{
+            if (cursorInputForLook)
+            {
+                LookInput(context.ReadValue<Vector2>());
+            }
+        }
+
+		public void OnJump(InputAction.CallbackContext context)
+		{
+			JumpInput(context.performed);
+        }
+
+		public void OnSprint(InputAction.CallbackContext context)
+		{
+            SprintInput(context.ReadValue<float>() > 0.1f);
+            //SprintInput(context.ReadValueAsButton());
+        }
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-		public void OnMove(InputValue value)
+        public void OnMove(InputValue value)
 		{
 			MoveInput(value.Get<Vector2>());
 		}
