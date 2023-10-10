@@ -1,3 +1,4 @@
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
@@ -23,7 +24,7 @@ namespace StarterAssets
 		public bool cursorInputForLook = true;  // 커서 입력을 카메라 회전용으로 사용
 
         public void OnMove(InputAction.CallbackContext context)
-		{
+		{			
 			MoveInput(context.ReadValue<Vector2>());			
         }
 
@@ -58,15 +59,15 @@ namespace StarterAssets
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         public void OnMove(InputValue value)
-		{
-			MoveInput(value.Get<Vector2>());
+		{            
+            MoveInput(value.Get<Vector2>());
 		}
 
 		public void OnLook(InputValue value)
 		{
 			if(cursorInputForLook)
 			{
-				LookInput(value.Get<Vector2>());
+                LookInput(value.Get<Vector2>());
 			}
 		}
 
