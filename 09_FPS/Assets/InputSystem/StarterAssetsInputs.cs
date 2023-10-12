@@ -1,3 +1,5 @@
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -22,6 +24,13 @@ namespace StarterAssets
 		[Header("Mouse Cursor Settings")]
 		public bool cursorLocked = true;		// 커서락 기능을 사용할지 여부(락이 되면 마우스커서가 안보인다)
 		public bool cursorInputForLook = true;  // 커서 입력을 카메라 회전용으로 사용
+
+		Player player;
+
+        private void Awake()
+        {
+            player = GetComponent<Player>();
+        }
 
         public void OnMove(InputAction.CallbackContext context)
 		{			
@@ -54,9 +63,50 @@ namespace StarterAssets
 
 		public void OnZoom(InputAction.CallbackContext context)
 		{
-			// 실습
-            // 기본 : FOV = 40, 총이 보인다.
-            // 줌 : FOV = 20, 총이 안보인다.
+			if(context.canceled)
+			{
+                // 마우스 우클릭이 때었으면 줌에서 원상 복귀
+                StopAllCoroutines();			// 이전에 진행하던 코루틴 정지
+                StartCoroutine(ZoomOut());		// 줌 취소하는 코루틴 실행
+				player.ShowGunCamera(true);		// 총 다시 보이게 하기
+            }
+			else
+			{
+				// 마우스 우클릭을 하면 줌 처리
+				StopAllCoroutines();            // 이전에 진행하던 코루틴 정지
+                StartCoroutine(ZoomIn());		// 줌하는 코루틴 실행
+                player.ShowGunCamera(false);	// 총 안 보이게 하기
+            }
+        }
+
+		IEnumerator ZoomIn()
+		{
+			// 확대
+			float fov = GameManager.Inst.VCamera.m_Lens.FieldOfView;	// 현재 fov값 가져오기
+
+			while(fov > 20)							// fov가 20 아래로 내려갈때까지 진행
+			{
+				fov -= Time.deltaTime * 80;			// 0.25초 동안 20이 처리되어야 하므로 * 80
+				GameManager.Inst.VCamera.m_Lens.FieldOfView = fov;	// 계산 결과를 카메라에 적용
+                yield return null;					// 다음 프레임까지 대기
+			}
+
+            GameManager.Inst.VCamera.m_Lens.FieldOfView = 20;	// fov 수치를 깔끔하게 만들기
+        }
+
+		IEnumerator ZoomOut()
+		{
+            // 축소
+            float fov = GameManager.Inst.VCamera.m_Lens.FieldOfView;
+
+            while (fov < 40)
+            {
+                fov += Time.deltaTime * 80;			// 0.25초 동안 20이 처리되어야 하므로 * 80
+                GameManager.Inst.VCamera.m_Lens.FieldOfView = fov;
+                yield return null;
+            }
+
+            GameManager.Inst.VCamera.m_Lens.FieldOfView = 40;
         }
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
