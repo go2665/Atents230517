@@ -49,13 +49,15 @@ namespace StarterAssets
 
 		public void OnFire(InputAction.CallbackContext context)
 		{
-			Debug.Log("Fire");
+			
 		}
 
 		public void OnZoom(InputAction.CallbackContext context)
 		{
-			Debug.Log("Zoom");
-		}
+			// 실습
+            // 기본 : FOV = 40, 총이 보인다.
+            // 줌 : FOV = 20, 총이 안보인다.
+        }
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         public void OnMove(InputValue value)
