@@ -1057,6 +1057,31 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1173123431}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1173123433 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2378791252096181124, guid: d4f8e3131c312ce459301b1365a9941a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1173123431}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1173123434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173123433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02034e243ec1744469c759e94701fe15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 100
+  damage: 10
+  fireRate: 1
+  spread: 0
+  recoil: 0
+  clipSize: 10
+  bulletRemain: 100
 --- !u!1 &1191171923
 GameObject:
   m_ObjectHideFlags: 0
@@ -1320,6 +1345,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0d7ccbc20184d9499a6cc89af85e92a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bulletHolePrefab: {fileID: 3971033468607636571, guid: 1f394dfe08eb8ee459d666fba98e0e9d,
+    type: 3}
 --- !u!4 &1642011917
 Transform:
   m_ObjectHideFlags: 0

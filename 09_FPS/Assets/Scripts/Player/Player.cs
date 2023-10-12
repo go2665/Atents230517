@@ -6,10 +6,13 @@ public class Player : MonoBehaviour
 {
     GameObject gunCamera;
 
+    GunBase gunBase;
+
 
     private void Awake()
     {
         gunCamera = transform.GetChild(2).gameObject;
+        gunBase = gunCamera.GetComponentInChildren<GunBase>();
     }
 
     /// <summary>
@@ -19,5 +22,10 @@ public class Player : MonoBehaviour
     public void ShowGunCamera(bool show = true)
     {
         gunCamera.SetActive(show);
+    }
+
+    public void GunFire()
+    {
+        gunBase.Fire();
     }
 }

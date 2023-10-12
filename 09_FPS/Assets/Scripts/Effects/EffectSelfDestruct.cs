@@ -14,8 +14,9 @@ public class EffectSelfDestruct : MonoBehaviour
         //ParticleSystem ps;
         //Destroy(this.gameObject, ps.main.duration);
         //ps.isPlaying
-        
 
-        //effect.
+        int id = Shader.PropertyToID("Duration");
+        float duration = effect.GetFloat(id);
+        Destroy(this.gameObject, duration);
     }
 }

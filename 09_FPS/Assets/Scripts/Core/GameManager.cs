@@ -17,6 +17,9 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     public CinemachineVirtualCamera VCamera => vcamera;
 
+    // 나중에 풀에서 가져오는 것으로 변경
+    public GameObject bulletHolePrefab;
+
     protected override void OnInitialize()
     {
         base.OnInitialize();

@@ -58,7 +58,7 @@ namespace StarterAssets
 
 		public void OnFire(InputAction.CallbackContext context)
 		{
-			
+			player.GunFire();
 		}
 
 		public void OnZoom(InputAction.CallbackContext context)
