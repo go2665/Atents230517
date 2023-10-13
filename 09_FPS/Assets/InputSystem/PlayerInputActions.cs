@@ -213,7 +213,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Fire"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Button"",
                     ""id"": ""aa84fa18-e6af-49f5-a35d-dec0d0ccac59"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",

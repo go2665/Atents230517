@@ -41,17 +41,19 @@ public class GunBase : MonoBehaviour
     public int bulletRemain;
 
     VisualEffect muzzleEffect;
+    int onFireID;
 
     private void Awake()
     {
         muzzleEffect = GetComponentInChildren<VisualEffect>();
+        onFireID = Shader.PropertyToID("OnFire");
     }
 
     public void Fire()
     {
         if( bulletRemain > 0 )
         {
-            muzzleEffect.Play();
+            muzzleEffect.SendEvent(onFireID);
             bulletRemain--;
 
             FireProcess();

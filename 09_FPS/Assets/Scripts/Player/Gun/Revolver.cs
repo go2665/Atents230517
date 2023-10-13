@@ -9,7 +9,8 @@ public class Revolver : GunBase
         Ray ray = new(fireTransform.position, fireTransform.forward);
         if( Physics.Raycast(ray, out RaycastHit hitInfo, range) )
         {
-            Instantiate(GameManager.Inst.bulletHolePrefab, hitInfo.point, Quaternion.identity);
+            GameObject obj = Instantiate(GameManager.Inst.bulletHolePrefab, hitInfo.point, Quaternion.identity);
+            obj.transform.forward = -hitInfo.normal;
         }
     }
 }
