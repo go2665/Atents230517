@@ -10,6 +10,8 @@ public class Test_07_Shoot : TestBase
     public TestBulletHole testBulletHole;
     public Transform bulletHoleTransform;
 
+    public GunBase gunBase;
+
     protected override void Test1(InputAction.CallbackContext context)
     {
         int id = Shader.PropertyToID("OnFire");
@@ -19,5 +21,11 @@ public class Test_07_Shoot : TestBase
     protected override void Test2(InputAction.CallbackContext context)
     {
         testBulletHole.Initialize(bulletHoleTransform.position, bulletHoleTransform.up);
+    }
+
+    protected override void Test3(InputAction.CallbackContext context)
+    {
+        StartCoroutine(gunBase.TestFire(gunBase.clipSize));
+
     }
 }
