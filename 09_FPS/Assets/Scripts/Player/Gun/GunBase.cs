@@ -118,7 +118,7 @@ public class GunBase : MonoBehaviour
         while(elapsedTime < 1)
         {            
             float angle = -fireUp.Evaluate(elapsedTime) * recoil;
-            fireTransform.rotation *= Quaternion.AngleAxis(angle, fireTransform.right);            
+            fireTransform.Rotate(angle, 0, 0);
 
             elapsedTime += (Time.deltaTime / upTime);
 
@@ -131,7 +131,7 @@ public class GunBase : MonoBehaviour
         while (elapsedTime < 1)
         {
             float angle = fireDown.Evaluate(elapsedTime) * recoil * (recoil * 0.05f);  // (recoil * 0.05f)를 곱한 이유는 내려올때 곱하는 회수가 많아 결과값이 증폭되고 있어서 그것을 줄이기 위해 추가          
-            fireTransform.rotation *= Quaternion.AngleAxis(angle, fireTransform.right);
+            fireTransform.Rotate(angle, 0, 0);
 
             elapsedTime += (Time.deltaTime / downTime); 
 
