@@ -530,5 +530,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d7ec3bdefc118847a1b2761d8f7e609, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testDirection: 12
+  testDirection: 0
   cellDisplayer: {fileID: 1795494420}
