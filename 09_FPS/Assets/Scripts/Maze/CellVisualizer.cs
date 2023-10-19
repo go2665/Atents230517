@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CellDisplayer : MonoBehaviour
+public class CellVisualizer : MonoBehaviour
 {
     /// <summary>
     /// 바닥 한변의 크기

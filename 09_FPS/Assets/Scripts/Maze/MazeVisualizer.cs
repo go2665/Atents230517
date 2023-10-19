@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MazeDisplayer : MonoBehaviour
+public class MazeVisualizer : MonoBehaviour
 {
     public GameObject cellPrefab;
 
@@ -11,10 +11,10 @@ public class MazeDisplayer : MonoBehaviour
         foreach (Cell cell in data)
         {
             GameObject obj = Instantiate(cellPrefab, transform);
-            obj.transform.Translate(cell.X * CellDisplayer.CellSize, 0, -cell.Y * CellDisplayer.CellSize);
+            obj.transform.Translate(cell.X * CellVisualizer.CellSize, 0, -cell.Y * CellVisualizer.CellSize);
             obj.gameObject.name = $"Cell_({cell.X},{cell.Y})";
 
-            CellDisplayer displayer = obj.GetComponent<CellDisplayer>();
+            CellVisualizer displayer = obj.GetComponent<CellVisualizer>();
             displayer.RefreshWall(cell.Path);
         }
     }

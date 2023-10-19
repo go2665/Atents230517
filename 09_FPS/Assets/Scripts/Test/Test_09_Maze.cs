@@ -6,9 +6,9 @@ using UnityEngine.InputSystem;
 public class Test_09_Maze : TestBase
 {
     public Direction testDirection = 0;
-    public CellDisplayer cellDisplayer;
+    public CellVisualizer cellDisplayer;
 
-    public MazeDisplayer mazeDisplayer;
+    public MazeVisualizer mazeDisplayer;
     public int height = 5;
     public int width = 5;
     public int seed = 0;
