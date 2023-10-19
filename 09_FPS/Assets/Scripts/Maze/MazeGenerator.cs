@@ -14,10 +14,10 @@ public class MazeGenerator
         this.width = width;
         this.height = height;
         if(seed != -1)
-        {
+        {            
             Random.InitState(seed);
         }
-
+        
         cells = new Cell[width * height];
 
         OnSpecificAlgorithmExcute();
