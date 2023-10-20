@@ -6,25 +6,35 @@ using UnityEngine.InputSystem;
 public class Test_09_Maze : TestBase
 {
     public Direction testDirection = 0;
-    public CellVisualizer cellDisplayer;
+    public CellVisualizer cellVisualizer;
 
-    public MazeVisualizer mazeDisplayer;
+    public MazeVisualizer mazeVisualizer_Backtracking;
+    public MazeVisualizer mazeVisualizer_Eller;
     public int height = 5;
     public int width = 5;
     public int seed = 0;
 
     protected override void Test1(InputAction.CallbackContext context)
     {
-        cellDisplayer.RefreshWall((int)testDirection);
+        cellVisualizer.RefreshWall((int)testDirection);
     }
 
     protected override void Test2(InputAction.CallbackContext context)
     {
-        mazeDisplayer.Clear();
+        mazeVisualizer_Backtracking.Clear();
 
         BackTracking maze = new BackTracking();
         Cell[] cells = maze.MakeMaze(height, width, seed);
-        mazeDisplayer.Draw(cells);
+        mazeVisualizer_Backtracking.Draw(cells);
+    }
+
+    protected override void Test3(InputAction.CallbackContext context)
+    {
+        mazeVisualizer_Eller.Clear();
+
+        Eller maze = new Eller();
+        Cell[] cells = maze.MakeMaze(height, width, seed);
+        mazeVisualizer_Eller.Draw(cells);
     }
 
 }
