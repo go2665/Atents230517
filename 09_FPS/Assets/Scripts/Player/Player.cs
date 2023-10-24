@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,12 @@ public class Player : MonoBehaviour
     GameObject gunCamera;
 
     GunBase gun;
+
+    public Action<int> onBulletCountChange
+    {
+        get => gun.onBulletCountChange;
+        set => gun.onBulletCountChange = value;
+    }
 
 
     private void Awake()
@@ -32,5 +39,14 @@ public class Player : MonoBehaviour
     public void GunFire()
     {
         gun.Fire();
+    }
+
+    public void GunRevolverReload()
+    {
+        Revolver revolver = gun as Revolver;
+        if(revolver != null)
+        {
+            revolver.Reload();
+        }
     }
 }

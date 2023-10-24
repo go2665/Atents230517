@@ -277,7 +277,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 798922425}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 140, y: 0, z: 0}
+  m_LocalPosition: {x: 130, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -672,6 +672,7 @@ MonoBehaviour:
   cellVisualizer: {fileID: 1795494420}
   mazeVisualizer_Backtracking: {fileID: 895704142}
   mazeVisualizer_Eller: {fileID: 2002671566}
+  mazeVisualizer_Wilson: {fileID: 798922426}
   height: 10
   width: 10
   seed: -1

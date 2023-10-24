@@ -112,8 +112,16 @@ namespace StarterAssets
             GameManager.Inst.VCamera.m_Lens.FieldOfView = 40;
         }
 
+		public void OnReload(InputAction.CallbackContext context)
+		{
+			if( context.performed)
+			{
+				player.GunRevolverReload();
+			}
+		}
+
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-        public void OnMove(InputValue value)
+            public void OnMove(InputValue value)
 		{            
             MoveInput(value.Get<Vector2>());
 		}

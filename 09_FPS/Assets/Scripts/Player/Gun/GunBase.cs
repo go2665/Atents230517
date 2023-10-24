@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,7 +24,7 @@ public class GunBase : MonoBehaviour
     /// <summary>
     /// 현재 발사가 가능한지 여부
     /// </summary>
-    private bool isFireReady = true;
+    protected bool isFireReady = true;
 
     /// <summary>
     /// 탄 퍼지는 각도
@@ -43,7 +44,19 @@ public class GunBase : MonoBehaviour
     /// <summary>
     /// 남은 총알 수
     /// </summary>
-    public int bulletRemain;
+    int bulletCount;
+
+    protected int BulletCount
+    {
+        get => bulletCount;
+        set
+        {
+            bulletCount = value;
+            onBulletCountChange?.Invoke(bulletCount);
+        }
+    }
+
+    public Action<int> onBulletCountChange;
 
     VisualEffect muzzleEffect;
     int onFireID;
@@ -56,17 +69,23 @@ public class GunBase : MonoBehaviour
     private void Awake()
     {
         muzzleEffect = GetComponentInChildren<VisualEffect>();
-        onFireID = Shader.PropertyToID("OnFire");
+        onFireID = Shader.PropertyToID("OnFire");        
+    }
+
+    void Initialize()
+    {
+        BulletCount = clipSize;
+        isFireReady = true;
     }
 
     public void Fire()
     {
-        if(isFireReady && bulletRemain > 0 )
+        if(isFireReady && bulletCount > 0 )
         {
             isFireReady = false;
 
             muzzleEffect.SendEvent(onFireID);
-            bulletRemain--;
+            BulletCount--;
 
             FireProcess();
 
@@ -113,7 +132,7 @@ public class GunBase : MonoBehaviour
         float upTime = 0.05f;
         float elapsedTime = 0.0f;
 
-        Debug.Log(fireTransform.right);
+        //Debug.Log(fireTransform.right);
 
         while(elapsedTime < 1)
         {            
@@ -144,14 +163,15 @@ public class GunBase : MonoBehaviour
     public void Equip()
     {
         fireTransform = GameManager.Inst.Player.transform.GetChild(0);
+        Initialize();
     }
 
     protected Vector3 GetFireDirection()
     {
         Vector3 result = fireTransform.forward;
 
-        result = Quaternion.AngleAxis(Random.Range(-spread, spread), fireTransform.right) * result; // 위 아래로 회전        
-        result = Quaternion.AngleAxis(Random.Range(0.0f, 360.0f), fireTransform.forward) * result;  // forward 축을 기준으로 0~360사이로 회전
+        result = Quaternion.AngleAxis(UnityEngine.Random.Range(-spread, spread), fireTransform.right) * result; // 위 아래로 회전        
+        result = Quaternion.AngleAxis(UnityEngine.Random.Range(0.0f, 360.0f), fireTransform.forward) * result;  // forward 축을 기준으로 0~360사이로 회전
 
         //fireDir = result;
 
