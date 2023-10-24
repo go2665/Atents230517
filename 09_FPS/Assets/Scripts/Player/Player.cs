@@ -18,8 +18,8 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        gunCamera = transform.GetChild(2).gameObject;
-        gun = gunCamera.GetComponentInChildren<GunBase>();
+        gunCamera = transform.GetChild(2).gameObject;     
+        gun = GetComponentInChildren<GunBase>();        
     }
 
     private void Start()
