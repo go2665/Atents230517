@@ -74,11 +74,11 @@ public class Factory : Singleton<Factory>
         return hole;
     }
 
-    public BulletHole GetBulletHole(Vector3 position, Vector3 normal)
+    public BulletHole GetBulletHole(Vector3 position, Vector3 normal, Vector3 reflect)
     {
         GameObject obj = GetObject(PoolObjectType.BulletHole);
         BulletHole hole = obj.GetComponent<BulletHole>();
-        hole.Initialize(position, normal);
+        hole.Initialize(position, normal, reflect);
         return hole;
     }
 }

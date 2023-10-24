@@ -10,7 +10,7 @@ public class BulletHole : PooledObject
     float duration;
     readonly int DurationId = Shader.PropertyToID("Duration");
     readonly int PositionID = Shader.PropertyToID("SpawnPosition");
-    readonly int NormalID = Shader.PropertyToID("SpawnNormal");
+    readonly int ReflectID = Shader.PropertyToID("SpawnReflect");
     readonly int OnStartEvent = Shader.PropertyToID("OnStart");
 
     private void Awake()
@@ -23,13 +23,13 @@ public class BulletHole : PooledObject
     {        
     }
 
-    public void Initialize(Vector3 position, Vector3 normal)
+    public void Initialize(Vector3 position, Vector3 normal, Vector3 reflect)
     {
         effect.SetVector3(PositionID, position);
         transform.position = position;
         transform.forward = -normal;
 
-        effect.SetVector3(NormalID, normal);
+        effect.SetVector3(ReflectID, reflect);
 
         effect.SendEvent(OnStartEvent);
         StartCoroutine(LifeOver(duration));

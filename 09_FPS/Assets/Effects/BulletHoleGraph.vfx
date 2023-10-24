@@ -353,8 +353,8 @@ MonoBehaviour:
     max: Infinity
     enumValues: []
     descendantCount: 0
-  - name: SpawnNormal
-    path: SpawnNormal
+  - name: SpawnReflect
+    path: SpawnReflect
     tooltip: 
     sheetType: m_Vector3f
     realType: Vector3
@@ -9127,7 +9127,7 @@ MonoBehaviour:
   m_InputSlots: []
   m_OutputSlots:
   - {fileID: 8926484042661615052}
-  m_ExposedName: SpawnNormal
+  m_ExposedName: SpawnReflect
   m_Exposed: 1
   m_Order: 8
   m_Category: 

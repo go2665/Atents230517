@@ -13,7 +13,7 @@ public class Revolver : GunBase
         if( Physics.Raycast(ray, out RaycastHit hitInfo, range) )
         {
             Vector3 reflect = Vector3.Reflect(ray.direction, hitInfo.normal);
-            Factory.Inst.GetBulletHole(hitInfo.point, reflect);
+            Factory.Inst.GetBulletHole(hitInfo.point, hitInfo.normal, reflect);
             //bulletHole.transform.position = hitInfo.point;
             //bulletHole.transform.forward = -hitInfo.normal;
         }
