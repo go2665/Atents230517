@@ -10,6 +10,7 @@ public class Test_09_Maze : TestBase
 
     public MazeVisualizer mazeVisualizer_Backtracking;
     public MazeVisualizer mazeVisualizer_Eller;
+    public MazeVisualizer mazeVisualizer_Wilson;
     public int height = 5;
     public int width = 5;
     public int seed = 0;
@@ -35,6 +36,15 @@ public class Test_09_Maze : TestBase
         Eller maze = new Eller();
         Cell[] cells = maze.MakeMaze(height, width, seed);
         mazeVisualizer_Eller.Draw(cells);
+    }
+
+    protected override void Test4(InputAction.CallbackContext context)
+    {
+        mazeVisualizer_Wilson.Clear();
+
+        Wilson maze = new Wilson();
+        Cell[] cells = maze.MakeMaze(height, width, seed);
+        mazeVisualizer_Wilson.Draw(cells);
     }
 
 }
