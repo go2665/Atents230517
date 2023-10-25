@@ -15,8 +15,14 @@ public class Player : MonoBehaviour
 
     public Action<int> onBulletCountChange
     {
-        get => activeGun.onBulletCountChange;
-        set => activeGun.onBulletCountChange = value;
+        set
+        { 
+            defaultGun.onBulletCountChange = value; 
+            foreach (var gun in powerGuns)
+            {
+                gun.onBulletCountChange = value;
+            }
+        }
     }
 
 
@@ -26,8 +32,14 @@ public class Player : MonoBehaviour
 
         Transform child = transform.GetChild(3);
         defaultGun = child.GetComponent<GunBase>();
+        defaultGun.onFireRecoil += GunFireRecoil;
+
         child = transform.GetChild(4);
-        powerGuns = child.GetComponentsInChildren<GunBase>();
+        powerGuns = child.GetComponentsInChildren<GunBase>(true);
+        foreach (var gun in powerGuns)
+        {
+            gun.onFireRecoil += GunFireRecoil;
+        }
 
         activeGun = defaultGun;        
 
@@ -45,8 +57,10 @@ public class Player : MonoBehaviour
             gun.onFireRecoil += (expend) => crosshair.Expend(expend * 10);
         }
 
-        activeGun.Equip();
-        activeGun.onFireRecoil += GunFireRecoil;
+        GunChange(GunType.Revoler);
+
+        //activeGun.Equip();
+        //activeGun.onFireRecoil += GunFireRecoil;
     }
 
     private void GunFireRecoil(float recoil)
@@ -80,6 +94,26 @@ public class Player : MonoBehaviour
     public void GunChange(GunType type)
     {
         // activeGun 변경
+
+        activeGun.gameObject.SetActive(false);
+
+        GunBase newGun = null;
+        switch (type)
+        {
+            case GunType.Revoler:
+                newGun = defaultGun;
+                break;
+            case GunType.Shotgun:
+                newGun = powerGuns[0];
+                break;
+            case GunType.AssaultRifle: 
+                newGun = powerGuns[1];
+                break;
+        }
+
+        activeGun = newGun;
+        activeGun.Equip();
+        activeGun.gameObject.SetActive(true);
 
     }
 }
