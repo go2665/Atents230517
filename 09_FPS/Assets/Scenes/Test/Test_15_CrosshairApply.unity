@@ -1857,7 +1857,7 @@ PrefabInstance:
     - target: {fileID: 3060761038460324834, guid: 399862f936d06ed45bc2a9c24af945fc,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3060761038460324845, guid: 399862f936d06ed45bc2a9c24af945fc,
         type: 3}
@@ -1917,7 +1917,7 @@ PrefabInstance:
     - target: {fileID: 8136362539912058553, guid: 399862f936d06ed45bc2a9c24af945fc,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8136362539912058555, guid: 399862f936d06ed45bc2a9c24af945fc,
         type: 3}
@@ -1933,10 +1933,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 177464138}
     m_Modifications:
+    - target: {fileID: 1156426370412194305, guid: 9526e5a3dfa352b4a817a979e697ea10,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5376269660485051672, guid: 9526e5a3dfa352b4a817a979e697ea10,
         type: 3}
       propertyPath: m_Name
       value: AssaultRifle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5376269660485051672, guid: 9526e5a3dfa352b4a817a979e697ea10,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5376269660485051679, guid: 9526e5a3dfa352b4a817a979e697ea10,
         type: 3}

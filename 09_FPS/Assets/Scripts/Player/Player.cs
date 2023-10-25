@@ -7,29 +7,46 @@ public class Player : MonoBehaviour
 {
     GameObject gunCamera;
 
-    GunBase gun;
+    GunBase activeGun;
+    GunBase defaultGun;
+    GunBase[] powerGuns;    
 
     StarterAssets.FirstPersonController controller;
 
     public Action<int> onBulletCountChange
     {
-        get => gun.onBulletCountChange;
-        set => gun.onBulletCountChange = value;
+        get => activeGun.onBulletCountChange;
+        set => activeGun.onBulletCountChange = value;
     }
 
 
     private void Awake()
     {
-        gunCamera = transform.GetChild(2).gameObject;     
-        gun = GetComponentInChildren<GunBase>();
+        gunCamera = transform.GetChild(2).gameObject;
+
+        Transform child = transform.GetChild(3);
+        defaultGun = child.GetComponent<GunBase>();
+        child = transform.GetChild(4);
+        powerGuns = child.GetComponentsInChildren<GunBase>();
+
+        activeGun = defaultGun;        
 
         controller = GetComponent<StarterAssets.FirstPersonController>();
     }
 
     private void Start()
     {
-        gun.Equip();
-        gun.onFireRecoil += GunFireRecoil;
+        Crosshair crosshair = FindAnyObjectByType<Crosshair>();
+        
+        defaultGun.onFireRecoil += (expend) => crosshair.Expend(expend * 10);
+
+        foreach(var gun in powerGuns)
+        {
+            gun.onFireRecoil += (expend) => crosshair.Expend(expend * 10);
+        }
+
+        activeGun.Equip();
+        activeGun.onFireRecoil += GunFireRecoil;
     }
 
     private void GunFireRecoil(float recoil)
@@ -48,15 +65,21 @@ public class Player : MonoBehaviour
 
     public void GunFire(bool isFireStart)
     {
-        gun.Fire(isFireStart);
+        activeGun.Fire(isFireStart);
     }
 
     public void GunRevolverReload()
     {
-        Revolver revolver = gun as Revolver;
+        Revolver revolver = activeGun as Revolver;
         if(revolver != null)
         {
             revolver.Reload();
         }
+    }
+
+    public void GunChange(GunType type)
+    {
+        // activeGun 변경
+
     }
 }

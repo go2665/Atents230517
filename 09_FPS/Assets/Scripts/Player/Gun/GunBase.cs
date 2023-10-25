@@ -4,6 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
+public enum GunType
+{
+    Revoler,
+    Shotgun,
+    AssaultRifle
+}
+
 public class GunBase : MonoBehaviour
 {
     /// <summary>
@@ -111,7 +118,7 @@ public class GunBase : MonoBehaviour
         }
 
         float endTime = Time.unscaledTime;
-        Debug.Log($"전체 진행 시간 : {endTime - startTime}");
+        //Debug.Log($"전체 진행 시간 : {endTime - startTime}");
     }
 
     protected virtual void FireProcess(bool isFireStart = true)
