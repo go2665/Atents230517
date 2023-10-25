@@ -58,13 +58,12 @@ public class GunBase : MonoBehaviour
 
     public Action<int> onBulletCountChange;
 
+    public Action<float> onFireRecoil;
+
     VisualEffect muzzleEffect;
     int onFireID;
 
     protected Transform fireTransform;
-
-    public AnimationCurve fireUp;
-    public AnimationCurve fireDown;
 
     private void Awake()
     {
@@ -124,40 +123,7 @@ public class GunBase : MonoBehaviour
     protected void FireRecoil()
     {
         //Time.timeScale = 0.1f;
-        StartCoroutine(FireRecoilCoroutine());
-    }
-
-    IEnumerator FireRecoilCoroutine()
-    {
-        float upTime = 0.05f;
-        float elapsedTime = 0.0f;
-
-        //Debug.Log(fireTransform.right);
-
-        while(elapsedTime < 1)
-        {            
-            float angle = -fireUp.Evaluate(elapsedTime) * recoil;
-            fireTransform.rotation = Quaternion.AngleAxis(angle, fireTransform.right) * fireTransform.rotation;
-            //fireTransform.Rotate(angle, 0, 0);
-
-            elapsedTime += (Time.deltaTime / upTime);
-
-            yield return null;      
-        }
-
-        elapsedTime = 0.0f;
-
-        float downTime = 0.2f;
-        while (elapsedTime < 1)
-        {
-            float angle = fireDown.Evaluate(elapsedTime) * recoil * (recoil * 0.05f);  // (recoil * 0.05f)를 곱한 이유는 내려올때 곱하는 회수가 많아 결과값이 증폭되고 있어서 그것을 줄이기 위해 추가          
-            fireTransform.rotation = Quaternion.AngleAxis(angle, fireTransform.right) * fireTransform.rotation;
-            //fireTransform.Rotate(angle, 0, 0);
-
-            elapsedTime += (Time.deltaTime / downTime); 
-
-            yield return null;
-        }
+        onFireRecoil?.Invoke(recoil);
     }
 
     public void Equip()

@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
 
     GunBase gun;
 
+    StarterAssets.FirstPersonController controller;
+
     public Action<int> onBulletCountChange
     {
         get => gun.onBulletCountChange;
@@ -19,12 +21,20 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         gunCamera = transform.GetChild(2).gameObject;     
-        gun = GetComponentInChildren<GunBase>();        
+        gun = GetComponentInChildren<GunBase>();
+
+        controller = GetComponent<StarterAssets.FirstPersonController>();
     }
 
     private void Start()
     {
         gun.Equip();
+        gun.onFireRecoil += GunFireRecoil;
+    }
+
+    private void GunFireRecoil(float recoil)
+    {
+        controller.FireRecoil(recoil);
     }
 
     /// <summary>
