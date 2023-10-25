@@ -46,9 +46,9 @@ public class Player : MonoBehaviour
         gunCamera.SetActive(show);
     }
 
-    public void GunFire()
+    public void GunFire(bool isFireStart)
     {
-        gun.Fire();
+        gun.Fire(isFireStart);
     }
 
     public void GunRevolverReload()

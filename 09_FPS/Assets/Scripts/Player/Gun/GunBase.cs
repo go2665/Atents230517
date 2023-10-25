@@ -60,7 +60,7 @@ public class GunBase : MonoBehaviour
 
     public Action<float> onFireRecoil;
 
-    VisualEffect muzzleEffect;
+    private VisualEffect muzzleEffect;
     int onFireID;
 
     protected Transform fireTransform;
@@ -77,18 +77,11 @@ public class GunBase : MonoBehaviour
         isFireReady = true;
     }
 
-    public void Fire()
+    public void Fire(bool isFireStart = true)
     {
         if(isFireReady && bulletCount > 0 )
-        {
-            isFireReady = false;
-
-            muzzleEffect.SendEvent(onFireID);
-            BulletCount--;
-
-            FireProcess();
-
-            StartCoroutine(FireReady());
+        {                    
+            FireProcess(isFireStart);
         }
     }
 
@@ -96,6 +89,11 @@ public class GunBase : MonoBehaviour
     {        
         yield return new WaitForSeconds(1/fireRate);
         isFireReady = true;
+    }
+
+    protected void MuzzleEffect()
+    {
+        muzzleEffect.SendEvent(onFireID);
     }
         
     public IEnumerator TestFire(int count)
@@ -116,8 +114,13 @@ public class GunBase : MonoBehaviour
         Debug.Log($"전체 진행 시간 : {endTime - startTime}");
     }
 
-    protected virtual void FireProcess()
+    protected virtual void FireProcess(bool isFireStart = true)
     {
+        isFireReady = false;
+        muzzleEffect.SendEvent(onFireID);
+        BulletCount--;
+
+        StartCoroutine(FireReady());
     }
 
     protected void FireRecoil()

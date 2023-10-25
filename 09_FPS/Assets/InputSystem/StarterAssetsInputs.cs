@@ -60,8 +60,13 @@ namespace StarterAssets
 		{
 			if(context.performed)
 			{
-				player.GunFire();
+				player.GunFire(true);
 			}
+			else if(context.canceled)
+			{
+				player.GunFire(false);
+			}
+
 		}
 
 		public void OnZoom(InputAction.CallbackContext context)

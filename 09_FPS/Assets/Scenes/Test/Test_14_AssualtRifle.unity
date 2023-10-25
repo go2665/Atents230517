@@ -986,9 +986,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 100
   damage: 15
-  fireRate: 3
+  fireRate: 10
   spread: 3
-  recoil: 5
+  recoil: 2
   clipSize: 50
 --- !u!4 &1171184120 stripped
 Transform:
@@ -1438,7 +1438,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   origianlPrefab: {fileID: 3971033468607636571, guid: 1f394dfe08eb8ee459d666fba98e0e9d,
     type: 3}
-  poolSize: 32
+  poolSize: 128
 --- !u!4 &1793309784
 Transform:
   m_ObjectHideFlags: 0
@@ -1555,12 +1555,12 @@ PrefabInstance:
     - target: {fileID: 6525763609891866837, guid: 66d58a4ba03d61f45b19da5a17eea502,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.1378
+      value: 0.164
       objectReference: {fileID: 0}
     - target: {fileID: 6525763609891866837, guid: 66d58a4ba03d61f45b19da5a17eea502,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.2427
+      value: 0.59
       objectReference: {fileID: 0}
     - target: {fileID: 6525763609891866837, guid: 66d58a4ba03d61f45b19da5a17eea502,
         type: 3}

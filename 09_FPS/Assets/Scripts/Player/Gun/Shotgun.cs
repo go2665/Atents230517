@@ -6,9 +6,11 @@ public class Shotgun : GunBase
 {
     public int pellet = 6;
 
-    protected override void FireProcess()
+    protected override void FireProcess(bool isFireStart = true)
     {
-        for(int i=0;i<pellet; i++)
+        base.FireProcess(isFireStart);
+
+        for (int i=0;i<pellet; i++)
         {
             Ray ray = new(fireTransform.position, GetFireDirection());
             if (Physics.Raycast(ray, out RaycastHit hitInfo, range))

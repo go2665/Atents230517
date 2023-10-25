@@ -7,8 +7,10 @@ public class Revolver : GunBase
     public float reloadTime = 1.0f;
     bool isReloading = false;
 
-    protected override void FireProcess()
+    protected override void FireProcess(bool isFireStart)
     {
+        base.FireProcess(isFireStart);
+
         Ray ray = new(fireTransform.position, GetFireDirection());
         if( Physics.Raycast(ray, out RaycastHit hitInfo, range) )
         {
