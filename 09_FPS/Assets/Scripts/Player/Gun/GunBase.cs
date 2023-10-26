@@ -125,9 +125,8 @@ public class GunBase : MonoBehaviour
     {
         isFireReady = false;
         muzzleEffect.SendEvent(onFireID);
-        BulletCount--;
-
         StartCoroutine(FireReady());
+        BulletCount--;
     }
 
     protected void FireRecoil()
@@ -140,6 +139,12 @@ public class GunBase : MonoBehaviour
     {
         fireTransform = GameManager.Inst.Player.transform.GetChild(0);
         Initialize();
+    }
+
+    public void UnEquip()
+    {
+        StopAllCoroutines();
+        isFireReady = true;
     }
 
     protected Vector3 GetFireDirection()

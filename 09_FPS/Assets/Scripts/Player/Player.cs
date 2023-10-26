@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class Player : MonoBehaviour
 {
@@ -12,19 +13,6 @@ public class Player : MonoBehaviour
     GunBase[] powerGuns;    
 
     StarterAssets.FirstPersonController controller;
-
-    public Action<int> onBulletCountChange
-    {
-        set
-        { 
-            defaultGun.onBulletCountChange = value; 
-            foreach (var gun in powerGuns)
-            {
-                gun.onBulletCountChange = value;
-            }
-        }
-    }
-
 
     private void Awake()
     {
@@ -39,6 +27,7 @@ public class Player : MonoBehaviour
         foreach (var gun in powerGuns)
         {
             gun.onFireRecoil += GunFireRecoil;
+            gun.onBulletCountChange += OnAmmoDepleted;
         }
 
         activeGun = defaultGun;        
@@ -58,9 +47,6 @@ public class Player : MonoBehaviour
         }
 
         GunChange(GunType.Revoler);
-
-        //activeGun.Equip();
-        //activeGun.onFireRecoil += GunFireRecoil;
     }
 
     private void GunFireRecoil(float recoil)
@@ -93,8 +79,6 @@ public class Player : MonoBehaviour
 
     public void GunChange(GunType type)
     {
-        // activeGun 변경
-
         activeGun.gameObject.SetActive(false);
 
         GunBase newGun = null;
@@ -111,9 +95,26 @@ public class Player : MonoBehaviour
                 break;
         }
 
+        activeGun.UnEquip();
         activeGun = newGun;
         activeGun.Equip();
         activeGun.gameObject.SetActive(true);
+    }
 
+    public void AddBulletCountChangeDelegate(Action<int> callback)
+    {
+        defaultGun.onBulletCountChange = callback + defaultGun.onBulletCountChange;
+        foreach (var gun in powerGuns)
+        {
+            gun.onBulletCountChange = callback + gun.onBulletCountChange;
+        }
+    }
+
+    private void OnAmmoDepleted(int ammo)
+    {
+        if (ammo <= 0)
+        {
+            GunChange(GunType.Revoler);
+        }
     }
 }
