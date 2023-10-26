@@ -11,13 +11,12 @@ GameObject:
   - component: {fileID: 8847774726419344703}
   - component: {fileID: 7498765966269344120}
   - component: {fileID: 4565431836026249297}
-  - component: {fileID: 2295347138750747301}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 16
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8847774726419344703
 Transform:
@@ -84,19 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &2295347138750747301
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 761899120117751607}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5901307179439117298
 GameObject:
   m_ObjectHideFlags: 0
@@ -107,12 +93,13 @@ GameObject:
   m_Component:
   - component: {fileID: 5901307179439117297}
   - component: {fileID: 433211602611084280}
+  - component: {fileID: 5946563711122752038}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 16
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5901307179439117297
 Transform:
@@ -142,3 +129,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c26d8bcc346cb49bfd08b11e474d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hp: 30
+  maxHp: 30
+--- !u!65 &5946563711122752038
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5901307179439117298}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 1, z: 0}

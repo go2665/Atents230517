@@ -159,6 +159,11 @@ public class GunBase : MonoBehaviour
         return result;
     }
 
+    protected void HitEnemy(Enemy enemy)
+    {
+        enemy.HP -= damage;
+    }
+
     //Vector3 fireDir = Vector3.forward;
     void OnDrawGizmos()
     {
