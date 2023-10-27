@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76cdda063b70b834ea174649b0f71c6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
+  seed: -1
 --- !u!4 &139498527
 Transform:
   m_ObjectHideFlags: 0
@@ -597,6 +597,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5393215579111688474, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
+        type: 3}
+      propertyPath: damage
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5393215579111688474, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
+        type: 3}
+      propertyPath: clipSize
+      value: 10000
+      objectReference: {fileID: 0}
     - target: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
       propertyPath: m_Name
@@ -703,6 +713,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58c50fa52b9be0a4fa6ef62b0fa0a8e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mazeWidth: 10
+  mazeHeight: 10
   enemyCount: 10
   enemyPrefab: {fileID: 5901307179439117298, guid: d3665fac2e584034385ad14b4c473ada,
     type: 3}
