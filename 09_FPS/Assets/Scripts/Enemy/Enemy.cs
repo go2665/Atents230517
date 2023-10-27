@@ -6,8 +6,6 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    // 1. 플레이어의 총에 맞으면 죽는다.
-
     public float hp = 30.0f;
     public float HP
     {
@@ -25,6 +23,7 @@ public class Enemy : MonoBehaviour
 
     public float walkSpeed = 5.0f;
     public float runSpeed = 10.0f;
+    float speedPenalty = 0;
 
     public Action<Enemy> onDie;
 
@@ -38,6 +37,8 @@ public class Enemy : MonoBehaviour
     private void OnEnable()
     {
         HP = maxHp;
+        agent.speed = walkSpeed;
+        speedPenalty = 0;
     }
 
     private void Update()
@@ -72,9 +73,36 @@ public class Enemy : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    // 실습
-    // 1. 이동 속도를 가진다.
-    // 2. NavMeshAgent를 이용해 이동을 한다.
-    //  2.1. 자신의 위치에서 +-3칸 안쪽을 랜덤으로 목적으로 설정한다.
-    //  2.2. 목적지에 도착하면 다시 2.1.반복
+    public void OnAttacked(HitLocation hitLocation, float damage)
+    {
+        switch(hitLocation)
+        {
+            case HitLocation.Body:
+                HP -= damage;
+                //Debug.Log("몸통을 맞았다.");
+                break;
+            case HitLocation.Head:
+                HP -= damage * 2;
+                //Debug.Log("머리를 맞았다.");
+                break;
+            case HitLocation.Arm:
+                HP -= damage;
+                // 공격력 감소
+                //Debug.Log("팔을 맞았다.");
+                break;
+            case HitLocation.Leg:
+                speedPenalty += 1;
+                agent.speed = walkSpeed - speedPenalty;
+                //Debug.Log("다리을 맞았다.");
+                break;
+        }
+    }
+}
+
+public enum HitLocation
+{
+    Body,
+    Head,
+    Arm,
+    Leg
 }
