@@ -18,8 +18,8 @@ TagManager:
   - Water
   - UI
   - 
-  - 
-  - Character
+  - Player
+  - Enemy
   - Ground
   - Test
   - Gun

@@ -134,7 +134,7 @@ public class GunBase : MonoBehaviour
         Ray ray = new(fireTransform.position, GetFireDirection());
         if (Physics.Raycast(ray, out RaycastHit hitInfo, range))
         {
-            if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("Character"))
+            if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 Enemy target = hitInfo.collider.GetComponentInParent<Enemy>();
                 HitLocation location = HitLocation.Body;

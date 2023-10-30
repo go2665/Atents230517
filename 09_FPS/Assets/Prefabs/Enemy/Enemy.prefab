@@ -595,6 +595,7 @@ GameObject:
   - component: {fileID: 433211602611084280}
   - component: {fileID: 8566370070748267017}
   - component: {fileID: 6218215281358186394}
+  - component: {fileID: 4952919454736650539}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
@@ -637,8 +638,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: 30
   maxHp: 30
-  walkSpeed: 5
-  runSpeed: 10
+  walkSpeed: 2
+  runSpeed: 7
+  sightAngle: 90
+  sightRange: 20
 --- !u!54 &8566370070748267017
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -677,6 +680,19 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!135 &4952919454736650539
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5901307179439117298}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 20
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8824993534537721761
 GameObject:
   m_ObjectHideFlags: 0
