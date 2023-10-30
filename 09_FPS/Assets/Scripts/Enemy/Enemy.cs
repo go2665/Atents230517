@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem.LowLevel;
 
 public enum BehaviourState : byte
 {
     Wander,
     Chase,
+    Find,
     Attack,
     Dead
 }
@@ -49,8 +51,9 @@ public class Enemy : MonoBehaviour
         {
             if(state != value)
             {
-                OnStateChange(value);
+                OnStateExit(state);
                 state = value;
+                OnStateEnter(state);
             }
         }
     }
@@ -95,14 +98,40 @@ public class Enemy : MonoBehaviour
         {
             Vector3 destination = GetRandomDestination();
             agent.SetDestination(destination);
-            Debug.Log($"Dest : {destination}");
+            //Debug.Log($"Dest : {destination}");
         }
     }
 
     void Update_Chase()
     {
         // 마지막 목격한 장소까지 이동
-        // 마지막 목격 장소에 도착했는데 플레이어가 없으면 다시 배회 상태로
+        if( IsPlayerInSight(out Vector3 newPostion) )
+        {
+            agent.SetDestination(newPostion);
+            Debug.Log($"목적지 갱신 : {newPostion}");
+        }
+        else if (!agent.pathPending && agent.remainingDistance <= 0)
+        {
+            // 플레이어가 안보이는데 마지막으로 목격한 장소에 도착했다. => 다시 배회 상태로
+            Debug.Log($"배회 상태로 전환");
+            State = BehaviourState.Find;
+        }
+    }
+
+    public float findTime = 5.0f;
+    float findTimeElapsed = 5.0f;
+    void Update_Find()
+    {
+        findTimeElapsed -= Time.deltaTime;
+        if(findTimeElapsed < 0 )
+        {
+            State = BehaviourState.Wander;  // 일정 시간까지 플레이어 못찾았다. => 배회
+        }
+
+        if (PlayerFind())
+        {
+            State = BehaviourState.Chase;   // 플레이어를 찾았다 => 추적
+        }   
     }
 
     void Update_Attack()
@@ -162,7 +191,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void OnStateChange(BehaviourState newState)
+    private void OnStateEnter(BehaviourState newState)
     {
         switch (newState)
         {
@@ -174,6 +203,13 @@ public class Enemy : MonoBehaviour
                 onUpdate = Update_Chase;
                 agent.speed = runSpeed;
                 break;
+            case BehaviourState.Find:
+                findTimeElapsed = findTime;
+                onUpdate = Update_Find;
+                agent.speed = walkSpeed;
+                agent.angularSpeed = 360.0f;
+                StartCoroutine(LookAround());
+                break;
             case BehaviourState.Attack:
                 onUpdate = Update_Attack;
                 break;
@@ -184,19 +220,47 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private void OnStateExit(BehaviourState prevState)
+    {
+        switch (prevState)
+        {
+            case BehaviourState.Find:
+                agent.angularSpeed = 120.0f;
+                StopAllCoroutines();
+                break;
+            case BehaviourState.Wander:                
+            case BehaviourState.Chase:
+            case BehaviourState.Attack:
+            case BehaviourState.Dead:
+            default:
+                break;
+        }
+    }
+
     Transform target = null;
     Collider[] playerCollider = new Collider[1];
     bool PlayerFind()
     {
         bool result = false;
 
-        if(target != null &&
-            Physics.OverlapSphereNonAlloc(transform.position, sightRange, playerCollider, LayerMask.GetMask("Player")) > 0 )
+        if(target != null)             
+        {
+            result = IsPlayerInSight(out _);
+        }
+
+        return result;
+    }
+
+    bool IsPlayerInSight(out Vector3 position)
+    {
+        bool result = false;
+        position = Vector3.zero;
+        if ( Physics.OverlapSphereNonAlloc(transform.position, sightRange, playerCollider, LayerMask.GetMask("Player")) > 0 )
         {
             // 벽에 가려지는가?
             Vector3 dir = playerCollider[0].transform.position - transform.position;
-            Ray ray = new(transform.position, dir);
-            if (Physics.Raycast(ray, out RaycastHit hit, sightRange, LayerMask.GetMask("Player")))
+            Ray ray = new(transform.position + Vector3.up, dir);
+            if (Physics.Raycast(ray, out RaycastHit hit, sightRange))
             {
                 if (hit.collider == playerCollider[0])
                 {
@@ -207,8 +271,9 @@ public class Enemy : MonoBehaviour
                     if (angle * 2 < sightAngle)
                     {
                         // 플레이어가 적의 시야각 안에 있다.
+                        position = playerCollider[0].transform.position;
                         result = true;
-                        Debug.Log("플레이어 발견");
+                        //Debug.Log("플레이어 발견");
                     }
                 }
             }
@@ -216,6 +281,26 @@ public class Enemy : MonoBehaviour
 
         return result;
     }
+
+    IEnumerator LookAround()
+    {
+        // 두리번 거리기
+        Vector3[] positions = { 
+            transform.position - transform.right * 0.1f, 
+            transform.position + transform.right * 0.1f,
+            transform.position - transform.forward * 0.1f
+        };
+        int index = 0;
+        int length = positions.Length;
+        while(true)
+        {
+            agent.SetDestination(positions[index]);
+            index = (index + 1) % length;
+            yield return new WaitForSeconds(1);
+        }
+    }
+
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Player"))
@@ -235,12 +320,31 @@ public class Enemy : MonoBehaviour
     private void OnDrawGizmos()
     {
         Vector3 p0 = transform.position + Vector3.up;
-        Vector3 f = transform.forward * 5;
+        Vector3 f = transform.forward * sightRange;
 
         Vector3 p1 = Quaternion.Euler(0, sightAngle * 0.5f, 0) * f + p0;
         Vector3 p2 = Quaternion.Euler(0, -sightAngle * 0.5f, 0) * f + p0;
 
-        Gizmos.color = Color.red;
+        switch(State)
+        {
+            case BehaviourState.Wander:
+                Gizmos.color = Color.green;
+                break;
+            case BehaviourState.Chase:
+                Gizmos.color = Color.yellow;
+                break;
+            case BehaviourState.Find:
+                Gizmos.color = Color.blue;
+                break;
+            case BehaviourState.Attack:
+                Gizmos.color = Color.red;
+                break;
+            case BehaviourState.Dead:
+                Gizmos.color = Color.black;
+                break;
+        }
+
+        Gizmos.DrawLine(p0, p0+f);
         Gizmos.DrawLine(p0, p1);
         Gizmos.DrawLine(p0, p2);
     }

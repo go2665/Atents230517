@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76cdda063b70b834ea174649b0f71c6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: -1
+  seed: 0
   revolver: {fileID: 1844351201}
   gunPower: 5
 --- !u!4 &139498527
