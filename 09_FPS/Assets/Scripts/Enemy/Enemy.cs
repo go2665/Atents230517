@@ -134,9 +134,20 @@ public class Enemy : MonoBehaviour
         }   
     }
 
+    public float attackPower = 10.0f;
     void Update_Attack()
     {
+        // 적
+        // 1. chase 상태에서 일정거리 안으로 플레이어가 들어오면 공격 상태로 변경된다.
+        // 2. 공격 상태일 때는 플레이어를 무조건 계속 쫒아온다.
+        // 3. 플레이어가 죽었다 => 배회 상태
+        // 4. 적이 죽었다. => 죽음 상태
 
+        // 플레이어
+        // 1. hp와 hpMax 만들기
+        // 2. 피격용 함수 만들기
+        //  2.1. hp 감소 => hp가 0이하면 플레이어 사망(디버그로 출력만)
+        //  2.2. 몇시 방향에서 피격 당했는지 UI로 표시
     }
 
     void Update_Dead()
