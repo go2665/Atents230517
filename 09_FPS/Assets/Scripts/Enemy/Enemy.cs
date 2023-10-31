@@ -195,7 +195,7 @@ public class Enemy : MonoBehaviour
 
     private void Attack()
     {
-        //attackTarget;
+        attackTarget.Attacked(this);
         Debug.Log($"플레이어 {attackTarget.gameObject.name} 공격");
     }
 

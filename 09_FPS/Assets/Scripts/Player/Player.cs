@@ -6,6 +6,24 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class Player : MonoBehaviour
 {
+    bool isAlive = true;
+    float hp;
+    public float MaxHP = 100.0f;
+    public float HP
+    {
+        get => hp;
+        set
+        {
+            hp = value;
+            if(hp<=0 && isAlive)
+            {
+                Die();
+            }
+            hp = Mathf.Clamp(hp, 0, MaxHP);
+        }
+    }
+    public Action onDie;
+
     GameObject gunCamera;
 
     GunBase activeGun;
@@ -46,6 +64,7 @@ public class Player : MonoBehaviour
             gun.onFireRecoil += (expend) => crosshair.Expend(expend * 10);
         }
 
+        HP = MaxHP;
         GunChange(GunType.Revoler);
     }
 
@@ -116,5 +135,22 @@ public class Player : MonoBehaviour
         {
             GunChange(GunType.Revoler);
         }
+    }
+
+    public Action<float> onAttacked;
+    public void Attacked(Enemy enemy)
+    {
+        Vector3 dir = enemy.transform.position - transform.position;
+        float angle = Vector3.SignedAngle(transform.forward, dir, transform.up);
+        onAttacked?.Invoke(-angle);
+
+        HP -= enemy.attackPower;
+    }
+
+    void Die()
+    {
+        isAlive = false;
+        Debug.Log("사망");
+        onDie?.Invoke();
     }
 }
