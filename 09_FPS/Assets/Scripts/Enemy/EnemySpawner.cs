@@ -57,7 +57,6 @@ public class EnemySpawner : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
 
-        target.transform.position = GetRandomPos();
-        target.gameObject.SetActive(true);
+        target.Respawn(GetRandomPos());
     }
 }

@@ -152,5 +152,6 @@ public class Player : MonoBehaviour
         isAlive = false;
         Debug.Log("사망");
         onDie?.Invoke();
+        gameObject.SetActive(false);
     }
 }
