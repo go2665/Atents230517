@@ -67,6 +67,8 @@ public class Enemy : MonoBehaviour
 
     NavMeshAgent agent;
 
+    Player attackTarget = null;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -74,6 +76,14 @@ public class Enemy : MonoBehaviour
         SphereCollider sphere = GetComponent<SphereCollider>();
         sphere.radius = sightRange;
         State = BehaviourState.Wander;
+
+        Transform child = transform.GetChild(6);
+        AttackSensor attackSensor = child.GetComponent<AttackSensor>();
+        attackSensor.onSensorTriggered += (target) =>
+        {
+            attackTarget = target.GetComponent<Player>();
+            State = BehaviourState.Attack;
+        };
     }
 
     private void OnEnable()
@@ -108,12 +118,12 @@ public class Enemy : MonoBehaviour
         if( IsPlayerInSight(out Vector3 newPostion) )
         {
             agent.SetDestination(newPostion);
-            Debug.Log($"목적지 갱신 : {newPostion}");
+            //Debug.Log($"목적지 갱신 : {newPostion}");
         }
         else if (!agent.pathPending && agent.remainingDistance <= 0)
         {
             // 플레이어가 안보이는데 마지막으로 목격한 장소에 도착했다. => 다시 배회 상태로
-            Debug.Log($"배회 상태로 전환");
+            //Debug.Log($"배회 상태로 전환");
             State = BehaviourState.Find;
         }
     }
@@ -135,6 +145,8 @@ public class Enemy : MonoBehaviour
     }
 
     public float attackPower = 10.0f;
+    public float attackInterval = 1.0f;
+    float attackElapsed = 0;
     void Update_Attack()
     {
         // 적
@@ -142,6 +154,16 @@ public class Enemy : MonoBehaviour
         // 2. 공격 상태일 때는 플레이어를 무조건 계속 쫒아온다.
         // 3. 플레이어가 죽었다 => 배회 상태
         // 4. 적이 죽었다. => 죽음 상태
+
+        //
+        agent.SetDestination(attackTarget.transform.position);
+
+        attackElapsed -= Time.deltaTime;
+        if (attackElapsed < 0)
+        {
+            Attack();
+            attackElapsed = attackInterval;
+        }
 
         // 플레이어
         // 1. hp와 hpMax 만들기
@@ -169,6 +191,12 @@ public class Enemy : MonoBehaviour
         result.z = -(target.y + 0.5f) * size;
 
         return result;
+    }
+
+    private void Attack()
+    {
+        //attackTarget;
+        Debug.Log($"플레이어 {attackTarget.gameObject.name} 공격");
     }
 
     private void Die()
@@ -239,9 +267,11 @@ public class Enemy : MonoBehaviour
                 agent.angularSpeed = 120.0f;
                 StopAllCoroutines();
                 break;
+            case BehaviourState.Attack:
+                attackTarget = null;
+                break;
             case BehaviourState.Wander:                
             case BehaviourState.Chase:
-            case BehaviourState.Attack:
             case BehaviourState.Dead:
             default:
                 break;
