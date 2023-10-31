@@ -82,8 +82,14 @@ public class Enemy : MonoBehaviour
         attackSensor.onSensorTriggered += (target) =>
         {
             attackTarget = target.GetComponent<Player>();
+            attackTarget.onDie += ReturnWander;
             State = BehaviourState.Attack;
         };
+    }
+
+    void ReturnWander()
+    {
+        State = BehaviourState.Wander;
     }
 
     private void OnEnable()
@@ -195,8 +201,8 @@ public class Enemy : MonoBehaviour
 
     private void Attack()
     {
-        attackTarget.Attacked(this);
         Debug.Log($"플레이어 {attackTarget.gameObject.name} 공격");
+        attackTarget.Attacked(this);
     }
 
     private void Die()
@@ -268,6 +274,7 @@ public class Enemy : MonoBehaviour
                 StopAllCoroutines();
                 break;
             case BehaviourState.Attack:
+                attackTarget.onDie -= ReturnWander;
                 attackTarget = null;
                 break;
             case BehaviourState.Wander:                
