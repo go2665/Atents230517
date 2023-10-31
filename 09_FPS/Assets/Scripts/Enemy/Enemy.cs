@@ -221,7 +221,6 @@ public class Enemy : MonoBehaviour
             State = BehaviourState.Chase;
             Player player = GameManager.Inst.Player;
             agent.SetDestination(player.transform.position);
-
         }
     }
 

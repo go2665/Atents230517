@@ -43,4 +43,12 @@ public class Test_17_Enemy : TestBase
         //result = PlayerPrefs.HasKey("HP");
         //Debug.Log(result);
     }
+
+    // 실습
+    // 1. 회복 아이템 만들기
+    // 2. 플레이어 HP 표시하기
+    //  2.1. 숫자로 표시하기
+    //  2.2. HP 남은 정도에 따라 화면 어둡게 하기(커브 사용)
+    // 3. 적이 죽으면 아이템 떨어트리기
+    //  3.1. 확률로 회복아이템, 돌격소총, 샷건
 }

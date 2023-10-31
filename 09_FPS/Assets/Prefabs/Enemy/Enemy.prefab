@@ -596,7 +596,7 @@ GameObject:
   - component: {fileID: 8566370070748267017}
   - component: {fileID: 6218215281358186394}
   - component: {fileID: 4952919454736650539}
-  m_Layer: 8
+  m_Layer: 2
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -708,7 +708,7 @@ GameObject:
   - component: {fileID: 954016599225475874}
   - component: {fileID: 7078224963909451953}
   - component: {fileID: 6108973044704571775}
-  m_Layer: 8
+  m_Layer: 2
   m_Name: AttackSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

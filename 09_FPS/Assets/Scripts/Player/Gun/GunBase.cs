@@ -150,6 +150,10 @@ public class GunBase : MonoBehaviour
                 {
                     location = HitLocation.Leg;
                 }
+                else if (hitInfo.collider.CompareTag("Enemy_Body"))
+                {
+                    location = HitLocation.Body;
+                }
                 target.OnAttacked(location, damage);
             }
             else
