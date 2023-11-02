@@ -69,6 +69,8 @@ public class Enemy : MonoBehaviour
 
     Player attackTarget = null;
 
+    public GameObject[] dropItems;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -248,6 +250,7 @@ public class Enemy : MonoBehaviour
                 onUpdate = Update_Attack;
                 break;
             case BehaviourState.Dead:
+                DropItem();
                 onUpdate = Update_Dead;
                 agent.speed = 0.0f;
                 onDie?.Invoke(this);
@@ -348,6 +351,39 @@ public class Enemy : MonoBehaviour
         State = BehaviourState.Wander;
     }
 
+    enum ItemTable
+    {        
+        Heal,
+        AssaultRifle,
+        ShotGun,
+        Random
+    }
+
+    void DropItem(ItemTable table = ItemTable.Random)
+    {
+        int index = 0;
+        if(table == ItemTable.Random) 
+        {
+            float random = UnityEngine.Random.value;
+            if(random < 0.8f)
+            {
+                index = (int)ItemTable.Heal;
+            }
+            else if(random < 0.9f)
+            {
+                index = (int)ItemTable.AssaultRifle;
+            }
+            else
+            {
+                index = (int)ItemTable.ShotGun;
+            }
+        }
+        else
+        {
+            index = (int)table;
+        }
+        Instantiate(dropItems[index], transform.position, transform.rotation);
+    }
 
     private void OnTriggerEnter(Collider other)
     {

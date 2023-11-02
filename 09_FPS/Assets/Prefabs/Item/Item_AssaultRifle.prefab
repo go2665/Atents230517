@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5354353358335484346}
   - component: {fileID: 6632119305424197355}
-  - component: {fileID: 8077603907793172255}
-  m_Layer: 0
+  - component: {fileID: 377208017589128848}
+  m_Layer: 2
   m_Name: Item_AssaultRifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,13 +42,13 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5354353358335484345}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.35
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &8077603907793172255
+--- !u!114 &377208017589128848
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -57,7 +57,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5354353358335484345}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 189458a56be1baf42825a7c357e165d2, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a436099db32c0742ba0c69629b1ee35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spinSpeed: 360
@@ -128,6 +128,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: assault1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4239965240344621176, guid: 2be4c88b587558549ab9cebc696a266c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2be4c88b587558549ab9cebc696a266c, type: 3}

@@ -20,9 +20,11 @@ public class Player : MonoBehaviour
                 Die();
             }
             hp = Mathf.Clamp(hp, 0, MaxHP);
+            onHPChange?.Invoke(hp);
         }
     }
     public Action onDie;
+    public Action<float> onHPChange;
 
     GameObject gunCamera;
 

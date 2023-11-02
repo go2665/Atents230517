@@ -643,6 +643,10 @@ MonoBehaviour:
   runSpeed: 7
   sightAngle: 150
   sightRange: 20
+  dropItems:
+  - {fileID: 4258758680271061071, guid: 2fa8d76fcd5a26746852db59484d5563, type: 3}
+  - {fileID: 5354353358335484345, guid: 5b08869a357aeb247ab09906fa03df69, type: 3}
+  - {fileID: 429038531016746023, guid: 12db1c19f10eb3948bbd613cbbebc3f5, type: 3}
   findTime: 5
   attackPower: 10
   attackInterval: 1

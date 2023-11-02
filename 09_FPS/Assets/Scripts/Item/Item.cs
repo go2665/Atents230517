@@ -6,7 +6,7 @@ public class Item : MonoBehaviour
 {
     Transform meshTransform;
     public float spinSpeed = 360.0f;
-    public GunType gunType;
+    
 
     private void Awake()
     {
@@ -25,9 +25,13 @@ public class Item : MonoBehaviour
             Player player = other.GetComponent<Player>();
             if (player != null)
             {
-                player.GunChange(gunType);
+                OnItemConsum(player);
                 Destroy(this.gameObject);
             }
         }
+    }
+
+    protected virtual void OnItemConsum(Player player)
+    {
     }
 }
