@@ -269,6 +269,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellPrefab: {fileID: 1145923745854741144, guid: 4dbdec14244f61242bee8ccf67843409,
     type: 3}
+  goalPrefab: {fileID: 1145923745854741144, guid: 8f239e3a17b08cb4592e7540b3b70714,
+    type: 3}
 --- !u!4 &798922427
 Transform:
   m_ObjectHideFlags: 0
@@ -277,7 +279,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 798922425}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 130, y: 0, z: 0}
+  m_LocalPosition: {x: 230, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -314,6 +316,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellPrefab: {fileID: 1145923745854741144, guid: 4dbdec14244f61242bee8ccf67843409,
+    type: 3}
+  goalPrefab: {fileID: 1145923745854741144, guid: 8f239e3a17b08cb4592e7540b3b70714,
     type: 3}
 --- !u!4 &895704143
 Transform:
@@ -609,6 +613,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellPrefab: {fileID: 1145923745854741144, guid: 4dbdec14244f61242bee8ccf67843409,
     type: 3}
+  goalPrefab: {fileID: 1145923745854741144, guid: 8f239e3a17b08cb4592e7540b3b70714,
+    type: 3}
 --- !u!4 &2002671567
 Transform:
   m_ObjectHideFlags: 0
@@ -617,7 +623,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2002671565}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 70, y: 0, z: 0}
+  m_LocalPosition: {x: 120, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -673,6 +679,6 @@ MonoBehaviour:
   mazeVisualizer_Backtracking: {fileID: 895704142}
   mazeVisualizer_Eller: {fileID: 2002671566}
   mazeVisualizer_Wilson: {fileID: 798922426}
-  height: 10
-  width: 10
+  height: 20
+  width: 20
   seed: -1

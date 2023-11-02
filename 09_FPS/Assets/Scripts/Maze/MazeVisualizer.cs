@@ -5,8 +5,9 @@ using UnityEngine;
 public class MazeVisualizer : MonoBehaviour
 {
     public GameObject cellPrefab;
+    public GameObject goalPrefab;
 
-    public void Draw(Cell[] data)
+    public void Draw(Cell[] data, Cell goal)
     {
         foreach (Cell cell in data)
         {
@@ -17,6 +18,12 @@ public class MazeVisualizer : MonoBehaviour
             CellVisualizer displayer = obj.GetComponent<CellVisualizer>();
             displayer.RefreshWall(cell.Path);
         }
+
+        GameObject goalObj = Instantiate(goalPrefab, transform);
+        goalObj.transform.Translate(goal.X * CellVisualizer.CellSize, 0, -goal.Y * CellVisualizer.CellSize);
+        goalObj.gameObject.name = "Cell_Goal";
+        CellVisualizer goalDisplayer = goalObj.GetComponent<CellVisualizer>();
+        goalDisplayer.RefreshWall(goal.Path);
     }
 
     public void Clear()

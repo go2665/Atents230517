@@ -9,6 +9,9 @@ public class MazeGenerator
 
     protected Cell[] cells;
 
+    Cell goal;
+    public Cell Goal => goal;
+
     public Cell[] MakeMaze(int width, int height, int seed = -1)
     {
         this.width = width;
@@ -21,12 +24,51 @@ public class MazeGenerator
         cells = new Cell[width * height];
 
         OnSpecificAlgorithmExcute();
+        
+        SetExitPoint();
 
         return cells;
     }
 
     protected virtual void OnSpecificAlgorithmExcute()
     {
+    }
+
+    void SetExitPoint()
+    {
+        Direction dir = (Direction)(1 << Random.Range(0,4));
+
+        int exit = 0;
+        Vector2Int goalGrid;
+
+        switch (dir)
+        {
+            case Direction.North:
+                exit = Random.Range(0, width);
+                goalGrid = IndexToGrid(exit);
+                goalGrid.y--;
+                break;
+            case Direction.East:
+                exit = Random.Range(0, height) * width + width - 1;
+                goalGrid = IndexToGrid(exit);
+                goalGrid.x++;
+                break;
+            case Direction.South:
+                exit = Random.Range(0, width) + width * (height - 1);
+                goalGrid = IndexToGrid(exit);
+                goalGrid.y++;
+                break;
+            case Direction.West:
+                exit = Random.Range(0, height) * width;
+                goalGrid = IndexToGrid(exit);
+                goalGrid.x--;
+                break;
+            default:
+                goalGrid = Vector2Int.zero;
+                break;
+        }
+        goal = new Cell(goalGrid.x, goalGrid.y);
+        ConnectPath(cells[exit], goal);
     }
 
     /// <summary>
