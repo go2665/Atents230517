@@ -239,6 +239,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1145923745854741145}
   - component: {fileID: 1145923745854741146}
+  - component: {fileID: 2627616539087592282}
+  - component: {fileID: 6985420005837621001}
   m_Layer: 0
   m_Name: GoalCell
   m_TagString: Untagged
@@ -276,6 +278,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf60455def5aa9f409dab66e202c6f66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2627616539087592282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1145923745854741144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf28d8e26048a524a9d77553d0251943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!135 &6985420005837621001
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1145923745854741144}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.5
+  m_Center: {x: 2.5, y: 0, z: -2.5}
 --- !u!1 &1145923746333378842
 GameObject:
   m_ObjectHideFlags: 0

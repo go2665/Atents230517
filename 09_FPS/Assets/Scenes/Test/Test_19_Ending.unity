@@ -2801,7 +2801,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1150741910
 Transform:
   m_ObjectHideFlags: 0
@@ -2829,8 +2829,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58c50fa52b9be0a4fa6ef62b0fa0a8e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mazeWidth: 10
-  mazeHeight: 10
+  mazeWidth: 20
+  mazeHeight: 20
   enemyCount: 10
   enemyPrefab: {fileID: 5901307179439117298, guid: d3665fac2e584034385ad14b4c473ada,
     type: 3}

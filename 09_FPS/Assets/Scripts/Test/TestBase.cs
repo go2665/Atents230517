@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class TestBase : MonoBehaviour
 {
+    static public int seed = -1;
+
     protected PlayerInputActions inputActions;
 
     private void Awake()
     {
+        if( seed != -1 )
+        {
+            Random.InitState(seed);
+        }
         inputActions = new PlayerInputActions();
     }
 

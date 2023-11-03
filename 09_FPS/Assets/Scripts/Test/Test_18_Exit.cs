@@ -51,7 +51,6 @@ public class Test_18_Exit : TestBase
         player.transform.position = world;
         controller.enabled = true;
 
-
         Ray ray = new(world + Vector3.up, Vector3.down);
         if(Physics.Raycast(ray, out RaycastHit hitInfo, 10.0f))
         {

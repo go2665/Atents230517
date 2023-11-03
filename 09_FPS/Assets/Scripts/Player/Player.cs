@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using static UnityEngine.Rendering.DebugUI;
 
 public class Player : MonoBehaviour
@@ -34,6 +35,8 @@ public class Player : MonoBehaviour
 
     StarterAssets.FirstPersonController controller;
 
+    CharacterController cc;
+
     private void Awake()
     {
         gunCamera = transform.GetChild(2).gameObject;
@@ -53,6 +56,7 @@ public class Player : MonoBehaviour
         activeGun = defaultGun;        
 
         controller = GetComponent<StarterAssets.FirstPersonController>();
+        cc = GetComponent<CharacterController>();
     }
 
     private void Start()
@@ -68,6 +72,8 @@ public class Player : MonoBehaviour
 
         HP = MaxHP;
         GunChange(GunType.Revoler);
+
+        Spawn();
     }
 
     private void GunFireRecoil(float recoil)
@@ -155,5 +161,57 @@ public class Player : MonoBehaviour
         Debug.Log("사망");
         onDie?.Invoke();
         gameObject.SetActive(false);
+    }
+
+    public void Spawn()
+    {
+        cc.enabled = false;
+
+        MazeVisualizer maze = FindAnyObjectByType<MazeVisualizer>();
+        int width = (int)(maze.width * 0.2f);
+        int height = (int)(maze.height * 0.2f);
+
+        int widthMin = (int)((maze.width - width) * 0.5f);
+        int widthMax = (int)((maze.width + width) * 0.5f);
+        int heightMin = (int)((maze.height - height) * 0.5f);
+        int heightMax = (int)((maze.height + height) * 0.5f);
+
+        int x = UnityEngine.Random.Range(widthMin, widthMax);
+        int y = UnityEngine.Random.Range(heightMin, heightMax);
+
+        //Debug.Log($"{x}, {y}");
+
+        Vector3 world = maze.GridToWorld(x, y);                
+        transform.position = world;
+
+        Ray ray = new(world + Vector3.up, Vector3.down);
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, 10.0f))
+        {
+            CellVisualizer cell = hitInfo.collider.gameObject.GetComponentInParent<CellVisualizer>();
+            Direction paths = cell.GetPaths();
+            Debug.Log(paths);
+            List<Vector3> dirList = new List<Vector3>(4);
+            if ((paths & Direction.North) != 0)
+            {
+                dirList.Add(Vector3.forward);
+            }
+            if ((paths & Direction.East) != 0)
+            {
+                dirList.Add(Vector3.right);
+            }
+            if ((paths & Direction.South) != 0)
+            {
+                dirList.Add(Vector3.back);
+            }
+            if ((paths & Direction.West) != 0)
+            {
+                dirList.Add(Vector3.left);
+            }
+
+            Vector3 dir = dirList[UnityEngine.Random.Range(0, dirList.Count)];
+            transform.LookAt(transform.position + dir);
+        }
+
+        cc.enabled = true;
     }
 }
