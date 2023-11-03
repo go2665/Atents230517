@@ -26,7 +26,7 @@ public class Test_09_Maze : TestBase
 
         BackTracking maze = new BackTracking();
         Cell[] cells = maze.MakeMaze(height, width, seed);
-        mazeVisualizer_Backtracking.Draw(cells, maze.Goal);
+        mazeVisualizer_Backtracking.Draw(maze);
     }
 
     protected override void Test3(InputAction.CallbackContext context)
@@ -35,7 +35,7 @@ public class Test_09_Maze : TestBase
 
         Eller maze = new Eller();
         Cell[] cells = maze.MakeMaze(height, width, seed);
-        mazeVisualizer_Eller.Draw(cells, maze.Goal);
+        mazeVisualizer_Eller.Draw(maze);
     }
 
     protected override void Test4(InputAction.CallbackContext context)
@@ -44,7 +44,7 @@ public class Test_09_Maze : TestBase
 
         Wilson maze = new Wilson();
         Cell[] cells = maze.MakeMaze(height, width, seed);
-        mazeVisualizer_Wilson.Draw(cells, maze.Goal);
+        mazeVisualizer_Wilson.Draw(maze);
     }
 
 }

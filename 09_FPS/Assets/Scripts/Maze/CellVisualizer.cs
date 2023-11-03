@@ -30,4 +30,18 @@ public class CellVisualizer : MonoBehaviour
             walls[i].SetActive( !((data & mask) != 0) );    // &시켜서 비트가 세팅되어 있는지 확인하고 세팅되어 있으면 벽을 제거
         }
     }
+
+    public Direction GetPaths()
+    {        
+        int mask = 0;
+        for (int i = 0; i < walls.Length; i++)                     // 모든 벽을 체크
+        {                                          
+            if( !walls[i].activeSelf )
+            {
+                mask |= 1 << i;     // 마스크 만들기(1,2,4,8 순서)
+            }
+        }
+
+        return (Direction)mask;
+    }
 }

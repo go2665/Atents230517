@@ -5,9 +5,12 @@ using UnityEngine;
 public class MazeGenerator
 {
     protected int width;
+    public int Width => width;
     protected int height;
+    public int Height => height;
 
     protected Cell[] cells;
+    public Cell[] Cells => cells;
 
     Cell goal;
     public Cell Goal => goal;
