@@ -8,12 +8,10 @@ public class Test_17_Enemy : TestBase
 {
     //public Enemy enemy;
 
-    public int seed = -1;
-
     public Revolver revolver;
     public float gunPower = 5;
 
-    private void Start()
+    protected override void Start() 
     {
         //enemy.onDie += (target) => Debug.Log($"{target.name} DIE!");
         if( seed != -1)

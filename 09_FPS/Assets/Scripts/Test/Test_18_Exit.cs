@@ -10,9 +10,8 @@ using UnityEditor;
 public class Test_18_Exit : TestBase
 {
     public MazeVisualizer maze;
-    public int seed = -1;
 
-    private void Start()
+    protected override void Start()
     {
         if(seed != -1)
         {

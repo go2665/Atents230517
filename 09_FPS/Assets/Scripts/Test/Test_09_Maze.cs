@@ -13,7 +13,6 @@ public class Test_09_Maze : TestBase
     public MazeVisualizer mazeVisualizer_Wilson;
     public int height = 5;
     public int width = 5;
-    public int seed = 0;
 
     protected override void Test1(InputAction.CallbackContext context)
     {

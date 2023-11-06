@@ -4,16 +4,12 @@ using UnityEngine;
 
 public class TestBase : MonoBehaviour
 {
-    static public int seed = -1;
+    public int seed = -1;
 
     protected PlayerInputActions inputActions;
 
     private void Awake()
     {
-        if( seed != -1 )
-        {
-            Random.InitState(seed);
-        }
         inputActions = new PlayerInputActions();
     }
 
@@ -37,6 +33,14 @@ public class TestBase : MonoBehaviour
         inputActions.Test.Test2.performed -= Test2;
         inputActions.Test.Test1.performed -= Test1;
         inputActions.Test.Disable();
+    }
+
+    protected virtual void Start()
+    {
+        if (seed != -1)
+        {
+            Random.InitState(seed);
+        }
     }
 
     protected virtual void Test1(UnityEngine.InputSystem.InputAction.CallbackContext context)
