@@ -39,6 +39,8 @@ public class Player : MonoBehaviour
 
     CharacterController cc;
 
+    public Action onSpawn;
+
     private void Awake()
     {
         gunCamera = transform.GetChild(2).gameObject;
@@ -216,5 +218,7 @@ public class Player : MonoBehaviour
         }
 
         cc.enabled = true;
+
+        onSpawn?.Invoke();
     }
 }
