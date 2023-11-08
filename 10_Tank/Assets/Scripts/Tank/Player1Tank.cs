@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerTank : MonoBehaviour
+public class Player1Tank : MonoBehaviour
 {
     public Color baseColor;
 
@@ -31,16 +31,16 @@ public class PlayerTank : MonoBehaviour
 
     private void OnEnable()
     {
-        inputActions.Player.Enable();
-        inputActions.Player.Move.performed += OnMove;
-        inputActions.Player.Move.canceled += OnMove;
+        inputActions.Player1.Enable();
+        inputActions.Player1.Move.performed += OnMove;
+        inputActions.Player1.Move.canceled += OnMove;
     }
 
     private void OnDisable()
     {
-        inputActions.Player.Move.canceled -= OnMove;
-        inputActions.Player.Move.performed -= OnMove;
-        inputActions.Player.Disable();
+        inputActions.Player1.Move.canceled -= OnMove;
+        inputActions.Player1.Move.performed -= OnMove;
+        inputActions.Player1.Disable();
     }
 
     private void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
