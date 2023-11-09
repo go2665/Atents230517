@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Shell : MonoBehaviour
 {
+    public float explosionRadius = 2.0f;
+    public float explosionForce = 10.0f;
+
     public float firePower = 10.0f;
     public GameObject explosionPrefab;
 
@@ -34,11 +37,27 @@ public class Shell : MonoBehaviour
     {
         if(!isExplosion)
         {
-            //Time.timeScale = 0.1f;
+            Time.timeScale = 0.00f;
             isExplosion = true;
             Vector3 pos = collision.contacts[0].point;
             Vector3 normal = collision.contacts[0].normal;
-            Instantiate(explosionPrefab, pos, Quaternion.LookRotation(normal));
+            GameObject obj = Instantiate(explosionPrefab, pos, Quaternion.LookRotation(normal));
+            ParticleSystem ps = obj.GetComponent<ParticleSystem>();
+            ps.Play();
+            
+            Collider[] colliders = Physics.OverlapSphere(pos, explosionRadius, LayerMask.GetMask("ExplosionTarget", "Players"));
+            if(colliders.Length > 0 )
+            {
+                foreach(Collider collider in colliders)
+                {
+                    Rigidbody targetRigid = collider.GetComponent<Rigidbody>();
+                    if (targetRigid != null)
+                    {
+                        targetRigid.AddExplosionForce(explosionForce, pos, explosionRadius);
+                    }
+                }
+            }
+
         }
     }
 }
