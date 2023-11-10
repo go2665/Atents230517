@@ -11,6 +11,6 @@ public class Test_01_Tank : TestBase
     }
     protected override void Test2(InputAction.CallbackContext context)
     {
-        Time.timeScale = 0.1f;
+        Time.timeScale = 0.15f;
     }
 }
