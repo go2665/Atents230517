@@ -10,7 +10,10 @@ public class Shell : PooledObject
     public float firePower = 10.0f;
     public GameObject explosionPrefab;
 
+    public AnimationCurve explotionCurve;
+
     Rigidbody rigid;
+    Collider col;
 
     bool isExplosion = false;
 
@@ -22,8 +25,9 @@ public class Shell : PooledObject
     // 4. 포탄, 폭팔이팩트는 오브젝트 풀로 관리된다.
 
     private void Awake()
-    {
+    {        
         rigid = GetComponent<Rigidbody>();
+        col = GetComponent<Collider>();
     }
 
     private void OnEnable()
@@ -40,8 +44,7 @@ public class Shell : PooledObject
         if(!isExplosion)
         {
             //Time.timeScale = 0.00f;
-            StopAllCoroutines();
-            StartCoroutine(LifeOver(5.0f));
+            StopAllCoroutines();            
 
             isExplosion = true;
             Vector3 pos = collision.contacts[0].point;
@@ -58,8 +61,37 @@ public class Shell : PooledObject
                     {
                         targetRigid.AddExplosionForce(explosionForce, pos, explosionRadius);
                     }
+                    PlayerBase player = collider.GetComponent<PlayerBase>();
+                    if (player != null)
+                    {
+                        Vector3 dir = player.transform.position - pos;
+                        float ratio = dir.magnitude / explosionRadius;
+                        float damage = explotionCurve.Evaluate(ratio) * explosionForce;
+
+                        dir = dir.normalized * (1 - ratio);
+                        player.DamageTaken(damage, dir);
+                    }
                 }
             }
+
+            StartCoroutine(EndProcess());
         }
+    }
+
+    IEnumerator EndProcess()
+    {
+        yield return new WaitForSeconds(3);
+
+        col.enabled = false;
+        rigid.drag = 20.0f;
+        rigid.angularDrag = 20.0f;
+
+        yield return new WaitForSeconds(5);
+
+        gameObject.SetActive(false);
+
+        col.enabled = true;
+        rigid.drag = 0.0f;
+        rigid.angularDrag = 0.05f;
     }
 }

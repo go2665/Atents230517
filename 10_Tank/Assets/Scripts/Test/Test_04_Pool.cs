@@ -18,4 +18,8 @@ public class Test_04_Pool : TestBase
     {
         Factory.Inst.GetShell(fire);
     }
+
+    protected override void Test3(InputAction.CallbackContext context)
+    {        
+    }
 }
