@@ -17,10 +17,14 @@ public class PlayerBase : MonoBehaviour
 
     protected PlayerInputActions inputActions;
 
+    GameObject explosionEffect;
+
     protected virtual void Awake()
     {
         rigid = GetComponent<Rigidbody>();
         inputActions = new PlayerInputActions();
+
+        explosionEffect = transform.GetChild(1).gameObject;
     }
     private void Start()
     {
@@ -56,10 +60,12 @@ public class PlayerBase : MonoBehaviour
     {
         if(isAlive)
         {
+            //Time.timeScale = 0.01f;
             isAlive = false;
+            explosionEffect.transform.SetParent(null);
+            explosionEffect.SetActive(true);
             inputActions.Disable();
 
-            //Time.timeScale = 0.1f;
             //Debug.Log($"{hitDir},{hitDir.sqrMagnitude}");
             Vector3 explosionDir = hitDir + transform.up * hitDir.sqrMagnitude * 2;
             rigid.constraints = RigidbodyConstraints.None;

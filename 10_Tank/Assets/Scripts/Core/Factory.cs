@@ -71,10 +71,10 @@ public class Factory : Singleton<Factory>
         return obj;
     }
 
-    public Explosion GetExplosion(Vector3 position, Vector3 normal)
+    public TankShellExplosion GetExplosion(Vector3 position, Vector3 normal)
     {
         GameObject obj = GetObject(PoolObjectType.Explosion, position);
-        Explosion explosion = obj.GetComponent<Explosion>();
+        TankShellExplosion explosion = obj.GetComponent<TankShellExplosion>();
         explosion.Initialize(position, normal);
         return explosion;
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
-public class Explosion : PooledObject
+public class TankShellExplosion : PooledObject
 {
     VisualEffect vfx;
     readonly int OnExplosionID = Shader.PropertyToID("OnExplosion");

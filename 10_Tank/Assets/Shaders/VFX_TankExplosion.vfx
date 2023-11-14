@@ -24,25 +24,7 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614555}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614556}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614603}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614558}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614606}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614608}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614610}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614629}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614583}
@@ -72,15 +54,6 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614585}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614589}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614593}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614661}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614699}
       id: 0
       isStickyNote: 0
@@ -101,25 +74,7 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614708}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614710}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614806}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614712}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614766}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614770}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614809}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614827}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614833}
@@ -164,22 +119,7 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614753}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614758}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614908}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614915}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614741}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614772}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614927}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614935}
@@ -199,12 +139,6 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614939}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614941}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614991}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614972}
       id: 0
       isStickyNote: 0
@@ -217,18 +151,6 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614943}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614987}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614989}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614994}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661615036}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661615026}
       id: 0
       isStickyNote: 0
@@ -236,15 +158,6 @@ MonoBehaviour:
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614974}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614977}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614980}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661615043}
       id: 0
       isStickyNote: 0
   stickyNoteInfos: []
@@ -4324,7 +4237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UIIgnoredErrors: []
-  m_Parent: {fileID: 0}
+  m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
   m_UICollapsed: 1
@@ -8004,7 +7917,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614864}
   m_ExposedName: DebrisColor
   m_Exposed: 1
-  m_Order: 1
+  m_Order: 0
   m_Category: 
   m_Min:
     m_Type:
@@ -8405,7 +8318,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614880}
   m_ExposedName: BaseColor
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 1
   m_Category: 
   m_Min:
     m_Type:
