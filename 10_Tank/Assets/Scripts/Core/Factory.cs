@@ -6,13 +6,19 @@ using UnityEngine.VFX;
 public enum PoolObjectType
 {
     Shell = 0,
-    Explosion
+    Explosion,
+    ShellGuided,
+    ShellClust,
+    ShellSubminuation
 }
 
 public class Factory : Singleton<Factory>
 {
     ShellPool shellPool;
     ExplosionPool explosionPool;
+    ShellGuidedPool shellGuidedPool;
+    ShellClustPool shellClustPool;
+    ShellSubminuationPool shellSubminuationPool;
 
     protected override void OnInitialize()
     {
@@ -20,9 +26,15 @@ public class Factory : Singleton<Factory>
 
         shellPool = GetComponentInChildren<ShellPool>();
         explosionPool = GetComponentInChildren<ExplosionPool>();
+        shellGuidedPool = GetComponentInChildren<ShellGuidedPool>();
+        shellClustPool = GetComponentInChildren<ShellClustPool>();
+        shellSubminuationPool = GetComponentInChildren<ShellSubminuationPool>();
 
         shellPool?.Initialize();
         explosionPool?.Initialize();
+        shellGuidedPool?.Initialize();
+        shellClustPool?.Initialize();
+        shellSubminuationPool?.Initialize();
     }
 
     /// <summary>
@@ -40,6 +52,15 @@ public class Factory : Singleton<Factory>
                 break;
             case PoolObjectType.Explosion:
                 result = explosionPool?.GetObject(spawn)?.gameObject;
+                break;
+            case PoolObjectType.ShellGuided:
+                result = shellGuidedPool?.GetObject(spawn)?.gameObject;
+                break;
+            case PoolObjectType.ShellClust:
+                result = shellClustPool?.GetObject(spawn)?.gameObject;
+                break;
+            case PoolObjectType.ShellSubminuation:
+                result = shellSubminuationPool?.GetObject(spawn)?.gameObject;
                 break;
             default:
                 result = new GameObject();
@@ -83,6 +104,27 @@ public class Factory : Singleton<Factory>
     {
         GameObject obj = GetObject(PoolObjectType.Shell, parent);
         Shell shell = obj.GetComponent<Shell>();
+        return shell;
+    }
+
+    public ShellGuided GetGuided(Transform parent = null)
+    {
+        GameObject obj = GetObject(PoolObjectType.ShellGuided, parent);
+        ShellGuided shell = obj.GetComponent<ShellGuided>();
+        return shell;
+    }
+
+    public ShellClust GetClust(Transform parent = null)
+    {
+        GameObject obj = GetObject(PoolObjectType.ShellClust, parent);
+        ShellClust shell = obj.GetComponent<ShellClust>();
+        return shell;
+    }
+
+    public ShellSubminuation GetSubminuation(Vector3 pos)
+    {
+        GameObject obj = GetObject(PoolObjectType.ShellSubminuation, pos);
+        ShellSubminuation shell = obj.GetComponent<ShellSubminuation>();
         return shell;
     }
 }
