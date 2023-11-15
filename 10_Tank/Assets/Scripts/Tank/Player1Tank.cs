@@ -25,10 +25,14 @@ public class Player1Tank : PlayerBase
         inputActions.Player1.Enable();
         inputActions.Player1.Move.performed += OnMove;
         inputActions.Player1.Move.canceled += OnMove;
+        inputActions.Player1.Fire.performed += OnChargeStart;
+        inputActions.Player1.Fire.canceled += OnFire;
     }
 
     private void OnDisable()
     {
+        inputActions.Player1.Fire.canceled -= OnFire;
+        inputActions.Player1.Fire.performed -= OnChargeStart;
         inputActions.Player1.Move.canceled -= OnMove;
         inputActions.Player1.Move.performed -= OnMove;
         inputActions.Player1.Disable();
@@ -48,6 +52,7 @@ public class Player1Tank : PlayerBase
             }
 
             turret.rotation = Quaternion.Slerp(turret.rotation, lookTarget, Time.deltaTime * turretSpinSpeed);
+            aimSlider.transform.localRotation = turret.rotation;
         }
     }
 }

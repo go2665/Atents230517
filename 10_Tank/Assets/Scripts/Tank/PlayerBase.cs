@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerBase : MonoBehaviour
 {
+    public float fullChargeTime = 3.0f;
     public Color baseColor;
 
     public float moveSpeed = 1.0f;
@@ -13,15 +15,24 @@ public class PlayerBase : MonoBehaviour
     protected bool isAlive = true;
     protected Vector2 inputDir = Vector2.zero;
 
+
     protected Rigidbody rigid;
+    protected Slider aimSlider;
 
     protected PlayerInputActions inputActions;
 
     GameObject explosionEffect;
 
+    bool isCharging = false;
+
     protected virtual void Awake()
     {
         rigid = GetComponent<Rigidbody>();
+
+        Canvas canvas = GetComponentInChildren<Canvas>();
+        Transform child = canvas.transform.GetChild(0);
+        aimSlider = child .GetComponent<Slider>();
+
         inputActions = new PlayerInputActions();
 
         explosionEffect = transform.GetChild(1).gameObject;
@@ -42,11 +53,6 @@ public class PlayerBase : MonoBehaviour
             Quaternion.Euler(0, Time.fixedDeltaTime * rotateSpeed * inputDir.x, 0) * transform.rotation);
     }
 
-    protected void OnMove(InputAction.CallbackContext context)
-    {
-        inputDir = context.ReadValue<Vector2>();
-    }
-
     public void DamageTaken(float damage, Vector3 hitDir)
     {
 
@@ -54,8 +60,6 @@ public class PlayerBase : MonoBehaviour
         Die(hitDir * damage * 0.1f);
     }
 
-    public float test = 1.0f;
-    public int test2 = 5;
     void Die(Vector3 hitDir)
     {
         if(isAlive)
@@ -97,5 +101,45 @@ public class PlayerBase : MonoBehaviour
 
         yield return new WaitForSeconds(5);
         Destroy(this.gameObject);
+    }    
+
+    IEnumerator Charging()
+    {
+        isCharging = true;
+        float timeElapsed = 0;
+        while (timeElapsed < fullChargeTime)
+        {
+            timeElapsed += Time.deltaTime;
+            aimSlider.value = timeElapsed;
+            yield return null;
+        }
+
+        Fire();
+    }
+
+    private void Fire()
+    {
+        if (isCharging)
+        {
+            aimSlider.value = 0;
+            Debug.Log("발사");            
+        }
+        isCharging = false;
+    }
+
+    protected void OnMove(InputAction.CallbackContext context)
+    {
+        inputDir = context.ReadValue<Vector2>();
+    }
+
+    protected void OnChargeStart(InputAction.CallbackContext context)
+    {
+        StartCoroutine(Charging());
+    }
+
+    protected void OnFire(InputAction.CallbackContext context)
+    {
+        StopAllCoroutines();
+        Fire();
     }
 }
