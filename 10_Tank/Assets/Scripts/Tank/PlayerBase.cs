@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,6 +31,11 @@ public class PlayerBase : MonoBehaviour
 
     Transform fireTransform;
 
+    public float coolTime = 2.0f;
+    float currentCoolTime = 0.0f;
+
+    public Action<float> onCoolTimeChange;
+
     protected virtual void Awake()
     {
         rigid = GetComponent<Rigidbody>();
@@ -57,6 +63,9 @@ public class PlayerBase : MonoBehaviour
 
     private void FixedUpdate()
     {
+        currentCoolTime -= Time.fixedDeltaTime;
+        onCoolTimeChange?.Invoke(1 - currentCoolTime / coolTime);
+
         rigid.MovePosition(transform.position + Time.fixedDeltaTime * moveSpeed * inputDir.y * transform.forward);
         rigid.MoveRotation(
             Quaternion.Euler(0, Time.fixedDeltaTime * rotateSpeed * inputDir.x, 0) * transform.rotation);
@@ -83,7 +92,7 @@ public class PlayerBase : MonoBehaviour
             Vector3 explosionDir = hitDir + transform.up * hitDir.sqrMagnitude * 2;
             rigid.constraints = RigidbodyConstraints.None;
 
-            Vector3 torqueAxis = Quaternion.Euler(0, Random.Range(80.0f,100.0f), 0) * explosionDir;
+            Vector3 torqueAxis = Quaternion.Euler(0, UnityEngine.Random.Range(80.0f,100.0f), 0) * explosionDir;
             //Vector3 torqueAxis = Quaternion.Euler(0, 90.0f, 0) * hitDir;
 
             rigid.AddForce(explosionDir, ForceMode.Impulse);
@@ -136,6 +145,7 @@ public class PlayerBase : MonoBehaviour
         }
         isCharging = false;
         chargingRate = 0.0f;
+        currentCoolTime = coolTime;
     }
 
     protected void OnMove(InputAction.CallbackContext context)
@@ -145,12 +155,23 @@ public class PlayerBase : MonoBehaviour
 
     protected void OnChargeStart(InputAction.CallbackContext context)
     {
-        StartCoroutine(Charging());
+        if(currentCoolTime <= 0)
+        {
+            StartCoroutine(Charging());
+        }
     }
 
     protected void OnFire(InputAction.CallbackContext context)
     {
-        StopAllCoroutines();
-        Fire();
+        if (currentCoolTime <= 0)
+        {
+            StopAllCoroutines();
+            Fire();
+        }
+    }
+
+    public void SetShell(ShellType shellType)
+    {
+        this.shellType = shellType;
     }
 }
