@@ -53,6 +53,10 @@ public class Player1Tank : PlayerBase
 
             turret.rotation = Quaternion.Slerp(turret.rotation, lookTarget, Time.deltaTime * turretSpinSpeed);
             aimSlider.transform.localRotation = turret.rotation;
+
+            float angle = Vector3.SignedAngle(transform.forward, turret.forward, turret.up);
+            Quaternion parentQ = aimSlider.transform.parent.rotation;
+            aimSlider.transform.rotation = Quaternion.Euler(0, angle, 0) * parentQ;
         }
     }
 }

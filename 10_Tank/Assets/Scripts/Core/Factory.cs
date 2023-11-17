@@ -100,24 +100,48 @@ public class Factory : Singleton<Factory>
         return explosion;
     }
 
-    public Shell GetShell(Transform parent = null)
+    public Shell GetShell(ShellType type, Transform parent, float chargingRate = 1.0f)
+    {
+        Shell result = null;
+        switch (type)
+        {
+            case ShellType.Normal:
+                result = GetNormalShell(parent, chargingRate);
+                break;
+            case ShellType.Guided:
+                result = GetGuidedShell(parent, chargingRate);
+                break;
+            case ShellType.Clust:
+                result = GetClustShell(parent, chargingRate);
+                break;
+            default:
+                break;
+        }
+
+        return result;
+    }
+
+    public Shell GetNormalShell(Transform parent, float chargingRate = 1.0f)
     {
         GameObject obj = GetObject(PoolObjectType.Shell, parent);
         Shell shell = obj.GetComponent<Shell>();
+        shell.SetFirePower(chargingRate);
         return shell;
     }
 
-    public ShellGuided GetGuided(Transform parent = null)
+    public ShellGuided GetGuidedShell(Transform parent, float chargingRate = 1.0f)
     {
         GameObject obj = GetObject(PoolObjectType.ShellGuided, parent);
         ShellGuided shell = obj.GetComponent<ShellGuided>();
+        shell.SetFirePower(chargingRate);
         return shell;
     }
 
-    public ShellClust GetClust(Transform parent = null)
+    public ShellClust GetClustShell(Transform parent, float chargingRate = 1.0f)
     {
         GameObject obj = GetObject(PoolObjectType.ShellClust, parent);
         ShellClust shell = obj.GetComponent<ShellClust>();
+        shell.SetFirePower(chargingRate);
         return shell;
     }
 

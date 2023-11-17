@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ShellType : byte
+{
+    Normal,
+    Guided,
+    Clust
+}
+
 public class Shell : PooledObject
 {
     public float explosionRadius = 2.0f;
@@ -94,5 +101,10 @@ public class Shell : PooledObject
         col.enabled = true;
         rigid.drag = 0.0f;
         rigid.angularDrag = 0.05f;
+    }
+
+    public void SetFirePower(float powerRate)
+    {
+        rigid.velocity = firePower * 0.5f * (1 + powerRate) * transform.forward;
     }
 }

@@ -16,7 +16,7 @@ public class Test_04_Pool : TestBase
 
     protected override void Test2(InputAction.CallbackContext context)
     {
-        Factory.Inst.GetShell(fire);
+        //Factory.Inst.GetNormalShell(fire);
     }
 
     protected override void Test3(InputAction.CallbackContext context)

@@ -10,7 +10,7 @@ public class Test_05_EndProcess : TestBase
 
     protected override void Test1(InputAction.CallbackContext context)
     {
-        Factory.Inst.GetShell(shellTransform);
+        //Factory.Inst.GetNormalShell(shellTransform);
     }
 
     protected override void Test2(InputAction.CallbackContext context)

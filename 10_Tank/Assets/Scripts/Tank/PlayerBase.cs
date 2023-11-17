@@ -12,6 +12,8 @@ public class PlayerBase : MonoBehaviour
     public float moveSpeed = 1.0f;
     public float rotateSpeed = 360.0f;
 
+    public ShellType shellType = ShellType.Normal;
+
     protected bool isAlive = true;
     protected Vector2 inputDir = Vector2.zero;
 
@@ -24,6 +26,9 @@ public class PlayerBase : MonoBehaviour
     GameObject explosionEffect;
 
     bool isCharging = false;
+    float chargingRate = 0;
+
+    Transform fireTransform;
 
     protected virtual void Awake()
     {
@@ -35,7 +40,11 @@ public class PlayerBase : MonoBehaviour
 
         inputActions = new PlayerInputActions();
 
+        child = transform.GetChild(0);
+        child = child.GetChild(3);
+        fireTransform = child.GetChild(0);
         explosionEffect = transform.GetChild(1).gameObject;
+
     }
     private void Start()
     {
@@ -110,6 +119,7 @@ public class PlayerBase : MonoBehaviour
         while (timeElapsed < fullChargeTime)
         {
             timeElapsed += Time.deltaTime;
+            chargingRate = timeElapsed / fullChargeTime;
             aimSlider.value = timeElapsed;
             yield return null;
         }
@@ -122,9 +132,10 @@ public class PlayerBase : MonoBehaviour
         if (isCharging)
         {
             aimSlider.value = 0;
-            Debug.Log("발사");            
+            Factory.Inst.GetShell(shellType, fireTransform, chargingRate);
         }
         isCharging = false;
+        chargingRate = 0.0f;
     }
 
     protected void OnMove(InputAction.CallbackContext context)
