@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
+    public ShellType ShellType => shellType;
     ShellType shellType = ShellType.Normal;
 
-    private void Start()
+    private void OnEnable()
     {
         Array enums = Enum.GetValues(typeof(ShellType));
 
